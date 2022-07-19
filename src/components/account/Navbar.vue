@@ -77,12 +77,18 @@
 </template>
 
 <script>
-	//import MenuItems from '../common/MenuItems.vue'
+	import { useUser } from '@/stores/user'
+	
 	export default {
 		name: 'AppNavbar',
+		setup() {
+			const user = useUser()
+			console.log(user.authenticate + "status");
+			return { user }
+		},
 		methods: {
 			logout() {
-				this.$store.commit("setAuthentication", false);
+				this.user.logout();
 				this.$router.replace({ name: "home" });
 			}
 		},

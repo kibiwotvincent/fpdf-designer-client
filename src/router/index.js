@@ -1,5 +1,6 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import store from '@/store/';
+import pinia from "@/store.js";
+import { useUser } from '@/stores/user'
 
 import Home from '@/views/Homepage.vue';
 import DesignPanel from '@/views/DesignPanel.vue';
@@ -25,7 +26,9 @@ const routes = [
 		name: 'login', 
 		component: Login,
 		beforeEnter: (to, from, next) => {
-			if(store.state.authenticated == true) {
+			const user = useUser(pinia);
+			
+			if(user.isAuthenticated == true) {
 				next("/dashboard");
 			}
 			next();
@@ -38,7 +41,9 @@ const routes = [
 		name: 'dashboard', 
 		component: Dashboard,
 		beforeEnter: (to, from, next) => {
-			if(store.state.authenticated == false) {
+			const user = useUser(pinia);
+			
+			if(user.isAuthenticated == false) {
 				next("/login");
 			}
 			else {
@@ -51,7 +56,9 @@ const routes = [
 		name: 'profile', 
 		component: Profile,
 		beforeEnter: (to, from, next) => {
-			if(store.state.authenticated == false) {
+			const user = useUser(pinia);
+			
+			if(user.isAuthenticated == false) {
 				next("/login");
 			}
 			else {
@@ -63,6 +70,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
+  linkActiveClass: 'active',
   routes
 })
 

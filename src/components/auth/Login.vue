@@ -39,8 +39,14 @@
 </template>
 
 <script>
+import { useUser } from '@/stores/user'
+
 export default {
   name: 'LoginPage',
+  setup() {
+    const user = useUser()
+    return { user }
+  },
   data() {
 		return {
 			input: {
@@ -53,7 +59,7 @@ export default {
 	signIn() {
 		if(this.input.email != "" && this.input.password != "") {
 			if(this.input.email == 'vinkib2@gmail.com' && this.input.password == 'admin') {
-				this.$store.commit("setAuthentication", true);
+				this.user.login();
 				this.$router.replace({ name: "dashboard" });
 			}
 			else {
