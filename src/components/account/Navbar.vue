@@ -1,5 +1,7 @@
 <script setup>
 	import {onMounted} from 'vue'
+	import { useAuthStore } from '@/stores';
+	
 	onMounted(() =>  {
 		var navMenuDiv = document.getElementById("nav-content");
 		var navMenu = document.getElementById("nav-toggle");
@@ -33,8 +35,14 @@
 			}
 			return false;
         }
-
+		
+		
 	})
+	
+	function logout() {
+		const authStore = useAuthStore();
+		return authStore.logout();
+	}
 </script>
 
 <template>
@@ -68,29 +76,15 @@
 			</div>
 
 			<div class="lg:flex items-right hidden">
-				<button @click="logout()" id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Logout</button>
+				<button @click="logout" id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Logout</button>
 			</div>
 
 		</div>
 		<hr class="border-b border-gray-100 opacity-20 my-0 py-0" />
 	</nav>
 </template>
-
 <script>
-	import { useUser } from '@/stores/user'
-	
 	export default {
 		name: 'AppNavbar',
-		setup() {
-			const user = useUser()
-			console.log(user.authenticate + "status");
-			return { user }
-		},
-		methods: {
-			logout() {
-				this.user.logout();
-				this.$router.replace({ name: "home" });
-			}
-		},
 	}
 </script>

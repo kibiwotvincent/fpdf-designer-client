@@ -1,0 +1,23 @@
+button.secondary {
+	background: linear-gradient(90deg, #FF8369 0%, #FD6F95 100%);
+}
+.border-danger, .is-invalid {
+	border: 1px solid #f5365c !important;
+}
+.text-danger {
+	color: #f5365c !important;
+}
+
+//alerts
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
