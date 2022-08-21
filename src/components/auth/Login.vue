@@ -6,7 +6,7 @@ import Spinner from '@/components/form/Spinner';
 import { useAuthStore } from '@/stores';
 
 const schema = Yup.object().shape({
-    email: Yup.string().required(),
+    email: Yup.string().required().email(),
     password: Yup.string().required()
 });
 
@@ -15,7 +15,6 @@ function onSubmit(values, { setErrors }) {
     const { email, password } = values;
 
     return authStore.login(email, password)
-        /*.catch(error => setErrors({ apiError: error }));*/
         .catch(errorResponse => {
 		console.log(errorResponse.data)
 		setErrors({apiError: errorResponse.data.message})

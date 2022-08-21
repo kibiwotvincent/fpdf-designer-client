@@ -3,7 +3,8 @@ import { defineStore } from 'pinia';
 import { fetchWrapper } from '@/helpers';
 import { router } from '@/router';
 
-//const baseUrl = `http://127.0.0.1:8000/api/users`;
+//const baseUrl = 'http://localhost:8000/api/users';
+const baseUrl = 'https://fpdf-designer.naet-tech.com/api/users';
 
 export const useAuthStore = defineStore({
     id: 'auth',
@@ -13,8 +14,16 @@ export const useAuthStore = defineStore({
         returnUrl: '/dashboard'
     }),
     actions: {
+		async register(email, password, password_confirmation) {
+            const response = await fetchWrapper.post(baseUrl+'/register', { email, password, password_confirmation });
+			
+			if(response && response.status == 200) {
+				// redirect to login
+				router.push('/login');
+			}
+        },
         async login(email, password) {
-            const response = await fetchWrapper.post('http://localhost:8000/api/users/login', { email, password });
+            const response = await fetchWrapper.post(baseUrl+'/login', { email, password });
 
 			if(response && response.status == 200) {
 				const user = response.data;

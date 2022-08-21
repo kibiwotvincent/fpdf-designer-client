@@ -29,7 +29,8 @@ function authHeader(url) {
     const { user } = useAuthStore();
     const isLoggedIn = !!user?.token;
     //const isApiUrl = url.startsWith(process.env.API_URL);
-    const isApiUrl = url.startsWith('http://localhost:8000/api');
+    //const isApiUrl = url.startsWith('http://localhost:8000/api');
+    const isApiUrl = url.startsWith('https://fpdf-designer.naet-tech.com/api');
     if (isLoggedIn && isApiUrl) {
         return { Authorization: `Bearer ${user.token}` };
     } else {
