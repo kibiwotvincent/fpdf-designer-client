@@ -14,8 +14,8 @@ function request(method) {
             headers: authHeader(url)
         };
         if (body) {
+            requestOptions.headers['Accept'] = 'application/json';
             requestOptions.headers['Content-Type'] = 'application/json';
-            requestOptions.headers['X-Requested-With'] = 'XMLHttpRequest';
             requestOptions.body = JSON.stringify(body);
         }
         return fetch(url, requestOptions).then(handleResponse)
@@ -28,9 +28,7 @@ function authHeader(url) {
     // return auth header with jwt if user is logged in and request is to the api url
     const { user } = useAuthStore();
     const isLoggedIn = !!user?.token;
-    //const isApiUrl = url.startsWith(process.env.API_URL);
-    //const isApiUrl = url.startsWith('http://localhost:8000/api');
-    const isApiUrl = url.startsWith('https://fpdf-designer.naet-tech.com/api');
+    const isApiUrl = url.startsWith(process.env.VUE_APP_API_URL);
     if (isLoggedIn && isApiUrl) {
         return { Authorization: `Bearer ${user.token}` };
     } else {

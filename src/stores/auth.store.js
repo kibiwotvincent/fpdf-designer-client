@@ -3,8 +3,7 @@ import { defineStore } from 'pinia';
 import { fetchWrapper } from '@/helpers';
 import { router } from '@/router';
 
-//const baseUrl = 'http://localhost:8000/api/users';
-const baseUrl = 'https://fpdf-designer.naet-tech.com/api/users';
+const baseUrl = process.env.VUE_APP_API_URL+'/api/users';
 
 export const useAuthStore = defineStore({
     id: 'auth',
@@ -31,7 +30,7 @@ export const useAuthStore = defineStore({
 				// update pinia state
 				this.user = user;
 
-				// store user details and jwt in local storage to keep user logged in between page refreshes
+				// store user details and api access token in local storage to keep user logged in between page refreshes
 				localStorage.setItem('user', JSON.stringify(user));
 
 				// redirect to previous url or default to account dashboard

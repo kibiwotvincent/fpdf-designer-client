@@ -8,7 +8,7 @@ import { useAuthStore } from '@/stores';
 const schema = Yup.object().shape({
     email: Yup.string().required().email(),
     password: Yup.string().required(),
-    password_confirmation: Yup.string().required('Password confirmation is required').oneOf([Yup.ref('password'), null], 'Passwords must match')
+    password_confirmation: Yup.string().required('password confirmation is required').oneOf([Yup.ref('password'), null], 'Passwords must match')
 });
 
 function onSubmit(values, { setErrors }) {

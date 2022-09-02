@@ -6,6 +6,10 @@ import Navbar from '@/components/common/Navbar.vue'
 	<Navbar />
 	<section class="bg-gray-100 py-8">
 		<div id="fpdf_designer_elements" class="w-ful" style="margin-top: 60px; margin-bottom: 20px; padding: 0 30px;width: 330mm;">
+			<button class="btn btn-primary fdpf-element" id="send_fpdf">Preview</button>
+			<button class="btn btn-danger fdpf-element" id="clear_fpdf">Clear</button>
+			<button class="btn btn-warning fdpf-element" id="save_design">Save</button>
+			<button class="btn btn-warning fdpf-element" id="load_design">Load</button>
 			<button class="btn btn-light fdpf-element" data-fpdf="cell" data-is-new-element="true">Cell</button>
 			<button class="btn btn-light fdpf-element" data-fpdf="multicell" data-is-new-element="true">Muliticell</button>
 			<button class="btn btn-light fdpf-element" data-fpdf="text" data-is-new-element="true">Text</button>
@@ -18,39 +22,31 @@ import Navbar from '@/components/common/Navbar.vue'
 			<button class="btn btn-light fdpf-element" data-fpdf="setfillcolor" data-is-new-element="true">Fill color</button>
 			<button class="btn btn-light fdpf-element" data-fpdf="setdrawcolor" data-is-new-element="true">Draw color</button>
 			<button class="btn btn-light fdpf-element" data-fpdf="settextcolor" data-is-new-element="true">Text color</button>
-		</div>
-		<div class="panel">
-			<div class="A4" ref="A4Ref">
-				<Vue3DraggableResizable
-					:initW="600"
-					:initH="30"
-					:parent=true 
-					v-model:x="x"
-					v-model:y="y"
-					v-model:w="w"
-					v-model:h="h"
-					v-model:active="active"
-					:draggable="true"
-					:resizable="true"
-					@activated="print('activated')"
-					@deactivated="print('deactivated')"
-					@drag-start="print('drag-start')"
-					@resize-start="print('resize-start')"
-					@dragging="logPosition()"
-					@resizing="print('resizing')"
-					@drag-end="print('drag-end')"
-					@resize-end="print('resize-end')"
-					>
-					##
-				</Vue3DraggableResizable>
-			</div>
-		</div>
-		<div class="right-panel float-right">
-			<button class="btn btn-primary fdpf-element" id="send_fpdf">Preview</button>
-			<button class="btn btn-danger fdpf-element" id="clear_fpdf">Clear</button>
-			<button class="btn btn-warning fdpf-element" id="save_design">Save</button>
 			<button class="btn btn-primary fdpf-element float-right ml-1" id="show_output">Show Output</button>
-			<h1>dfd</h1>
+		</div>
+		<div class="panel" ref="panelRef">
+			<Vue3DraggableResizable
+				:initW="600"
+				:initH="30"
+				:parent=true 
+				v-model:x="x"
+				v-model:y="y"
+				v-model:w="w"
+				v-model:h="h"
+				v-model:active="active"
+				:draggable="true"
+				:resizable="true"
+				@activated="print('activated')"
+				@deactivated="print('deactivated')"
+				@drag-start="print('drag-start')"
+				@resize-start="print('resize-start')"
+				@dragging="logPosition()"
+				@resizing="print('resizing')"
+				@drag-end="print('drag-end')"
+				@resize-end="print('resize-end')"
+				>
+				##
+			</Vue3DraggableResizable>
 		</div>
 	</section>
 </template>
@@ -69,19 +65,15 @@ export default defineComponent({
       y: 156,
       h: 100,
       w: 100,
-      active: true,
-      panelPosition: {}, //{'top': panelPosition.top, 'right': panelPosition.right, 'bottom': panelPosition.bottom, 'left': panelPosition.left, }
+      active: false
     }
-  },
-  mounted() {
-    //this.panelPosition = this.$refs["panelRef"].getBoundingClientRect();
   },
   methods: {
     print(val) {
       console.log(val)
     },
 	logPosition() {
-		const panelPosition = this.$refs["A4Ref"].getBoundingClientRect();
+		const panelPosition = this.$refs["panelRef"].getBoundingClientRect();
 		console.log("Panel position"+panelPosition.left+" - "+panelPosition.top);
 		console.log("Item position"+this.x+" - "+this.y);
 	}
@@ -91,15 +83,12 @@ export default defineComponent({
 
 <style scoped>
 .panel {
-	width: 220mm;
-	display: inline-block;
-}
-.A4 {
 	width: 210mm;
 	height: 297mm;
+	//margin: 0 auto;
 	margin-left: 30px;
 	margin-bottom: 20px;
-	border: 1px #d3d3d3 solid;
+	border: 1px #D3D3D3 solid;
 	background: #fff;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	color: #000;
@@ -109,9 +98,7 @@ button {
 	border: 1px solid #d3d3d3;
 	padding: 4px 10px;
 }
-.right-panel {
-	padding: 10px; 
-	margin-right: 30px; 
-	width: 400px;
+.btn-lightt {
+	color: #fff;
 }
 </style>

@@ -15,6 +15,7 @@
     "vee-validate": "^4.6.6",
     "vue": "^3.2.13",
     "vue-router": "^4.0.15",
+    "vue3-draggable-resizable": "^1.6.5",
     "vuesax": "^3.12.2",
     "vuex": "^4.0.2",
     "yup": "^0.32.11"
