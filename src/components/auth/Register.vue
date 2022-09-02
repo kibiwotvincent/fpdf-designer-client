@@ -17,8 +17,19 @@ function onSubmit(values, { setErrors }) {
 
     return authStore.register(email, password, password_confirmation)
         .catch(errorResponse => {
-		console.log(errorResponse.data)
-		setErrors({apiError: errorResponse.data.message})
+			const errors = {};
+			errors.apiError = errorResponse.data.message;
+			
+			if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'errors')) {
+				let errorFields = Object.keys(errorResponse.data.errors);
+				
+				// insert laravel errors
+				errorFields.map(field => {
+					errors[field] = errorResponse.data.errors[field][0];
+				});
+			}
+			
+			setErrors(errors);
 		});
 }
 </script>

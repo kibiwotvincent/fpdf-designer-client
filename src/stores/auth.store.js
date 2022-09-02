@@ -22,7 +22,7 @@ export const useAuthStore = defineStore({
 			}
         },
         async login(email, password) {
-            const response = await fetchWrapper.post(baseUrl+'/login', { email, password });
+		const response = await fetchWrapper.post(baseUrl+'/login', { email, password })
 
 			if(response && response.status == 200) {
 				const user = response.data;

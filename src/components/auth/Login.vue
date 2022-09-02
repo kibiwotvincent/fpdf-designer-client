@@ -16,8 +16,25 @@ function onSubmit(values, { setErrors }) {
 
     return authStore.login(email, password)
         .catch(errorResponse => {
-		console.log(errorResponse.data)
-		setErrors({apiError: errorResponse.data.message})
+			const errors = {};
+			
+			if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'message')) {
+				errors.apiError = errorResponse.data.message;
+			}
+			else {
+				errors.apiError = "Network error. Try again later.";
+			}
+			
+			if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'errors')) {
+				let errorFields = Object.keys(errorResponse.data.errors);
+				
+				// insert laravel errors
+				errorFields.map(field => {
+					errors[field] = errorResponse.data.errors[field][0];
+				});
+			}
+			
+			setErrors(errors);
 		});
 }
 </script>
