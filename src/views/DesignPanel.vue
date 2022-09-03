@@ -20,29 +20,10 @@ import Navbar from '@/components/common/Navbar.vue'
 			<button class="btn btn-light fdpf-element" data-fpdf="settextcolor" data-is-new-element="true">Text color</button>
 		</div>
 		<div class="panel">
-			<div class="A4" ref="A4Ref">
-				<Vue3DraggableResizable
-					:initW="600"
-					:initH="30"
-					:parent=true 
-					v-model:x="x"
-					v-model:y="y"
-					v-model:w="w"
-					v-model:h="h"
-					v-model:active="active"
-					:draggable="true"
-					:resizable="true"
-					@activated="print('activated')"
-					@deactivated="print('deactivated')"
-					@drag-start="print('drag-start')"
-					@resize-start="print('resize-start')"
-					@dragging="logPosition()"
-					@resizing="print('resizing')"
-					@drag-end="print('drag-end')"
-					@resize-end="print('resize-end')"
-					>
-					##
-				</Vue3DraggableResizable>
+			<div class="A4 parent">
+				<vue-draggable-resizable :parent=true :w=700 :h=30>
+					<p>You can drag me around and resize me as you wish.</p>
+				</vue-draggable-resizable>
 			</div>
 		</div>
 		<div class="right-panel float-right">
@@ -56,37 +37,33 @@ import Navbar from '@/components/common/Navbar.vue'
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import Vue3DraggableResizable from 'vue3-draggable-resizable'
-//default styles
-//import 'vue3-draggable-resizable/dist/Vue3DraggableResizable.css'
-export default defineComponent({
-  name: 'DesignPanel',
-  components: { Vue3DraggableResizable },
-  data() {
-    return {
-      x: 40,
-      y: 156,
-      h: 100,
-      w: 100,
-      active: true,
-      panelPosition: {}, //{'top': panelPosition.top, 'right': panelPosition.right, 'bottom': panelPosition.bottom, 'left': panelPosition.left, }
-    }
-  },
-  mounted() {
-    //this.panelPosition = this.$refs["panelRef"].getBoundingClientRect();
-  },
-  methods: {
-    print(val) {
-      console.log(val)
-    },
-	logPosition() {
-		const panelPosition = this.$refs["A4Ref"].getBoundingClientRect();
-		console.log("Panel position"+panelPosition.left+" - "+panelPosition.top);
-		console.log("Item position"+this.x+" - "+this.y);
-	}
-  }
-})
+	import VueDraggableResizable from "vue-draggable-resizable-vue3";
+
+	export default {
+		components: {
+			VueDraggableResizable
+		},
+		data: function () {
+			return {
+				width: 0,
+				height: 0,
+				x: 0,
+				y: 0
+			}
+		},
+		methods: {
+			onResize: function (x, y, width, height) {
+				this.x = x
+				this.y = y
+				this.width = width
+				this.height = height
+			},
+			onDrag: function (x, y) {
+				this.x = x
+				this.y = y
+			}
+		}
+	};
 </script>
 
 <style scoped>
@@ -103,6 +80,9 @@ export default defineComponent({
 	background: #fff;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	color: #000;
+}
+.parent {
+  
 }
 button {
 	color: rgb(236, 72, 153);
