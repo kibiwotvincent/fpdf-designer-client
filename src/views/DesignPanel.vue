@@ -5,21 +5,27 @@ import Navbar from '@/components/common/Navbar.vue'
 <template>
 	<Navbar />
 	<section class="bg-gray-100 py-8">
-		<div id="fpdf_designer_elements" class="w-ful" style="margin-top: 60px; margin-bottom: 20px; padding: 0 30px;width: 330mm;">
-			<button class="btn btn-light fdpf-element" data-fpdf="cell" data-is-new-element="true">Cell</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="multicell" data-is-new-element="true">Muliticell</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="text" data-is-new-element="true">Text</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="write" data-is-new-element="true">Write</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="rect" data-is-new-element="true">Rect</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="link" data-is-new-element="true">Link</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="line" data-is-new-element="true">Line</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="image" data-is-new-element="true">Image</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="ln" data-is-new-element="true">Ln</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="setfillcolor" data-is-new-element="true">Fill color</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="setdrawcolor" data-is-new-element="true">Draw color</button>
-			<button class="btn btn-light fdpf-element" data-fpdf="settextcolor" data-is-new-element="true">Text color</button>
+		<div id="fpdf_designer_elements" class="w-ful" style="margin-top: 60px; margin-bottom: 20px; padding: 0 30px;width: 336mm;">
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="cell" data-is-new-element="true">Cell</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="multicell" data-is-new-element="true">MulitiCell</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true">Text</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="write" data-is-new-element="true">Write</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="rect" data-is-new-element="true">Rect</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="link" data-is-new-element="true">Link</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="line" data-is-new-element="true">Line</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="image" data-is-new-element="true">Image</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="ln" data-is-new-element="true">Ln</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="setfillcolor" data-is-new-element="true">Fill Color</button>
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="setdrawcolor" data-is-new-element="true">Draw Color</button>
+			
+			<div class="float-right">
+				<button class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Clear</button>
+				<button class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Preview</button>
+				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Save</button>
+			</div>
 		</div>
 		<div class="panel">
+		<div class="left-panel">
 			<div class="A4">
 				<vue-draggable-resizable v-for="(draggable, index) in draggables"
 				:key=index
@@ -38,150 +44,199 @@ import Navbar from '@/components/common/Navbar.vue'
 			</div>
 		</div>
 		<div class="right-panel float-right">
-			<button class="btn btn-primary fdpf-element" id="send_fpdf">Preview</button>
-			<button class="btn btn-danger fdpf-element" id="clear_fpdf">Clear</button>
-			<button class="btn btn-warning fdpf-element" id="save_design">Save</button>
-			<button class="btn btn-primary fdpf-element float-right ml-1" id="show_output">Show Output</button>
-			
 			<TabGroup>
-				<TabList>
-					<Tab v-slot="{ selected }" as="template">
-					<button :class="[selected ? 'bg-blue-500 text-white' : 'bg-white text-black']">
-					Tab 1
-					</button>
+				<TabList class="flex">
+					<Tab v-slot="{ selected }" as="template" class="flex-auto text-center">
+						<button :class="[selected ? 'outline-none secondary text-white-800' : 'text-pink-500']">
+							Element Settings
+						</button>
 					</Tab>
-					<Tab>Tab 2</Tab>
-					<Tab>Tab 3</Tab>
+					<Tab v-slot="{ selected }" as="template" class="flex-auto text-center">
+						<button :class="[selected ? 'outline-none secondary text-white-800' : 'text-pink-500']">
+							Page Settings
+						</button>
+					</Tab>
 				</TabList>
 				<TabPanels>
-					<TabPanel>Content 1</TabPanel>
-					<TabPanel>Content 2</TabPanel>
-					<TabPanel>Content 3</TabPanel>
+					<TabPanel>
+						<div class="draggable-meta">
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Height</label>
+								</div>
+								<div class="right">
+									<input type="text" :value=activeDraggable.height />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Width</label>
+								</div>
+								<div class="right">
+									<input type="text" :value=activeDraggable.width />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Top</label>
+								</div>
+								<div class="right">
+									<input type="text" :value=activeDraggable.top />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Left</label>
+								</div>
+								<div class="right">
+									<input type="text" :value=activeDraggable.left />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Text</label>
+								</div>
+								<div class="right">
+									<input type="text" :value=activeDraggable.text />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Family</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Style</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Size</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Color</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Border</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Border Size</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Border Color</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Background</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Background Color</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+							<div class="draggable-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Text Align</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+						</div>
+					</TabPanel>
+					<TabPanel>
+						<div class="page-meta">
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Family</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Style</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Size</label>
+								</div>
+								<div class="right">
+									<input type="text" />
+								</div>
+							</div>
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Font Color</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Background Color</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+							<div class="page-meta-config">
+								<div class="left">
+									<label class="text-gray-600">Background Image</label>
+								</div>
+								<div class="right">
+									<input type="color" />
+								</div>
+							</div>
+						</div>
+					</TabPanel>
 				</TabPanels>
 			</TabGroup>
-			
-			<div class="draggable-meta">
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Height</label>
-					</div>
-					<div class="right">
-						<input type="text" :value=activeDraggable.height />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Width</label>
-					</div>
-					<div class="right">
-						<input type="text" :value=activeDraggable.width />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Top</label>
-					</div>
-					<div class="right">
-						<input type="text" :value=activeDraggable.top />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Left</label>
-					</div>
-					<div class="right">
-						<input type="text" :value=activeDraggable.left />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Text</label>
-					</div>
-					<div class="right">
-						<input type="text" :value=activeDraggable.text />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Font Family</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Font Style</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Font Size</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Font Color</label>
-					</div>
-					<div class="right">
-						<input type="color" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Border</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Border Size</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Border Color</label>
-					</div>
-					<div class="right">
-						<input type="color" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Background</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Background Color</label>
-					</div>
-					<div class="right">
-						<input type="color" />
-					</div>
-				</div>
-				<div class="draggable-meta-config">
-					<div class="left">
-						<label>Text Align</label>
-					</div>
-					<div class="right">
-						<input type="text" />
-					</div>
-				</div>
-			</div>
+		</div>
 		</div>
 	</section>
 </template>
@@ -248,6 +303,9 @@ import Navbar from '@/components/common/Navbar.vue'
 
 <style scoped>
 .panel {
+	width: 336mm;
+}
+.left-panel {
 	width: 220mm;
 	display: inline-block;
 }
@@ -262,9 +320,9 @@ import Navbar from '@/components/common/Navbar.vue'
 	color: #000;
 }
 button {
-	color: rgb(236, 72, 153);
+	//color: rgb(236, 72, 153);
 	border: 1px solid #d3d3d3;
-	padding: 4px 10px;
+	padding: 4px 15.65px;
 }
 .right-panel {
 	padding: 10px; 
@@ -275,30 +333,37 @@ button {
 	color: #000;
 	border-radius: 4px;
 }
-.right-panel .draggable-meta {
-	background: #f3f4f6;
-	margin-top: 20px;
-	padding: 10px;
+
+.right-panel button.secondary{ 
+	color: #fff;
 }
-.right-panel .draggable-meta .draggable-meta-config {
+.right-panel .draggable-meta, .right-panel .page-meta {
+	background: #f3f4f6;
+	margin-top: 0px;
+	padding: 10px;
+	border-left:1px solid #d3d3d3;
+	border-right:1px solid #d3d3d3;
+	border-bottom:1px solid #d3d3d3;
+}
+.right-panel .draggable-meta .draggable-meta-config, .right-panel .page-meta .page-meta-config {
 	padding: 8px 0;
 	border-bottom: 1px solid #d3d3d3;
 }
-.right-panel .draggable-meta .draggable-meta-config .left, .right-panel .draggable-meta .draggable-meta-config .right{
+.right-panel .draggable-meta .draggable-meta-config .left, .right-panel .draggable-meta .draggable-meta-config .right, .right-panel .page-meta .page-meta-config .left, .right-panel .page-meta .page-meta-config .right {
 	width: 50%;
 	display: inline-block;
 }
-.right-panel .draggable-meta .draggable-meta-config label {
+.right-panel .draggable-meta .draggable-meta-config label, .right-panel .page-meta .page-meta-config label {
 	margin-right: 20px;
 }
-.right-panel .draggable-meta .draggable-meta-config input {
+.right-panel .draggable-meta .draggable-meta-config input, .right-panel .page-meta .page-meta-config input {
 	width: 100%;
 	border: 1px solid #d3d3d3;
 	border-radius: 4px;
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	padding: 0 4px;
 }
-.right-panel .draggable-meta .draggable-meta-config input:focus {
+.right-panel .draggable-meta .draggable-meta-config input:focus, .right-panel .page-meta .page-meta-config input:focus {
 	outline: none;
 }
 
