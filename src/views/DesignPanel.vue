@@ -21,7 +21,7 @@ import Navbar from '@/components/common/Navbar.vue'
 		</div>
 		<div class="panel">
 			<div class="A4">
-				<vue-draggable-resizable v-for="(draggable, index) in this.draggables"
+				<vue-draggable-resizable v-for="(draggable, index) in draggables"
 				:key=index
 				:parent=true 
 				:x=draggable.left 
@@ -42,13 +42,31 @@ import Navbar from '@/components/common/Navbar.vue'
 			<button class="btn btn-danger fdpf-element" id="clear_fpdf">Clear</button>
 			<button class="btn btn-warning fdpf-element" id="save_design">Save</button>
 			<button class="btn btn-primary fdpf-element float-right ml-1" id="show_output">Show Output</button>
+			
+			<TabGroup>
+				<TabList>
+					<Tab v-slot="{ selected }" as="template">
+					<button :class="[selected ? 'bg-blue-500 text-white' : 'bg-white text-black']">
+					Tab 1
+					</button>
+					</Tab>
+					<Tab>Tab 2</Tab>
+					<Tab>Tab 3</Tab>
+				</TabList>
+				<TabPanels>
+					<TabPanel>Content 1</TabPanel>
+					<TabPanel>Content 2</TabPanel>
+					<TabPanel>Content 3</TabPanel>
+				</TabPanels>
+			</TabGroup>
+			
 			<div class="draggable-meta">
 				<div class="draggable-meta-config">
 					<div class="left">
 						<label>Height</label>
 					</div>
 					<div class="right">
-						<input type="text" :value=this.activeDraggable.height />
+						<input type="text" :value=activeDraggable.height />
 					</div>
 				</div>
 				<div class="draggable-meta-config">
@@ -56,7 +74,7 @@ import Navbar from '@/components/common/Navbar.vue'
 						<label>Width</label>
 					</div>
 					<div class="right">
-						<input type="text" :value=this.activeDraggable.width />
+						<input type="text" :value=activeDraggable.width />
 					</div>
 				</div>
 				<div class="draggable-meta-config">
@@ -64,7 +82,7 @@ import Navbar from '@/components/common/Navbar.vue'
 						<label>Top</label>
 					</div>
 					<div class="right">
-						<input type="text" :value=this.activeDraggable.top />
+						<input type="text" :value=activeDraggable.top />
 					</div>
 				</div>
 				<div class="draggable-meta-config">
@@ -72,7 +90,7 @@ import Navbar from '@/components/common/Navbar.vue'
 						<label>Left</label>
 					</div>
 					<div class="right">
-						<input type="text" :value=this.activeDraggable.left />
+						<input type="text" :value=activeDraggable.left />
 					</div>
 				</div>
 				<div class="draggable-meta-config">
@@ -80,7 +98,7 @@ import Navbar from '@/components/common/Navbar.vue'
 						<label>Text</label>
 					</div>
 					<div class="right">
-						<input type="text" :value=this.activeDraggable.text />
+						<input type="text" :value=activeDraggable.text />
 					</div>
 				</div>
 				<div class="draggable-meta-config">
@@ -170,6 +188,7 @@ import Navbar from '@/components/common/Navbar.vue'
 
 <script>
 	import VueDraggableResizable from "vue-draggable-resizable-vue3";
+	import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 
 	export default {
 		components: {
