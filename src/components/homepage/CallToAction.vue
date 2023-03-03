@@ -29,7 +29,7 @@
 				<div class="h-1 mx-auto bg-white w-1/6 opacity-25 my-0 py-0 rounded-t"></div>
 			</div>
 			<h3 class="my-6 text-2xl leading-tight">
-				Design your first five documents for free!
+				Design & download your first document for free!
 			</h3>
 			<button class="primary mx-auto lg:mx-0 hover:underline bg-white text-white font-bold rounded-full my-6 py-4 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				Start Designing

@@ -22,11 +22,13 @@ import Navbar from '@/components/common/Navbar.vue'
 				<button class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Clear</button>
 				<button class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Preview</button>
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Save</button>
+				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Download</button>
 			</div>
 		</div>
 		<div class="panel">
 		<div class="left-panel">
 			<div class="A4">
+				<img src="http://www.ifam.com/storage/season-record-files/2ffk3a9K8wupilOVjr76h0hSLXwyNTiulsCFsZ2j.jpg" />
 				<vue-draggable-resizable v-for="(draggable, index) in draggables"
 				:key=index
 				:parent=true 
@@ -252,7 +254,9 @@ import Navbar from '@/components/common/Navbar.vue'
 		data() {
 			return {
 				draggables: [],
-				activeDraggable: {}
+				activeDraggable: {},
+				onePxToMM: 50/196,
+				oneMMToPx: 196/50,
 			}
 		},
 		mounted() {
@@ -273,19 +277,20 @@ import Navbar from '@/components/common/Navbar.vue'
 					width: 300,
 					top: 40,
 					left: 20,
-					text: 'Draggable Content Two',
+					text: 'Draggable \n page Content Two',
 				});
 			},
 			onResize: function (x) {
 				console.log(x.left);
-				this.activeDraggable.left = x.left
-				this.activeDraggable.top = x.top
-				this.activeDraggable.width = x.width
-				this.activeDraggable.height = x.height
+				this.activeDraggable.left = Math.floor(x.left * this.onePxToMM)
+				this.activeDraggable.top = Math.floor(x.top * this.onePxToMM)
+				this.activeDraggable.width = Math.floor(x.width * this.onePxToMM)
+				this.activeDraggable.height = Math.floor(x.height * this.onePxToMM)
 			},
 			onDrag: function (x) {
-				this.activeDraggable.left = x.left
-				this.activeDraggable.top = x.top
+				console.log(this.onePxToMM);
+				this.activeDraggable.left = Math.floor(x.left * this.onePxToMM)
+				this.activeDraggable.top = Math.floor(x.top * this.onePxToMM)
 			},
 			onActivated (index) {
 				this.activeDraggable = this.draggables[index];
@@ -319,8 +324,12 @@ import Navbar from '@/components/common/Navbar.vue'
 	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 	color: #000;
 }
+.A4 img {
+	position: absolute;
+	width: 210mm;
+	height: 297mm;
+}
 button {
-	//color: rgb(236, 72, 153);
 	border: 1px solid #d3d3d3;
 	padding: 4px 15.65px;
 }
