@@ -42,7 +42,7 @@
 		<div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
 			<div class="flex items-center">
 				<router-link to="/" class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl">
-					<img id="logo-black" class="logo" src="assets/images/logo-black.png" />
+					<img id="logo-black" class="logo" src="/assets/images/logo-black.png" />
 				</router-link>
 			</div>
 			<div class="block lg:hidden pr-4">
@@ -69,7 +69,10 @@
 
 			<div class="lg:flex items-right hidden">
 				<router-link to="/dashboard">
-					<button id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Account</button>
+					<button id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+					<UserIcon class="inline-block h-5 w-5"/>
+					Account
+					</button>
 				</router-link>
 			</div>
 
@@ -80,6 +83,7 @@
 
 <script>
 	//import MenuItems from '../common/MenuItems.vue'
+	import { UserIcon } from '@heroicons/vue/20/solid'
 	export default {
 		name: 'AppNavbar',
 		props: {

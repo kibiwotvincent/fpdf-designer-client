@@ -19,9 +19,11 @@ import Bubbles from '../homepage/Bubbles.vue'
 				Design any kind of pdf document and download the code that will plug into your PHP project.
 				</p>
 				<div class="w-full py-6 text-center">
+					<router-link to="/document/choose-template">
 					<button class="primary mx-auto lg:mx-0 hover:underline bg-white text-white-800 font-bold rounded my-6 py-3 px-8 shadow-lg focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 					Get Started
 					</button>
+					</router-link>
 				</div>
 			</div>
 		</div>

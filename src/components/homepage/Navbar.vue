@@ -113,7 +113,10 @@
 
 			<div class="lg:flex items-right hidden">
 				<router-link to="/dashboard">
-					<button id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Account</button>
+					<button id="navAction" class="secondary mr-3 hover:underline bg-white text-white-800 font-bold rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+					<UserIcon class="inline-block h-5 w-5"/>
+					Account
+					</button>
 				</router-link>
 			</div>
 
@@ -124,6 +127,7 @@
 
 <script>
     import MenuItems from '../common/MenuItems.vue'
+	import { UserIcon } from '@heroicons/vue/20/solid'
 	export default {
 		name: 'HomepageNavbar',
 		props: {

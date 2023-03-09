@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores';
 
 import Home from '@/views/Homepage.vue';
 import DesignPanel from '@/views/DesignPanel.vue';
+import ChooseTemplate from '@/views/ChooseTemplate.vue';
 import Pricing from '@/views/Pricing.vue';
 import Help from '@/views/Help.vue';
 import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
@@ -17,6 +18,7 @@ import Profile from '@/views/account/Profile.vue';
 const routes = [
 	{path: '/', name: 'home', component: Home},
 	{path: '/design-panel', name: 'design-panel', component: DesignPanel},
+	{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
 	{path: '/pricing', name: 'pricing', component: Pricing},
 	{path: '/help', name: 'help', component: Help},
 	{path: '/privacy-policy', name: 'privacy-policy', component: PrivacyPolicy},

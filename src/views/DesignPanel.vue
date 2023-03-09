@@ -277,7 +277,7 @@ import Navbar from '@/components/common/Navbar.vue'
 					width: 300,
 					top: 40,
 					left: 20,
-					text: 'Draggable \n page Content Two',
+					text: 'Draggable &#13;&#10; page Content Two',
 				});
 			},
 			onResize: function (x) {
