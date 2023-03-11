@@ -15,8 +15,6 @@ import Navbar from '@/components/common/Navbar.vue'
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="line" data-is-new-element="true">Line</button>
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="image" data-is-new-element="true">Image</button>
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="ln" data-is-new-element="true">Ln</button>
-			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="setfillcolor" data-is-new-element="true">Fill Color</button>
-			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="setdrawcolor" data-is-new-element="true">Draw Color</button>
 			
 			<div class="float-right">
 				<button class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Clear</button>
@@ -28,7 +26,6 @@ import Navbar from '@/components/common/Navbar.vue'
 		<div class="panel">
 		<div class="left-panel">
 			<div class="A4">
-				<img src="http://www.ifam.com/storage/season-record-files/2ffk3a9K8wupilOVjr76h0hSLXwyNTiulsCFsZ2j.jpg" />
 				<vue-draggable-resizable v-for="(draggable, index) in draggables"
 				:key=index
 				:parent=true 
@@ -41,7 +38,9 @@ import Navbar from '@/components/common/Navbar.vue'
 				@resizing="onResize"
 				@dragging="onDrag"
 				>
-					<i style="font-size: 11px;">{{draggable.text}}</i>
+				<div class="flex flex-row items-center justify-end " :style="'height: '+(draggable.height - 2)+'px; font-weight: '+draggable.font_weight+'; background-color: '+draggable.background_color">
+				<span class="mr-2">{{ draggable.text }}</span>
+				</div>
 				</vue-draggable-resizable>
 			</div>
 		</div>
@@ -244,6 +243,7 @@ import Navbar from '@/components/common/Navbar.vue'
 </template>
 
 <script>
+	import axios from 'axios'
 	import VueDraggableResizable from "vue-draggable-resizable-vue3";
 	import { TabGroup, TabList, Tab, TabPanels, TabPanel } from '@headlessui/vue';
 
@@ -257,6 +257,7 @@ import Navbar from '@/components/common/Navbar.vue'
 				activeDraggable: {},
 				onePxToMM: 50/196,
 				oneMMToPx: 196/50,
+				currentTop: 0,
 			}
 		},
 		mounted() {
@@ -264,40 +265,52 @@ import Navbar from '@/components/common/Navbar.vue'
 		},
 		methods: {
 			initDraggables() {
-				this.draggables.push({
-					height: 30,
-					width: 200,
-					top: 20,
-					left: 20,
-					text: 'Draggable Content',
-				});
+				let templateID = this.$route.params.template_id
 				
-				this.draggables.push({
-					height: 30,
-					width: 300,
-					top: 40,
-					left: 20,
-					text: 'Draggable &#13;&#10; page Content Two',
-				});
+				axios
+				.get('http://localhost:8000/api/templates/'+templateID)
+				.then((response) => {
+					this.draggables = response.data.draggables
+				})
 			},
 			onResize: function (x) {
-				console.log(x.left);
-				this.activeDraggable.left = Math.floor(x.left * this.onePxToMM)
-				this.activeDraggable.top = Math.floor(x.top * this.onePxToMM)
-				this.activeDraggable.width = Math.floor(x.width * this.onePxToMM)
-				this.activeDraggable.height = Math.floor(x.height * this.onePxToMM)
+				this.activeDraggable.left = x.left
+				this.activeDraggable.top = x.top
+				this.activeDraggable.width = x.width
+				this.activeDraggable.height = x.height
 			},
 			onDrag: function (x) {
-				console.log(this.onePxToMM);
-				this.activeDraggable.left = Math.floor(x.left * this.onePxToMM)
-				this.activeDraggable.top = Math.floor(x.top * this.onePxToMM)
+				this.activeDraggable.left = x.left
+				this.activeDraggable.top = x.top
+				
+				//calculate how much top position has changed
+				let adjustTopBy = this.activeDraggable.top - this.currentTop;
+				
+				//adjust the top positions of the other draggables
+				for(let i = 0; i < this.draggables.length; i++) {
+					let newTop = this.draggables[i].current_top + adjustTopBy
+					
+					//only move draggables that are below the active draggable
+					if(this.draggables[i].current_top > this.activeDraggable.current_top) {
+					console.log(newTop)
+					//this.draggables[i].top = newTop;
+					}
+				}
 			},
 			onActivated (index) {
 				this.activeDraggable = this.draggables[index];
+				//save the initial top position of the selected draggable
+				this.currentTop = this.activeDraggable.top;
+				
+				for(let i = 0; i < this.draggables.length; i++) {
+					//save curent top position of the draggable
+					//to be used to move other draggables when dragging
+					this.draggables[i].current_top = this.draggables[i].top
+				}
 			},
 			onDeactivated () {
 				this.active = false
-			}
+			},
 		},
 		computed: {
 			

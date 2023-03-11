@@ -17,7 +17,7 @@ import Profile from '@/views/account/Profile.vue';
 
 const routes = [
 	{path: '/', name: 'home', component: Home},
-	{path: '/design-panel', name: 'design-panel', component: DesignPanel},
+	{path: '/design-panel/:template_id?', name: 'design-panel', component: DesignPanel},
 	{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
 	{path: '/pricing', name: 'pricing', component: Pricing},
 	{path: '/help', name: 'help', component: Help},
