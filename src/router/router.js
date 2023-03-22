@@ -33,13 +33,17 @@ const routes = [
 export const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   linkActiveClass: 'active',
-  routes
+  routes,
+  scrollBehavior() {
+    // always scroll to top
+    return { top: 0 }
+  },
 })
 
 router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/', '/login', '/register', '/forgot-password', '/pricing', '/help', '/privacy-policy', '/contact-us'];
-    const authRequired = !publicPages.includes(to.path);
+    const protectedPages = ['/profile','/dashboard'];
+    const authRequired = protectedPages.includes(to.path);
     const auth = useAuthStore();
 
     if (authRequired && !auth.user) {
