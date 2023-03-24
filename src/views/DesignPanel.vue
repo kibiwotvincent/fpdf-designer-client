@@ -1,8 +1,10 @@
 <script setup>
 import Navbar from '@/components/common/Navbar.vue'
+//import { MutationType } from 'pinia'
 import { useDocumentStore } from '@/stores'
 
 const documentStore = useDocumentStore()
+
 </script>
 
 <template>
@@ -15,11 +17,10 @@ const documentStore = useDocumentStore()
 			data-te-target="#pageSettingsModal"
 			data-te-ripple-init
 			data-te-ripple-color="light"
-			ref="top"
 			>
 			Page Settings
 			</button>
-				
+			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true"
 			data-te-toggle="modal"
 			data-te-target="#addTextModal"
@@ -29,6 +30,8 @@ const documentStore = useDocumentStore()
 			>
 			Add Text
 			</button>
+			<button data-te-toggle="modal" data-te-target="#updateTextModal" ref="updateModalButton-text" class="hidden">Update</button>
+			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="rect" data-is-new-element="true"
 			data-te-toggle="modal"
 			data-te-target="#addTableModal"
@@ -85,9 +88,7 @@ const documentStore = useDocumentStore()
 					@dragging="onDrag"
 					:active= draggable.active
 					:resizable= draggable.resizable
-					@click.right.prevent="updateDraggable(index)"
-					@click="scroll"
-					:ref="'draggable'+index"
+					@click.right.prevent="showUpdateDraggable(index)"
 					>
 					<div v-if="draggable.type != 'image'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
 					:style="
@@ -120,12 +121,10 @@ const documentStore = useDocumentStore()
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
-	<button data-te-toggle="modal" data-te-target="#updateTextModal" ref="updateTextModalButton">Update</button>
 	<add-link-modal />
 	<add-line-modal />
 	<add-image-modal />
 	<!--end modals-->
-	
 </template>
 
 <script>
@@ -137,7 +136,7 @@ const documentStore = useDocumentStore()
 	import AddLineModal from '@/components/modals/AddLineModal.vue'
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'
-
+	
 	export default {
 		components: {
 			VueDraggableResizable,
@@ -148,7 +147,7 @@ const documentStore = useDocumentStore()
 		data() {
 			return {
 				currentTop: 0,
-				updateText: false,
+				updateText: false
 			}
 		},
 		mounted() {
@@ -203,16 +202,13 @@ const documentStore = useDocumentStore()
 			onDeactivated () {
 				this.active = false
 			},
-			updateDraggable(index) {
+			showUpdateDraggable(index) {
 				const documentStore = useDocumentStore()
 				documentStore.setActiveDraggable(documentStore.draggables[index])
 				documentStore.activateDraggable(index)
-				//launch update text modal
-				this.$refs.updateTextModalButton.click()
-				
-			},
-			scroll() {
-				this.$refs.top.scrollIntoView({ behavior: "smooth" })
+				//launch update modal
+				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
+				this.$refs[modal].click()
 			}
 		}
 	};

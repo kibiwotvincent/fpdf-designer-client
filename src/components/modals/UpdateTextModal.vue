@@ -4,8 +4,7 @@ import { useDocumentStore } from '@/stores'
 const documentStore = useDocumentStore()
 </script>
 <template>
-	<modal title="Update Text" id="updateTextModal">
-		<form @submit.prevent="onSubmit">
+	<modal id="updateTextModal">
 		<input type="hidden" v-model="documentStore.activeDraggable.type"/>
 		<div class="">
 			<label class="block">Text</label>
@@ -67,22 +66,16 @@ const documentStore = useDocumentStore()
 			<label class="block">Background Color</label>
 			<input type="color" v-model="documentStore.activeDraggable.background_color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow" />
 		</div>
-		</form>
 	</modal>
 </template>
 
 <script>
-	import Modal from '@/components/form/Modal.vue'
+	import Modal from '@/components/form/HeadlessModal.vue'
 	
 	export default {
 		name: 'UpdateTextModalComponent',
 		components: {
-				Modal
-			},
-		methods: {
-			onSubmit() {
-				//empty
-			}
-		}
+			Modal
+		},
 	}
 </script>

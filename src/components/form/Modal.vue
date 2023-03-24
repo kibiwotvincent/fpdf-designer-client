@@ -25,7 +25,7 @@
 					type="button"
 					class="box-content rounded bg-gray-100 border-none hover:no-underline hover:opacity-75 focus:opacity-100 focus:shadow-none focus:outline-none"
 					data-te-modal-dismiss
-					aria-label="Close" @click="scroll">
+					aria-label="Close">
 						<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
@@ -54,6 +54,7 @@
 
 <script>
 	import { reactive } from 'vue'
+	
 	export default {
 		name: 'ModalComponent',
 		props: reactive({
@@ -66,11 +67,6 @@
 				if(this.dismiss) {
 					this.$refs.closeModalButton.click()
 				}
-			}
-		},
-		methods: {
-			scroll() {
-				this.$refs.top.scrollIntoView({ behavior: "smooth" })
 			}
 		}
 	}

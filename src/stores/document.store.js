@@ -23,7 +23,7 @@ export const useDocumentStore = defineStore({
 						'padding_left' : '0',
 						'background_color' : '#ffffff'
 					}
-				}
+		}
     }),
     actions: {
         async init(templateID) {
@@ -42,7 +42,6 @@ export const useDocumentStore = defineStore({
 		},
 		setActiveDraggable(draggable) {
 			this.document.active_draggable = this.format(draggable)
-			this.default_text = this.document.active_draggable
 		},
 		dragDraggable(draggable) {
 			this.document.active_draggable.left = draggable.left
@@ -82,9 +81,6 @@ export const useDocumentStore = defineStore({
 		doc() {
 			return this.document
 		},
-		draggable() {
-			return this.document.active_draggable
-		},
 		draggables() {
 			return this.document.draggables
 		},
@@ -94,5 +90,5 @@ export const useDocumentStore = defineStore({
 		defaults() {
 			return this.defaultValues
 		},
-    },
+    }
 });

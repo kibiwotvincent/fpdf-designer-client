@@ -1,5 +1,5 @@
 <template>
-	<modal title="Add Text" id="addTextModal" :dismiss=dismiss>
+	<modal id="addTextModal">
 		<form @submit.prevent="onSubmit">
 		<input type="hidden" v-model="draggable.type"/>
 		<div class="">
@@ -62,8 +62,14 @@
 			<label class="block">Background Color</label>
 			<input type="color" v-model="draggable.background_color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow" />
 		</div>
-		<div class="flex justify-end">
-			<button @click="resetDismiss" class="bg-red-400 text-white rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+		<div class="flex justify-between">
+			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
+			Close
+			</button>
+			<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+			Cancel
+			</button>
+			<button class="bg-red-400 text-white rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			Add Text
 			</button>
 		</div>
@@ -72,43 +78,40 @@
 </template>
 
 <script>
-	import Modal from '@/components/form/Modal.vue'
+	import Modal from '@/components/form/HeadlessModal.vue'
 	import { useDocumentStore } from '@/stores'
 	
 	export default {
 		name: 'AddTextModalComponent',
 		components: {
-				Modal
-			},
+			Modal
+		},
 		data: () => ({
 				draggable: {},
-				dismiss: false
+				defaultDraggable: {}
 			}),
 		mounted() {
 			const documentStore = useDocumentStore()
 			this.draggable = documentStore.defaults.text
-			},
+			this.defaultDraggable = { ...this.draggable }
+		},
 		methods: {
-			resetDismiss() {
-				this.dismiss = false
+			cancel() {
+				this.resetForm()
+				this.closeModal()
 			},
 			resetForm() {
-				this.draggable.text = 'Text'
+				this.draggable = { ...this.defaultDraggable }
 			},
 			onSubmit() {
 				const documentStore = useDocumentStore()
-				/**
-				I don't know what is happening but when I pass this.draggable to addDraggable method,
-				it will always update previously added draggable instead of creating a new one,
-				Solution was to clone this.draggable into a new object and pass that instead
-				**/
-				let draggable = {} 
-				Object.keys(this.draggable).forEach(key => {
-					draggable[key] = this.draggable[key]
-				})
-				documentStore.addDraggable(draggable)
-				this.dismiss = true
+				//pass the draggable as new object
+				documentStore.addDraggable({ ...this.draggable })
 				this.resetForm()
+				this.closeModal()
+			},
+			closeModal() {
+				this.$refs.closeModal.click()
 			}
 		}
 	}
