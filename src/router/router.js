@@ -12,12 +12,13 @@ import ContactUs from '@/views/ContactUs.vue';
 import Login from '@/views/auth/Login.vue';
 import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
-import Dashboard from '@/views/account/Dashboard.vue';
+//import Dashboard from '@/views/account/Dashboard.vue';
+import UserDocuments from '@/views/account/UserDocuments.vue';
 import Profile from '@/views/account/Profile.vue';
 
 const routes = [
 	{path: '/', name: 'home', component: Home},
-	{path: '/design-panel/:template_id?', name: 'design-panel', component: DesignPanel},
+	{path: '/design-panel/:source?/:id?', name: 'design-panel', component: DesignPanel},
 	{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
 	{path: '/pricing', name: 'pricing', component: Pricing},
 	{path: '/help', name: 'help', component: Help},
@@ -26,7 +27,7 @@ const routes = [
 	{path: '/login', name: 'login', component: Login},
 	{path: '/register', name: 'register', component: Register},
 	{path: '/forgot-password', name: 'forgot-password', component: ForgotPassword},
-	{path: '/dashboard', name: 'dashboard', component: Dashboard},
+	{path: '/dashboard', name: 'dashboard', component: UserDocuments},
 	{path: '/profile', name: 'profile', component: Profile},
 ]
 
@@ -42,13 +43,17 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page
+    const authPages = ['/register','/login','/forgot-password'];
     const protectedPages = ['/profile','/dashboard'];
     const authRequired = protectedPages.includes(to.path);
     const auth = useAuthStore();
 
-    if (authRequired && !auth.user) {
-        auth.returnUrl = to.fullPath;
+    if(authRequired && !auth.isLoggedIn) {
         return '/login';
+    }
+	if(authPages.includes(to.path) && auth.isLoggedIn) {
+		//user is trying to access authentication pages but already logged in
+        return '/dashboard';
     }
 })
 

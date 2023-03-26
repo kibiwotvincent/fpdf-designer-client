@@ -9,7 +9,12 @@ export const useAuthStore = defineStore({
     id: 'auth',
     state: () => ({
         // initialize state from local storage to enable user to stay logged in
-        user: JSON.parse(localStorage.getItem('user')),
+        activeUser: {
+						"id": 1,
+						"name": null,
+						"email": "vinkib2@gmail.com",
+						"token": "8|EkmmvjH1Xk67SagrmUtZQyoSjWLIAcavdNOcClA5"
+					},//JSON.parse(localStorage.getItem('user')),
         returnUrl: '/dashboard'
     }),
     actions: {
@@ -28,7 +33,9 @@ export const useAuthStore = defineStore({
 				const user = response.data;
 				
 				// update pinia state
-				this.user = user;
+				this.activeUser = user;
+				
+				console.log(user)
 
 				// store user details and api access token in local storage to keep user logged in between page refreshes
 				localStorage.setItem('user', JSON.stringify(user));
@@ -38,9 +45,20 @@ export const useAuthStore = defineStore({
 			}
         },
         logout() {
-            this.user = null;
+            this.activeUser = null;
             localStorage.removeItem('user');
             router.push('/login');
         }
+    },
+	getters: {
+		user() {
+			return this.activeUser
+		},
+		token() {
+			return (this.activeUser == null) ? '' : this.activeUser.token
+		},
+		isLoggedIn() {
+			return (this.activeUser !== null && this.activeUser.token !== '')
+		}
     }
 });

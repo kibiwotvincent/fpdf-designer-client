@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import createHttp from '@/axios.js'
 
 export const useDocumentStore = defineStore({
     id: 'document',
     state: () => ({
-        document: {'page' : {}, 'draggables' : [], 'active_draggable' : {}},
+        document: {'name': 'doc1', 'page' : {}, 'draggables' : [], 'active_draggable' : {}},
 		defaultValues: {
 					'text' : {
 						'type' : 'text',
@@ -26,12 +26,33 @@ export const useDocumentStore = defineStore({
 		}
     }),
     actions: {
-        async init(templateID) {
-			axios
-			.get(process.env.VUE_APP_API_URL+'/api/templates/'+templateID)
+        async init(source, id) {
+			this.reset()
+			const http = createHttp()
+			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
 			.then((response) => {
+				console.log(response.data.draggables)
 				this.document.draggables = response.data.draggables
 			})
+		},
+		async save() {
+			const http = createHttp()
+			http.post(process.env.VUE_APP_API_URL+'/api/documents/save', {'document' : this.document})
+			.then((response) => {
+				console.log(response)
+			})
+		},
+		async update(id) {
+			const http = createHttp()
+			http.post(process.env.VUE_APP_API_URL+'/api/documents/update', {'id': id, 'document' : this.document})
+			.then((response) => {
+				console.log(response)
+			})
+		},
+		reset() {
+			this.document.page = {}
+			this.document.draggables = []
+			this.document.active_draggable = {}
 		},
 		addDraggable(draggable) {
 			this.document.draggables.push(this.format(draggable))
@@ -40,8 +61,9 @@ export const useDocumentStore = defineStore({
 		updatePageSettings(page) {
 			this.document.page = page
 		},
-		setActiveDraggable(draggable) {
+		setActiveDraggable(draggable, index) {
 			this.document.active_draggable = this.format(draggable)
+			this.document.active_draggable.index = index
 		},
 		dragDraggable(draggable) {
 			this.document.active_draggable.left = draggable.left
@@ -75,7 +97,10 @@ export const useDocumentStore = defineStore({
 		},
 		activateDraggable(index) {
 			this.document.draggables[index].active = true
-		}
+		},
+		deleteDraggable(index) {
+			this.document.draggables.splice(index, 1)
+		},
 	},
 	getters: {
 		doc() {

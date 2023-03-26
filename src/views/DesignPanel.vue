@@ -1,9 +1,13 @@
 <script setup>
 import Navbar from '@/components/common/Navbar.vue'
-//import { MutationType } from 'pinia'
 import { useDocumentStore } from '@/stores'
 
 const documentStore = useDocumentStore()
+/*documentStore.$subscribe((state) => {
+  // persist the whole state to the local storage whenever it changes
+  localStorage.setItem('document', JSON.stringify(state))
+  alert()
+})*/
 
 </script>
 
@@ -18,6 +22,7 @@ const documentStore = useDocumentStore()
 			data-te-ripple-init
 			data-te-ripple-color="light"
 			>
+			<Cog8ToothIcon class="inline-block h-4 w-4 mb-1"/> 
 			Page Settings
 			</button>
 			
@@ -66,10 +71,10 @@ const documentStore = useDocumentStore()
 			</button>
 			
 			<div class="float-right">
-				<button class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Reset</button>
-				<button class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Preview</button>
-				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Save</button>
-				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">Download</button>
+				<button @click="reset" class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowPathIcon class="inline-block h-4 w-4 mb-1"/> Reset</button>
+				<button class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1"/> Preview</button>
+				<button @click="save" class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><InboxArrowDownIcon class="inline-block h-4 w-4 mb-1"/> Save</button>
+				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
 		<div class="panel">
@@ -105,8 +110,10 @@ const documentStore = useDocumentStore()
 							'padding-right: '+draggable.padding_right+'px;'+ 
 							'padding-bottom: '+draggable.padding_bottom+'px;'+ 
 							'padding-left: '+draggable.padding_left+'px;' 
-						">
-						{{ draggable.text }}</span>
+							"
+						v-html=draggable.text 
+						>
+						</span>
 					</div>
 					<span v-if="draggable.type == 'image'">
 						<img :src="draggable.url" class="w-full h-full" />
@@ -135,7 +142,8 @@ const documentStore = useDocumentStore()
 	import AddLinkModal from '@/components/modals/AddLinkModal.vue'
 	import AddLineModal from '@/components/modals/AddLineModal.vue'
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
-	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'
+	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
+	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	
 	export default {
 		components: {
@@ -147,7 +155,7 @@ const documentStore = useDocumentStore()
 		data() {
 			return {
 				currentTop: 0,
-				updateText: false
+				update: false
 			}
 		},
 		mounted() {
@@ -156,11 +164,28 @@ const documentStore = useDocumentStore()
 		methods: {
 			initDraggables() {
 				const documentStore = useDocumentStore()
-				let templateID = this.$route.params.template_id
-				if(templateID !== "") {
-					//initialize design panel with the selected template
-					documentStore.init(templateID)
+				let source = this.$route.params.source
+				let id = this.$route.params.id
+				if(id !== "" && source !== "") {
+					//initialize design panel with the selected template or from saved user designs
+					documentStore.init(source, id)
 				}
+			},
+			save() {
+				const documentStore = useDocumentStore()
+				let source = this.$route.params.source
+				let id = this.$route.params.id
+				if(source == "documents" && id !== "") {
+					documentStore.update(id)
+				}
+				else {
+					documentStore.save()
+				}
+			},
+			reset() {
+				const documentStore = useDocumentStore()
+				documentStore.reset()
+				this.initDraggables()
 			},
 			onResize: function (x) {
 				const documentStore = useDocumentStore()
@@ -204,8 +229,8 @@ const documentStore = useDocumentStore()
 			},
 			showUpdateDraggable(index) {
 				const documentStore = useDocumentStore()
-				documentStore.setActiveDraggable(documentStore.draggables[index])
-				documentStore.activateDraggable(index)
+				documentStore.setActiveDraggable(documentStore.draggables[index], index)
+				//documentStore.activateDraggable(index)
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
 				this.$refs[modal].click()

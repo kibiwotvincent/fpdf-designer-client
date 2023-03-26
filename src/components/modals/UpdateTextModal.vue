@@ -5,6 +5,13 @@ const documentStore = useDocumentStore()
 </script>
 <template>
 	<modal id="updateTextModal">
+		<div class="flex justify-end">
+		<button @click="deleteDraggable" class="bg-red-400 text-white rounded py-1 px-3 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+		<TrashIcon class="inline-block h-4 w-4 mb-1"/> 
+		Delete
+		</button>
+		<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">Close</button>
+		</div>
 		<input type="hidden" v-model="documentStore.activeDraggable.type"/>
 		<div class="">
 			<label class="block">Text</label>
@@ -71,11 +78,21 @@ const documentStore = useDocumentStore()
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
+	import { TrashIcon } from '@heroicons/vue/20/solid'
 	
 	export default {
 		name: 'UpdateTextModalComponent',
 		components: {
 			Modal
 		},
+		methods: {
+			deleteDraggable() {
+				const documentStore = useDocumentStore()
+				const draggableIndex = documentStore.activeDraggable.index
+				documentStore.deleteDraggable(draggableIndex)
+				//close modal
+				this.$refs.closeModal.click()
+			}
+		}
 	}
 </script>
