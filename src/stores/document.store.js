@@ -31,7 +31,6 @@ export const useDocumentStore = defineStore({
 			const http = createHttp()
 			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
 			.then((response) => {
-				console.log(response.data.draggables)
 				this.document.draggables = response.data.draggables
 			})
 		},

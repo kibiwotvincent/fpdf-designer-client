@@ -25,6 +25,10 @@
 			</div>
 			<div class="flex w-full justify-between gap-4 mb-3">
 				<div>
+					<label class="block">Text Align</label>
+					<input type="text" v-model="draggable.text_align" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
 					<label class="block">Font Size</label>
 					<input type="number" v-model="draggable.font_size" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
@@ -39,6 +43,20 @@
 				<div>
 					<label class="block">Font Family</label>
 					<input type="text" v-model="draggable.font_family" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+			</div>
+			<div class="flex w-full justify-between gap-4 mb-3">
+				<div>
+					<label class="block">Border Bottom</label>
+					<input type="text" v-model="draggable.border_bottom" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
+					<label class="block">Border Color</label>
+					<input type="color" v-model="draggable.border_color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
+					<label class="block">Border Weight</label>
+					<input type="text" v-model="draggable.border_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
 			</div>
 			<div class="flex w-full justify-between gap-4 mb-3">

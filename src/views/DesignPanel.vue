@@ -106,10 +106,10 @@ const documentStore = useDocumentStore()
 							'color: '+draggable.font_color+';'+ 
 							'font-weight: '+draggable.font_weight+';'+ 
 							'font-size: '+draggable.font_size+'pt;'+ 
-							'padding-top: '+draggable.padding_top+'px;'+ 
-							'padding-right: '+draggable.padding_right+'px;'+ 
-							'padding-bottom: '+draggable.padding_bottom+'px;'+ 
-							'padding-left: '+draggable.padding_left+'px;' 
+							'ppadding-top: '+draggable.padding_top+'px;'+ 
+							'ppadding-right: '+draggable.padding_right+'px;'+ 
+							'ppadding-bottom: '+draggable.padding_bottom+'px;'+ 
+							'ppadding-left: '+draggable.padding_left+'px;' 
 							"
 						v-html=draggable.text 
 						>
@@ -195,18 +195,17 @@ const documentStore = useDocumentStore()
 				const documentStore = useDocumentStore()
 				documentStore.dragDraggable(x)
 				
-				///calculate how much top position has changed
-				//let adjustTopBy = this.activeDraggable.top - this.currentTop;
-				
 				/*
+				//calculate how much top position has changed
+				let adjustTopBy = documentStore.activeDraggable.top - this.currentTop
+				
 				//adjust the top positions of the other draggables
-				for(let i = 0; i < this.document.draggables.length; i++) {
-					let newTop = this.document.draggables[i].current_top + adjustTopBy
+				for(let i = 0; i < documentStore.draggables.length; i++) {
+					let newTop = documentStore.draggables[i].current_top + adjustTopBy
 					
 					//only move draggables that are below the active draggable
-					if(this.document.draggables[i].current_top > this.activeDraggable.current_top) {
-					console.log(newTop)
-					//this.document.draggables[i].top = newTop;
+					if(documentStore.draggables[i].current_top >= documentStore.activeDraggable.current_top) {
+						documentStore.draggables[i].top = newTop
 					}
 				}*/
 			},
@@ -216,12 +215,12 @@ const documentStore = useDocumentStore()
 				
 				/*
 				//save the initial top position of the selected draggable
-				this.currentTop = this.activeDraggable.top;
+				this.currentTop = documentStore.activeDraggable.top
 				
-				for(let i = 0; i < this.document.draggables.length; i++) {
+				for(let i = 0; i < documentStore.draggables.length; i++) {
 					//save curent top position of the draggable
 					//to be used to move other draggables when dragging
-					this.document.draggables[i].current_top = this.document.draggables[i].top
+					documentStore.draggables[i].current_top = documentStore.draggables[i].top
 				}*/
 			},
 			onDeactivated () {
@@ -252,9 +251,9 @@ const documentStore = useDocumentStore()
 	color: #000;
 }
 .workspace {
-	width: 190mm; /*convert everything to px*/
-	height: 277mm;
-	margin: 10mm;
+	width: 718px; /*convert everything to px*/
+	height: 1047px;
+	margin: 38px;
 	border: 1px pink dotted;
 	background: #fff;
 }

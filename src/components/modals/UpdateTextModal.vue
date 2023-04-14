@@ -5,15 +5,19 @@ const documentStore = useDocumentStore()
 </script>
 <template>
 	<modal id="updateTextModal">
-		<div class="flex justify-end">
-		<button @click="deleteDraggable" class="bg-red-400 text-white rounded py-1 px-3 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-		<TrashIcon class="inline-block h-4 w-4 mb-1"/> 
-		Delete
-		</button>
-		<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">Close</button>
+		<div class="flex justify-between">
+			<button @click="duplicateDraggable" class="bg-gray-200 text-gray-700 rounded py-1 px-3 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+			<DocumentDuplicateIcon class="inline-block h-4 w-4 mb-1"/> 
+			Duplicate
+			</button>
+			<button @click="deleteDraggable" class="bg-red-400 text-white rounded py-1 px-3 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+			<TrashIcon class="inline-block h-4 w-4 mb-1"/> 
+			Delete
+			</button>
+			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">Close</button>
 		</div>
 		<input type="hidden" v-model="documentStore.activeDraggable.type"/>
-		<div class="">
+		<div class="mt-4">
 			<label class="block">Text</label>
 			<textarea v-model="documentStore.activeDraggable.text" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow"></textarea>
 			<div class="flex w-full justify-between gap-4 mb-3">
@@ -36,6 +40,10 @@ const documentStore = useDocumentStore()
 			</div>
 			<div class="flex w-full justify-between gap-4 mb-3">
 				<div>
+					<label class="block">Text Align</label>
+					<input type="text" v-model="documentStore.activeDraggable.text_align" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
 					<label class="block">Font Size</label>
 					<input type="number" v-model="documentStore.activeDraggable.font_size" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
@@ -50,6 +58,20 @@ const documentStore = useDocumentStore()
 				<div>
 					<label class="block">Font Family</label>
 					<input type="text" v-model="documentStore.activeDraggable.font_family" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+			</div>
+			<div class="flex w-full justify-between gap-4 mb-3">
+				<div>
+					<label class="block">Border Bottom</label>
+					<input type="text" v-model="documentStore.activeDraggable.border_bottom" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
+					<label class="block">Border Color</label>
+					<input type="color" v-model="documentStore.activeDraggable.border_color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div>
+					<label class="block">Border Weight</label>
+					<input type="text" v-model="documentStore.activeDraggable.border_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
 			</div>
 			<div class="flex w-full justify-between gap-4 mb-3">
@@ -79,6 +101,7 @@ const documentStore = useDocumentStore()
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
 	import { TrashIcon } from '@heroicons/vue/20/solid'
+	import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid'
 	
 	export default {
 		name: 'UpdateTextModalComponent',
@@ -92,7 +115,13 @@ const documentStore = useDocumentStore()
 				documentStore.deleteDraggable(draggableIndex)
 				//close modal
 				this.$refs.closeModal.click()
-			}
+			},
+			duplicateDraggable() {
+				const documentStore = useDocumentStore()
+				documentStore.addDraggable({ ...documentStore.activeDraggable })
+				//close modal
+				this.$refs.closeModal.click()
+			},
 		}
 	}
 </script>
