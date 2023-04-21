@@ -98,18 +98,17 @@ const documentStore = useDocumentStore()
 					<div v-if="draggable.type != 'image'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
 					:style="
 							'height: '+(draggable.height - 2)+'px;'+ 
-							'border-bottom: '+draggable.border_weight+'px '+draggable.border_color+' solid;'+ 
-							'background-color: '+draggable.background_color
+							'border-left: '+(draggable.border_left == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
+							'border-top: '+(draggable.border_top == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
+							'border-right: '+(draggable.border_right == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
+							'border-bottom: '+(draggable.border_bottom == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
+							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
 						">
 						<span 
 						:style="
 							'color: '+draggable.font_color+';'+ 
 							'font-weight: '+draggable.font_weight+';'+ 
-							'font-size: '+draggable.font_size+'pt;'+ 
-							'ppadding-top: '+draggable.padding_top+'px;'+ 
-							'ppadding-right: '+draggable.padding_right+'px;'+ 
-							'ppadding-bottom: '+draggable.padding_bottom+'px;'+ 
-							'ppadding-left: '+draggable.padding_left+'px;' 
+							'font-size: '+draggable.font_size+'pt;'
 							"
 						v-html=draggable.text 
 						>
