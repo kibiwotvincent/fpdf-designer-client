@@ -6,7 +6,7 @@
 	<modal id="addTextModal">
 		<form @submit.prevent="onSubmit">
 		<input type="hidden" v-model="draggable.type"/>
-		<div class="">
+		<div>
 			<label class="block">Text</label>
 			<textarea v-model="draggable.text" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow"></textarea>
 			<div class="flex w-full gap-4 mb-3">

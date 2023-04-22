@@ -112,6 +112,9 @@ export const useDocumentStore = defineStore({
 		deleteDraggable(index) {
 			this.document.draggables.splice(index, 1)
 		},
+		updateDraggable(index, item, itemValue) {
+			this.document.draggables[index][item] = itemValue
+		},
 	},
 	getters: {
 		doc() {

@@ -108,6 +108,7 @@ const documentStore = useDocumentStore()
 						:style="
 							'color: '+draggable.font_color+';'+ 
 							'font-weight: '+draggable.font_weight+';'+ 
+							'font-style: '+draggable.font_style+';'+ 
 							'font-size: '+draggable.font_size+'pt;'
 							"
 						v-html=draggable.text 
