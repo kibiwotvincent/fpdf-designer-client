@@ -1,3 +1,7 @@
+<script setup>
+	const documentStore = useDocumentStore()
+</script>
+
 <template>
 	<modal id="addTextModal">
 		<form @submit.prevent="onSubmit">
@@ -5,20 +9,20 @@
 		<div class="">
 			<label class="block">Text</label>
 			<textarea v-model="draggable.text" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow"></textarea>
-			<div class="flex w-full justify-between gap-4 mb-3">
-				<div>
+			<div class="flex w-full gap-4 mb-3">
+				<div class="w-1/4">
 					<label class="block">Left</label>
 					<input type="number" v-model="draggable.left" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div>
+				<div class="w-1/4">
 					<label class="block">Top</label>
 					<input type="number" v-model="draggable.top" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div>
+				<div class="w-1/4">
 					<label class="block">Height</label>
 					<input type="number" v-model="draggable.height" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div>
+				<div class="w-1/4">
 					<label class="block">Width</label>
 					<input type="number" v-model="draggable.width" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
@@ -59,7 +63,7 @@
 				<div class="w-1/4">
 					<label class="block">Font Family</label>
 					<select data-te-select-init v-model="draggable.font_family" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
-						<option value="arial">Arial</option>
+						<option v-for="(font, index) in documentStore.fonts" :key=index :value=font>{{ font }}</option>
 					</select>
 				</div>
 				<div class="w-1/4">

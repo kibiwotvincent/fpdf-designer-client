@@ -159,6 +159,8 @@ const documentStore = useDocumentStore()
 		},
 		mounted() {
 			this.initDraggables()
+			const documentStore = useDocumentStore()
+			documentStore.setFonts()
 		},
 		methods: {
 			initDraggables() {

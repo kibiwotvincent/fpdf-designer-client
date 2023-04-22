@@ -4,7 +4,7 @@ import createHttp from '@/axios.js'
 export const useDocumentStore = defineStore({
     id: 'document',
     state: () => ({
-        document: {'name': 'doc1', 'page' : {}, 'draggables' : [], 'active_draggable' : {}},
+        document: {'name': 'doc1', 'page' : {}, 'fonts' : [], 'draggables' : [], 'active_draggable' : {}},
 		defaultValues: {
 					'text' : {
 						'type' : 'text',
@@ -18,7 +18,7 @@ export const useDocumentStore = defineStore({
 						'font_weight' : 'normal',
 						'font_color' : '#000000',
 						'font_style' : 'normal',
-						'font_family' : 'arial',
+						'font_family' : 'Arial',
 						'background' : 'none',
 						'background_color' : '#ffffff',
 						'border_left' : 'none',
@@ -37,6 +37,13 @@ export const useDocumentStore = defineStore({
 			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
 			.then((response) => {
 				this.document.draggables = response.data.draggables
+			})
+		},
+		async setFonts() {
+			const http = createHttp()
+			http.get(process.env.VUE_APP_API_URL+'/api/fonts')
+			.then((response) => {
+				this.document.fonts = response.data
 			})
 		},
 		async save() {
@@ -112,6 +119,9 @@ export const useDocumentStore = defineStore({
 		},
 		draggables() {
 			return this.document.draggables
+		},
+		fonts() {
+			return this.document.fonts
 		},
 		activeDraggable() {
 			return this.document.active_draggable
