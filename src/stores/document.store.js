@@ -47,6 +47,7 @@ export const useDocumentStore = defineStore({
 			})
 		},
 		async save() {
+			this.cleanDraggables()
 			const http = createHttp()
 			http.post(process.env.VUE_APP_API_URL+'/api/documents/save', {'document' : this.document})
 			.then((response) => {
@@ -54,6 +55,7 @@ export const useDocumentStore = defineStore({
 			})
 		},
 		async update(id) {
+			this.cleanDraggables()
 			const http = createHttp()
 			http.post(process.env.VUE_APP_API_URL+'/api/documents/update', {'id': id, 'document' : this.document})
 			.then((response) => {
@@ -100,10 +102,6 @@ export const useDocumentStore = defineStore({
 			draggable.height = parseInt(draggable.height)
 			draggable.width = parseInt(draggable.width)
 			draggable.font_size = parseInt(draggable.font_size)
-			draggable.padding_top = parseInt(draggable.padding_top)
-			draggable.padding_right = parseInt(draggable.padding_right)
-			draggable.padding_bottom = parseInt(draggable.padding_bottom)
-			draggable.padding_left = parseInt(draggable.padding_left)
 			return draggable
 		},
 		activateDraggable(index) {
@@ -114,6 +112,39 @@ export const useDocumentStore = defineStore({
 		},
 		updateDraggable(index, item, itemValue) {
 			this.document.draggables[index][item] = itemValue
+		},
+		cleanDraggables() {
+			for(let i = 0; i < this.document.draggables.length; i++) {
+				//set active to false
+				if(typeof this.document.draggables[i]['active'] != 'undefined') {
+					this.document.draggables[i]['active'] = false
+				}
+				/*
+				//insert borders
+				let borders = ['left','top','right','bottom']
+				for(let j = 0; j < borders.length; j++) {
+					if(typeof this.document.draggables[i]['border_'+borders[j]] == 'undefined') {
+						this.document.draggables[i]['border_'+borders[j]] = 'none'
+					}
+				}
+				//populate font color
+				if(typeof this.document.draggables[i]['font_color'] == 'undefined') {
+					this.document.draggables[i]['font_color'] = '#000000'
+				}
+				//populate border color
+				if(typeof this.document.draggables[i]['border_color'] == 'undefined') {
+					this.document.draggables[i]['border_color'] = '#000000'
+				}
+				//populate background
+				if(typeof this.document.draggables[i]['background'] == 'undefined') {
+					this.document.draggables[i]['background'] = 'none'
+				}
+				//populate background color
+				if(typeof this.document.draggables[i]['background_color'] == 'undefined') {
+					this.document.draggables[i]['background_color'] = '#000000'
+				}
+				*/
+			}
 		},
 	},
 	getters: {
