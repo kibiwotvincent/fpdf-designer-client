@@ -5,7 +5,7 @@ export const useDocumentStore = defineStore({
     id: 'document',
     state: () => ({
         document: {
-					'name' : 'doc1',
+					'name' : 'document_name',
 					'draggables' : [], 
 					'active_draggable' : {},
 					'page_settings' : {},
@@ -18,7 +18,7 @@ export const useDocumentStore = defineStore({
 		loaded: {
 				'document' : false,
 				'template' : false,
-				'page' : false,
+				'page_settings' : false,
 		},
 		defaultValues: {
 					'page' : {
@@ -64,16 +64,40 @@ export const useDocumentStore = defineStore({
     }),
     actions: {
 		async setPage() {
-			const http = createHttp()
-			http.get(process.env.VUE_APP_API_URL+'/api/page/setup')
-			.then((response) => {
-				this.setup.fonts = response.data.fonts
-				this.setup.page_sizes = response.data.page_sizes
-				this.setup.page_margins = response.data.page_margins
-			})
-			this.document.page_settings = this.defaultValues.page
+			if(sessionStorage.getItem('page_setup_data') == null) {
+				const http = createHttp()
+				http.get(process.env.VUE_APP_API_URL+'/api/page/setup')
+				.then((response) => {
+					this.setup = response.data
+					sessionStorage.setItem('page_setup_data', JSON.stringify(response.data))
+				})
+			}
+			else {
+				this.setup = JSON.parse(sessionStorage.getItem('page_setup_data'))
+			}
+			
+			if(sessionStorage.getItem('page_settings') == null) {
+				//set page with default values
+				this.document.page_settings = this.defaultValues.page
+			}
+			else {
+				//set page with values from session
+				this.document.page_settings = JSON.parse(sessionStorage.getItem('page_settings'))
+			}
+			//update default font size, color and family for new text draggables
+			this.updatePageFonts()
 		},
-        async init(source, id) {
+		async fetchPageSettings(source, id) {
+			const http = createHttp()
+			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
+			.then((response) => {
+				//save document ID in session; fresh page settings will be fetched if document ID changes
+				sessionStorage.setItem('document_id', response.data.id)
+				this.loaded.page_settings = true
+				this.updatePageSettings(JSON.parse(response.data.page_settings))
+			})
+		},
+        async initDocument(source, id) {
 			this.reset()
 			const http = createHttp()
 			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
@@ -111,9 +135,6 @@ export const useDocumentStore = defineStore({
 		addDraggable(draggable) {
 			this.document.draggables.push(this.format(draggable))
 			this.activateDraggable(this.document.draggables.length - 1)
-		},
-		updatePageSettings(page) {
-			this.document.page = page
 		},
 		setActiveDraggable(draggable, index) {
 			this.document.active_draggable = this.format(draggable)
@@ -161,6 +182,16 @@ export const useDocumentStore = defineStore({
 					this.document.draggables[i]['active'] = false
 				}
 			}
+		},
+		updatePageSettings(pageSettings) {
+			this.document.page_settings = pageSettings
+			
+			this.updatePageMargins()
+			this.updatePageOrientation()
+			this.updatePageFonts()
+			sessionStorage.setItem('page_settings', JSON.stringify(this.document.page_settings))
+			//refresh page
+			//location = window.reload
 		},
 		updatePageMargins() {
 			const marginsCode = this.document.page_settings.margins

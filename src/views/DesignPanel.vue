@@ -5,6 +5,7 @@ import { useDocumentStore } from '@/stores'
 const documentStore = useDocumentStore()
 documentStore.isLoaded.document = false
 documentStore.isLoaded.template = false
+documentStore.isLoaded.page_settings = false
 
 /*documentStore.$subscribe((state) => {
   // persist the whole state to the local storage whenever it changes
@@ -80,11 +81,14 @@ documentStore.isLoaded.template = false
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div v-show="source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading document..." />
+		<div v-show="documentStore.isLoaded.page_settings == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading page settings..." :show-text=true />
 		</div>
-		<div v-show="source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading template..." />
+		<div v-show="documentStore.isLoaded.page_settings== true && source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading document..." :show-text=true />
+		</div>
+		<div v-show="documentStore.isLoaded.page_settings== true && source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading template..." :show-text=true />
 		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
@@ -178,12 +182,14 @@ documentStore.isLoaded.template = false
 						},
 				currentTop : 0,
 				update : false,
-				source: this.$route.params.source
+				source: this.$route.params.source,
+				id: this.$route.params.id
 			}
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
 			documentStore.setPage()
+			documentStore.fetchPageSettings(this.source, this.id)
 			this.updatePage()
 			this.initDraggables()
 		},
@@ -207,7 +213,7 @@ documentStore.isLoaded.template = false
 				let id = this.$route.params.id
 				if(id !== "" && source !== "") {
 					//initialize design panel with the selected template or from saved user designs
-					documentStore.init(source, id)
+					documentStore.initDocument(source, id)
 				}
 			},
 			save() {
