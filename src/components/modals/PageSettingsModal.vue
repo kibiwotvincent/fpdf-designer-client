@@ -1,116 +1,109 @@
+<script setup>
+import { useDocumentStore } from '@/stores'
+const documentStore = useDocumentStore()
+</script>
+
 <template>
-	<modal title="Page Settings" id="pageSettingsModal">
+	<modal id="pageSettingsModal">
 		<form @submit="onSubmit">
-		<input type="hidden" v-model="page.type"/>
 		<div class="">
-			<div class="flex w-full justify-between gap-4 mb-3">
-				<div>
+			<div class="flex w-full gap-4 mb-3">
+				<div class="w-2/6">
 					<label class="block">Page Size</label>
-					<input type="text" v-model="page.size" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<select data-te-select-init v-model="documentStore.pageSettings.size" @change="updatePageSize" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+						<option v-for="(size, name) in documentStore.pageSizes" :key=name :value=name>{{ name }}</option>
+					</select>
 				</div>
-				<div>
+				<div class="w-2/6">
 					<label class="block">Page Orientation</label>
-					<input type="text" v-model="page.orientation" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<select data-te-select-init v-model="documentStore.pageSettings.orientation" @change="updatePageOrientation" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+						<option value="P">Potrait</option>
+						<option value="L">Landscape</option>
+					</select>
 				</div>
-				<div>
+				<div class="w-2/6">
 					<label class="block">Page Margins</label>
-					<input type="number" v-model="page.margins" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<select data-te-select-init v-model="documentStore.pageSettings.margins" @change="updatePageMargins" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+						<option v-for="(size, name) in documentStore.pageMargins" :key=name :value=name>{{ name }}</option>
+					</select>
 				</div>
 			</div>
-			<label class="block">Customize Page Margins</label>
-			<div class="flex w-full justify-between gap-4 mb-3">
-				<div>
-					<label class="block">Margin Top</label>
-					<input type="number" v-model="page.margin_top" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
-				</div>
-				<div>
-					<label class="block">Margin Right</label>
-					<input type="number" v-model="page.margin_right" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
-				</div>
-				<div>
-					<label class="block">Margin Bottom</label>
-					<input type="number" v-model="page.margin_bottom" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
-				</div>
-				<div>
-					<label class="block">Margin Left</label>
-					<input type="number" v-model="page.margin_left" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+			<div v-show="documentStore.pageSettings.margins == 'custom'">
+				<label class="block">Customize Page Margins (in millimeters)</label>
+				<div class="flex w-full gap-4 mb-3">
+					<div class="1/4">
+						<label class="block">Top Margin </label>
+						<input type="number" v-model="documentStore.pageSettings.top_margin" @change="updatePageMargins" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" 
+						:disabled = "documentStore.pageSettings.margins != 'custom'"
+						/>
+					</div>
+					<div class="1/4">
+						<label class="block">Right Margin </label>
+						<input type="number" v-model="documentStore.pageSettings.right_margin" @change="updatePageMargins" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" 
+						:disabled = "documentStore.pageSettings.margins != 'custom'"
+						/>
+					</div>
+					<div class="1/4">
+						<label class="block">Bottom Margin </label>
+						<input type="number" v-model="documentStore.pageSettings.bottom_margin" @change="updatePageMargins" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" 
+						:disabled = "documentStore.pageSettings.margins != 'custom'"
+						/>
+					</div>
+					<div class="1/4">
+						<label class="block">Left Margin </label>
+						<input type="number" v-model="documentStore.pageSettings.left_margin" @change="updatePageMargins" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" 
+						:disabled = "documentStore.pageSettings.margins != 'custom'"
+						/>
+					</div>
 				</div>
 			</div>
-			<div class="flex w-full justify-between gap-4 mb-3">
-				<div>
+			<div class="flex w-full gap-4 mb-3">
+				<div class="w-2/6">
 					<label class="block">Font Size</label>
-					<input type="number" v-model="page.font_size" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<input type="number" v-model="documentStore.pageSettings.font_size" @change="updatePageFonts" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div>
-					<label class="block">Font Weight</label>
-					<input type="text" v-model="page.font_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
-				</div>
-				<div>
+				<div class="w-2/6">
 					<label class="block">Font Color</label>
-					<input type="color" v-model="page.font_color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<input type="color" v-model="documentStore.pageSettings.font_color" @change="updatePageFonts" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div>
+				<div class="w-2/6">
 					<label class="block">Font Family</label>
-					<input type="text" v-model="page.font_family" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+					<select data-te-select-init v-model="documentStore.pageSettings.font_family" @change="updatePageFonts" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+						<option v-for="(font, index) in documentStore.fonts" :key=index :value=font>{{ font }}</option>
+					</select>
 				</div>
 			</div>
-			<label class="block">Page Color</label>
-			<input type="color" v-model="page.color" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow" />
-		</div>
-		<div class="flex justify-end">
-			<button class="bg-red-400 text-white rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
-			Add Text
-			</button>
+			<small class="block mb-1">Updating font size, font color and font family sets their defaults in new texts. It does not affect existing texts in the document.</small>
 		</div>
 		</form>
 	</modal>
 </template>
 
 <script>
-	import Modal from '@/components/form/Modal.vue'
-	import { useDocumentStore } from '@/stores'
+	import Modal from '@/components/form/HeadlessModal.vue'
 	
 	export default {
 		name: 'PageSettingsModalComponent',
-		components: {
-				Modal
-			},
-		data: () => ({
-				page: {
-					'size' : 'A4',
-					'orientation' : 'P',
-					'height' : '50',
-					'width' : '400',
-					'workspace_height' : '50',
-					'workspace_width' : '400',
-					'font_size' : '12',
-					'font_weight' : 'normal',
-					'font_color' : '#333333',
-					'font_family' : 'Arial',
-					'margins' : '0',
-					'margin_top' : '0',
-					'margin_right' : '0',
-					'margin_bottom' : '0',
-					'margin_left' : '0',
-					'color' : '#ffffff',
-				},
-			}),
 		methods: {
-			onSubmit(e) {
-				e.preventDefault()
-				this.page.height = parseInt(this.page.height)
-				this.page.width = parseInt(this.page.width)
-				this.page.workspace_height = parseInt(this.page.workspace_height)
-				this.page.workspace_width = parseInt(this.page.workspace_width)
-				this.page.font_size = parseInt(this.page.font_size)
-				this.page.margin_top = parseInt(this.page.margin_top)
-				this.page.margin_right = parseInt(this.page.margin_right)
-				this.page.margin_bottom = parseInt(this.page.margin_bottom)
-				this.page.margin_left = parseInt(this.page.margin_left)
-				
+			updatePageMargins() {
 				const documentStore = useDocumentStore()
-				documentStore.updatePageSettings(this.page)
-			}
+				documentStore.updatePageMargins()
+				this.$emit('updated')
+			},
+			updatePageOrientation() {
+				const documentStore = useDocumentStore()
+				documentStore.updatePageOrientation()
+				this.$emit('updated')
+			},
+			updatePageSize() {
+				const documentStore = useDocumentStore()
+				documentStore.updatePageSize()
+				this.$emit('updated')
+			},
+			updatePageFonts() {
+				const documentStore = useDocumentStore()
+				documentStore.updatePageFonts()
+			},
 		}
 	}
 </script>

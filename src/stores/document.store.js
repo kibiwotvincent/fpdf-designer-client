@@ -4,8 +4,40 @@ import createHttp from '@/axios.js'
 export const useDocumentStore = defineStore({
     id: 'document',
     state: () => ({
-        document: {'name': 'doc1', 'page' : {}, 'fonts' : [], 'draggables' : [], 'active_draggable' : {}},
+        document: {
+					'name' : 'doc1',
+					'draggables' : [], 
+					'active_draggable' : {},
+					'page_settings' : {},
+				},
+		setup: {
+				'fonts' : [],
+				'page_sizes' : [],
+				'page_margins' : [],
+				},
+		loaded: {
+				'document' : false,
+				'template' : false,
+				'page' : false,
+		},
 		defaultValues: {
+					'page' : {
+						'size' : 'A4',
+						'orientation' : 'P',
+						'width' : '210',
+						'height' : '297',
+						'workspace_width' : '190',
+						'workspace_height' : '277',
+						'font_size' : '11',
+						'font_color' : '#000000',
+						'font_family' : 'Arial',
+						'margins' : 'medium',
+						'top_margin' : '10',
+						'right_margin' : '10',
+						'bottom_margin' : '10',
+						'left_margin' : '10',
+						'scale_factor' : 3.7795 /*eqivalent of 1mm in pixels at 96PPI*/
+					},
 					'text' : {
 						'type' : 'text',
 						'text' : 'Text',
@@ -14,7 +46,7 @@ export const useDocumentStore = defineStore({
 						'height' : '50',
 						'width' : '400',
 						'text_align' : 'left',
-						'font_size' : '12',
+						'font_size' : '11',
 						'font_weight' : 'normal',
 						'font_color' : '#000000',
 						'font_style' : 'normal',
@@ -31,19 +63,28 @@ export const useDocumentStore = defineStore({
 		}
     }),
     actions: {
+		async setPage() {
+			const http = createHttp()
+			http.get(process.env.VUE_APP_API_URL+'/api/page/setup')
+			.then((response) => {
+				this.setup.fonts = response.data.fonts
+				this.setup.page_sizes = response.data.page_sizes
+				this.setup.page_margins = response.data.page_margins
+			})
+			this.document.page_settings = this.defaultValues.page
+		},
         async init(source, id) {
 			this.reset()
 			const http = createHttp()
 			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
 			.then((response) => {
+				if(source == 'documents') {
+					this.loaded.document = true;
+				}
+				else if(source == 'templates') {
+					this.loaded.template = true;
+				}
 				this.document.draggables = response.data.draggables
-			})
-		},
-		async setFonts() {
-			const http = createHttp()
-			http.get(process.env.VUE_APP_API_URL+'/api/fonts')
-			.then((response) => {
-				this.document.fonts = response.data
 			})
 		},
 		async save() {
@@ -119,33 +160,37 @@ export const useDocumentStore = defineStore({
 				if(typeof this.document.draggables[i]['active'] != 'undefined') {
 					this.document.draggables[i]['active'] = false
 				}
-				/*
-				//insert borders
-				let borders = ['left','top','right','bottom']
-				for(let j = 0; j < borders.length; j++) {
-					if(typeof this.document.draggables[i]['border_'+borders[j]] == 'undefined') {
-						this.document.draggables[i]['border_'+borders[j]] = 'none'
-					}
-				}
-				//populate font color
-				if(typeof this.document.draggables[i]['font_color'] == 'undefined') {
-					this.document.draggables[i]['font_color'] = '#000000'
-				}
-				//populate border color
-				if(typeof this.document.draggables[i]['border_color'] == 'undefined') {
-					this.document.draggables[i]['border_color'] = '#000000'
-				}
-				//populate background
-				if(typeof this.document.draggables[i]['background'] == 'undefined') {
-					this.document.draggables[i]['background'] = 'none'
-				}
-				//populate background color
-				if(typeof this.document.draggables[i]['background_color'] == 'undefined') {
-					this.document.draggables[i]['background_color'] = '#000000'
-				}
-				*/
 			}
 		},
+		updatePageMargins() {
+			const marginsCode = this.document.page_settings.margins
+			if(this.document.page_settings.margins != 'custom') {
+				for(let margin in this.setup.page_margins[marginsCode]) {
+					this.document.page_settings[margin] = this.setup.page_margins[marginsCode][margin]
+				}
+			}
+		},
+		updatePageOrientation() {
+			const pageSize = this.setup.page_sizes[this.document.page_settings.size]
+			
+			if(this.document.page_settings.orientation == 'L') {
+				this.document.page_settings.width = pageSize.height
+				this.document.page_settings.height = pageSize.width
+			}
+			else {
+				this.document.page_settings.width = pageSize.width
+				this.document.page_settings.height = pageSize.height
+			}
+		},
+		updatePageSize() {
+			this.updatePageOrientation()
+		},
+		updatePageFonts() {
+			//update default font size, color & family with values from page set up
+			this.defaultValues.text.font_size = this.document.page_settings.font_size
+			this.defaultValues.text.font_color = this.document.page_settings.font_color
+			this.defaultValues.text.font_family = this.document.page_settings.font_family
+		}
 	},
 	getters: {
 		doc() {
@@ -154,14 +199,26 @@ export const useDocumentStore = defineStore({
 		draggables() {
 			return this.document.draggables
 		},
+		pageSettings() {
+			return this.document.page_settings
+		},
 		fonts() {
-			return this.document.fonts
+			return this.setup.fonts
+		},
+		pageSizes() {
+			return this.setup.page_sizes
+		},
+		pageMargins() {
+			return this.setup.page_margins
 		},
 		activeDraggable() {
 			return this.document.active_draggable
 		},
 		defaults() {
 			return this.defaultValues
+		},
+		isLoaded() {
+			return this.loaded
 		},
     }
 });

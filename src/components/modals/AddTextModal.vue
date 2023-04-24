@@ -177,6 +177,9 @@
 			this.defaultDraggable = { ...this.draggable }
 		},
 		methods: {
+			getDefaultDraggable() {
+				
+			},
 			cancel() {
 				this.resetForm()
 				this.closeModal()

@@ -1,6 +1,5 @@
 <script setup>
 import { useDocumentStore } from '@/stores'
-
 const documentStore = useDocumentStore()
 </script>
 

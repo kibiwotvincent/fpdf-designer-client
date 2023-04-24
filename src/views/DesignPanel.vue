@@ -3,6 +3,9 @@ import Navbar from '@/components/common/Navbar.vue'
 import { useDocumentStore } from '@/stores'
 
 const documentStore = useDocumentStore()
+documentStore.isLoaded.document = false
+documentStore.isLoaded.template = false
+
 /*documentStore.$subscribe((state) => {
   // persist the whole state to the local storage whenever it changes
   localStorage.setItem('document', JSON.stringify(state))
@@ -14,8 +17,8 @@ const documentStore = useDocumentStore()
 <template>
 	<Navbar />
 	
-	<section class="bg-gray-100 py-8">
-		<div id="fpdf_designer_elements" class="w-ful" style="margin-top: 60px; margin-bottom: 20px; padding: 0 30px;width: 336mm;">
+	<section class="bg-gray-100">
+		<div id="fpdf_designer_elements" class="bg-gray-100 shadow">
 			<button class="mr-4 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
 			data-te-toggle="modal"
 			data-te-target="#pageSettingsModal"
@@ -77,9 +80,17 @@ const documentStore = useDocumentStore()
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div class="panel">
-			<div class="page">
-				<div class="workspace">
+		<div v-show="source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading document..." />
+		</div>
+		<div v-show="source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading template..." />
+		</div>
+		<div class="panel bg-blue-50 flex items-center px-8">
+			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
+				<div class="workspace" 
+				:style="'width: '+page.workspace_width+'px;height:'+page.workspace_height+'px;margin: '+page.top_margin+'px '+page.right_margin+'px '+page.bottom_margin+'px '+page.left_margin+'px'"
+				>
 					<vue-draggable-resizable v-for="(draggable, index) in documentStore.draggables"
 					:key=index
 					:parent=true 
@@ -124,7 +135,7 @@ const documentStore = useDocumentStore()
 		</div>
 	</section>
 	<!--modals-->
-	<page-settings-modal />
+	<page-settings-modal @updated=updatePage />
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
@@ -144,6 +155,7 @@ const documentStore = useDocumentStore()
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
+	import Spinner from '@/components/form/Spinner'
 	
 	export default {
 		components: {
@@ -154,16 +166,41 @@ const documentStore = useDocumentStore()
 		},
 		data() {
 			return {
-				currentTop: 0,
-				update: false
+				page : {
+						'width' : 0,
+						'height' : 0,
+						'workspace_width' : 0,
+						'workspace_height' : 0,
+						'top_margin' : 0,
+						'right_margin' : 0,
+						'bottom_margin' : 0,
+						'left_margin' : 0,
+						},
+				currentTop : 0,
+				update : false,
+				source: this.$route.params.source
 			}
 		},
 		mounted() {
-			this.initDraggables()
 			const documentStore = useDocumentStore()
-			documentStore.setFonts()
+			documentStore.setPage()
+			this.updatePage()
+			this.initDraggables()
 		},
 		methods: {
+			updatePage() {
+				/*convert page items such as width from mm to px*/
+				const documentStore = useDocumentStore()
+				const scaleFactor = documentStore.pageSettings.scale_factor
+				
+				for(let pageItem in this.page) {
+					//update page with new values from store
+					this.page[pageItem] = documentStore.pageSettings[pageItem] * scaleFactor
+				}
+				//adjust workspace height & width to fit the page after adding margins
+				this.page.workspace_width = this.page.width - (this.page.left_margin + this.page.right_margin)
+				this.page.workspace_height = this.page.height - (this.page.top_margin + this.page.bottom_margin)
+			},
 			initDraggables() {
 				const documentStore = useDocumentStore()
 				let source = this.$route.params.source
@@ -242,23 +279,26 @@ const documentStore = useDocumentStore()
 
 <style scoped>
 .panel {
-	width: 336mm;
+	padding-top: 165px;
+	padding-bottom: 40px;
 }
 .page {
-	display: inline-block;
-	width: 210mm;
-	height: 297mm;
 	background: #fff;
-	margin-left: 63mm;
-	color: #000;
+	margin: auto;
 }
 .workspace {
-	width: 718px; /*convert everything to px*/
-	height: 1047px;
-	margin: 38px;
 	border: 1px pink dotted;
 	background: #fff;
 }
+#fpdf_designer_elements {
+	position:fixed; 
+	z-index:30; 
+	padding: 20px 30px;
+	width: 100%;
+	min-width: 336mm;
+	margin-top: 60px;
+}
+
 #fpdf_designer_elements button {
 	border: 1px solid #d3d3d3;
 	padding: 4px 15.65px;
