@@ -43,10 +43,8 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
 	if(to.name == 'design-panel') {
-		console.log(to.params.id)
 		if(sessionStorage.getItem('document_id') != to.params.id) {
 			sessionStorage.removeItem('page_settings')
-			console.log('fetch new settings')
 		}
 	}
     // redirect to login page if not logged in and trying to access a restricted page

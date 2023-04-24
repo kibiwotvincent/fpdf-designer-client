@@ -92,9 +92,13 @@ const documentStore = useDocumentStore()
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
+	import { reactive } from 'vue'
 	
 	export default {
 		name: 'PageSettingsModalComponent',
+		props: reactive({
+				refresh: false,
+		}),
 		data: () => ({
 				settings: {},
 				defaultSettings: {},
@@ -120,6 +124,13 @@ const documentStore = useDocumentStore()
 			},
 			closeModal() {
 				this.$refs.closeModal.click()
+			}
+		},
+		watch: {
+			refresh() {
+				if(this.refresh) {
+					this.settings = JSON.parse(sessionStorage.getItem('page_settings'))
+				}
 			}
 		}
 	}

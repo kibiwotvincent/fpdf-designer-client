@@ -1,11 +1,11 @@
 <script setup>
 import Navbar from '@/components/common/Navbar.vue'
 import { useDocumentStore } from '@/stores'
+import createHttp from '@/axios.js'
 
 const documentStore = useDocumentStore()
 documentStore.isLoaded.document = false
 documentStore.isLoaded.template = false
-documentStore.isLoaded.page_settings = false
 
 /*documentStore.$subscribe((state) => {
   // persist the whole state to the local storage whenever it changes
@@ -81,18 +81,18 @@ documentStore.isLoaded.page_settings = false
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div v-show="documentStore.isLoaded.page_settings == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+		<div v-show="pageSettingsLoaded == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading page settings..." :show-text=true />
 		</div>
-		<div v-show="documentStore.isLoaded.page_settings== true && source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+		<div v-show="pageSettingsLoaded == true && source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading document..." :show-text=true />
 		</div>
-		<div v-show="documentStore.isLoaded.page_settings== true && source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+		<div v-show="pageSettingsLoaded == true && source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading template..." :show-text=true />
 		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
-				<div class="workspace" 
+				<div v-show=pageSettingsLoaded class="workspace" 
 				:style="'width: '+page.workspace_width+'px;height:'+page.workspace_height+'px;margin: '+page.top_margin+'px '+page.right_margin+'px '+page.bottom_margin+'px '+page.left_margin+'px'"
 				>
 					<vue-draggable-resizable v-for="(draggable, index) in documentStore.draggables"
@@ -139,7 +139,7 @@ documentStore.isLoaded.page_settings = false
 		</div>
 	</section>
 	<!--modals-->
-	<page-settings-modal @updated=updatePage />
+	<page-settings-modal @updated=updatePage :refresh=refreshPageSettingsModal />
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
@@ -182,18 +182,35 @@ documentStore.isLoaded.page_settings = false
 						},
 				currentTop : 0,
 				update : false,
-				source: this.$route.params.source,
-				id: this.$route.params.id
+				source : this.$route.params.source,
+				id : this.$route.params.id,
+				pageSettingsLoaded : false,
+				refreshPageSettingsModal : false
 			}
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
 			documentStore.setPage()
-			documentStore.fetchPageSettings(this.source, this.id)
-			this.updatePage()
-			this.initDraggables()
+			this.fetchPageSettings(this.source, this.id)
 		},
 		methods: {
+			async fetchPageSettings() {
+				const http = createHttp()
+				http.get(process.env.VUE_APP_API_URL+'/api/'+this.source+'/'+this.id)
+				.then((response) => {
+					//save document ID in session; fresh page settings will be fetched if document ID changes
+					sessionStorage.setItem('document_id', response.data.id)
+					
+					const documentStore = useDocumentStore()
+					this.pageSettingsLoaded = true
+					const pageSettings = sessionStorage.getItem('page_settings') == null ? response.data.page_settings : sessionStorage.getItem('page_settings')
+					documentStore.updatePageSettings(JSON.parse(pageSettings))
+					this.refreshPageSettingsModal = true
+					this.updatePage()
+					documentStore.reset()
+					this.initDraggables()
+				})
+			},
 			updatePage() {
 				/*convert page items such as width from mm to px*/
 				const documentStore = useDocumentStore()
@@ -209,11 +226,9 @@ documentStore.isLoaded.page_settings = false
 			},
 			initDraggables() {
 				const documentStore = useDocumentStore()
-				let source = this.$route.params.source
-				let id = this.$route.params.id
-				if(id !== "" && source !== "") {
+				if(this.id !== "" && this.source !== "") {
 					//initialize design panel with the selected template or from saved user designs
-					documentStore.initDocument(source, id)
+					documentStore.initDocument(this.source, this.id)
 				}
 			},
 			save() {

@@ -87,16 +87,6 @@ export const useDocumentStore = defineStore({
 			//update default font size, color and family for new text draggables
 			this.updatePageFonts()
 		},
-		async fetchPageSettings(source, id) {
-			const http = createHttp()
-			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
-			.then((response) => {
-				//save document ID in session; fresh page settings will be fetched if document ID changes
-				sessionStorage.setItem('document_id', response.data.id)
-				this.loaded.page_settings = true
-				this.updatePageSettings(JSON.parse(response.data.page_settings))
-			})
-		},
         async initDocument(source, id) {
 			this.reset()
 			const http = createHttp()
@@ -128,7 +118,6 @@ export const useDocumentStore = defineStore({
 			})
 		},
 		reset() {
-			this.document.page = {}
 			this.document.draggables = []
 			this.document.active_draggable = {}
 		},
