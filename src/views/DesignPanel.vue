@@ -190,26 +190,39 @@ documentStore.isLoaded.template = false
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
+			documentStore.updateDocument('source', this.source)
+			documentStore.updateDocument('id', this.id)
 			documentStore.setPage()
-			this.fetchPageSettings(this.source, this.id)
+			this.fetchPageSettings()
 		},
 		methods: {
 			async fetchPageSettings() {
-				const http = createHttp()
-				http.get(process.env.VUE_APP_API_URL+'/api/'+this.source+'/'+this.id)
-				.then((response) => {
-					//save document ID in session; fresh page settings will be fetched if document ID changes
-					sessionStorage.setItem('document_id', response.data.id)
-					
+				if(this.id !== "" && this.source !== "") {
+					const http = createHttp()
+					http.get(process.env.VUE_APP_API_URL+'/api/'+this.source+'/'+this.id)
+					.then((response) => {
+						//save document ID in session; fresh page settings will be fetched if document ID changes
+						sessionStorage.setItem('document_id', response.data.id)
+						
+						const documentStore = useDocumentStore()
+						this.pageSettingsLoaded = true
+						const pageSettings = sessionStorage.getItem('page_settings') == null ? response.data.page_settings : sessionStorage.getItem('page_settings')
+						documentStore.updatePageSettings(JSON.parse(pageSettings))
+						this.refreshPageSettingsModal = true
+						this.updatePage()
+						documentStore.reset()
+						this.initDraggables()
+					})
+				}
+				else {
 					const documentStore = useDocumentStore()
+					documentStore.reset()
 					this.pageSettingsLoaded = true
-					const pageSettings = sessionStorage.getItem('page_settings') == null ? response.data.page_settings : sessionStorage.getItem('page_settings')
-					documentStore.updatePageSettings(JSON.parse(pageSettings))
+					const pageSettings = sessionStorage.getItem('page_settings') == null ? documentStore.pageSettings : JSON.parse(sessionStorage.getItem('page_settings'))
+					documentStore.updatePageSettings(pageSettings)
 					this.refreshPageSettingsModal = true
 					this.updatePage()
-					documentStore.reset()
-					this.initDraggables()
-				})
+				}
 			},
 			updatePage() {
 				/*convert page items such as width from mm to px*/
@@ -228,7 +241,7 @@ documentStore.isLoaded.template = false
 				const documentStore = useDocumentStore()
 				if(this.id !== "" && this.source !== "") {
 					//initialize design panel with the selected template or from saved user designs
-					documentStore.initDocument(this.source, this.id)
+					documentStore.initDocument()
 				}
 			},
 			save() {
@@ -243,6 +256,8 @@ documentStore.isLoaded.template = false
 				}
 			},
 			reset() {
+				sessionStorage.removeItem('page_settings')
+				this.fetchPageSettings()
 				const documentStore = useDocumentStore()
 				documentStore.reset()
 				this.initDraggables()

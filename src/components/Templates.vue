@@ -32,11 +32,11 @@
 		<div class="w-full" v-for="template in templates" :key="template.id">
 			<div
 			class="block rounded-lg shadow-lg">
-			<router-link :to="'/design-panel/templates/'+template.id">
+			<router-link :to="'/design-panel/templates/'+template.uuid">
 				<img
 				class="rounded-lg w-full transform transition hover:scale-105 duration-300 ease-in-out"
-				:src="template.url"
-				:alt="template.id" />
+				src="http://localhost:8080/1.PNG"
+				:alt="template.name" />
 			</router-link>
 			</div>
 		</div>

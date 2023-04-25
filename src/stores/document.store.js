@@ -9,6 +9,8 @@ export const useDocumentStore = defineStore({
 					'draggables' : [], 
 					'active_draggable' : {},
 					'page_settings' : {},
+					'source' : '',
+					'id' : '',
 				},
 		setup: {
 				'fonts' : [],
@@ -87,15 +89,15 @@ export const useDocumentStore = defineStore({
 			//update default font size, color and family for new text draggables
 			this.updatePageFonts()
 		},
-        async initDocument(source, id) {
-			this.reset()
+        async initDocument() {
+			//this.reset()
 			const http = createHttp()
-			http.get(process.env.VUE_APP_API_URL+'/api/'+source+'/'+id)
+			http.get(process.env.VUE_APP_API_URL+'/api/'+this.document.source+'/'+this.document.id)
 			.then((response) => {
-				if(source == 'documents') {
+				if(this.document.source == 'documents') {
 					this.loaded.document = true;
 				}
-				else if(source == 'templates') {
+				else if(this.document.source == 'templates') {
 					this.loaded.template = true;
 				}
 				this.document.draggables = response.data.draggables
@@ -120,6 +122,9 @@ export const useDocumentStore = defineStore({
 		reset() {
 			this.document.draggables = []
 			this.document.active_draggable = {}
+		},
+		updateDocument(item, itemValue) {
+			this.document[item] = itemValue
 		},
 		addDraggable(draggable) {
 			this.document.draggables.push(this.format(draggable))
@@ -179,8 +184,7 @@ export const useDocumentStore = defineStore({
 			this.updatePageOrientation()
 			this.updatePageFonts()
 			sessionStorage.setItem('page_settings', JSON.stringify(this.document.page_settings))
-			//refresh page
-			//location = window.reload
+			//refresh page settings
 		},
 		updatePageMargins() {
 			const marginsCode = this.document.page_settings.margins
