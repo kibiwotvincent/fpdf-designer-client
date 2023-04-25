@@ -6,7 +6,8 @@
 	tabindex="-1"
 	:aria-labelledby="this.id+'Label'"
 	aria-modal="true"
-	role="dialog">
+	role="dialog"
+	@focus="hidden">
 		
 		<div
 		data-te-modal-dialog-ref
@@ -31,7 +32,12 @@
 		name: 'HeadlessModalComponent',
 		props: reactive({
 				id: null
-		})
+		}),
+		methods: {
+			hidden() {
+			//console.log("focus")
+			}
+		}
 	}
 </script>
 
