@@ -169,26 +169,22 @@
 		},
 		data: () => ({
 				draggable: {},
-				defaultDraggable: {},
 			}),
 		mounted() {
 			const documentStore = useDocumentStore()
 			this.draggable = documentStore.defaults.text
-			this.defaultDraggable = { ...this.draggable }
 		},
 		methods: {
-			getDefaultDraggable() {
-				
-			},
 			cancel() {
 				this.resetForm()
 				this.closeModal()
 			},
 			resetForm() {
-				this.draggable = { ...this.defaultDraggable }
+				const documentStore = useDocumentStore()
+				const defaultDraggable = documentStore.defaults.text
+				this.draggable = { ...defaultDraggable }
 			},
 			onSubmit() {
-				console.log(this.draggable.border)
 				const documentStore = useDocumentStore()
 				//pass the draggable as new object
 				documentStore.addDraggable({ ...this.draggable })

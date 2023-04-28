@@ -9,7 +9,6 @@ export const useDocumentStore = defineStore({
 					'draggables' : [], 
 					'active_draggable' : {},
 					'page_settings' : {},
-					'source' : '',
 					'id' : '',
 				},
 		setup: {
@@ -65,58 +64,35 @@ export const useDocumentStore = defineStore({
 		}
     }),
     actions: {
-		async setPage() {
-			if(sessionStorage.getItem('page_setup_data') == null) {
-				const http = createHttp()
-				http.get(process.env.VUE_APP_API_URL+'/api/page/setup')
-				.then((response) => {
-					this.setup = response.data
-					sessionStorage.setItem('page_setup_data', JSON.stringify(response.data))
-				})
-			}
-			else {
-				this.setup = JSON.parse(sessionStorage.getItem('page_setup_data'))
-			}
-			
-			if(sessionStorage.getItem('page_settings') == null) {
-				//set page with default values
-				this.document.page_settings = this.defaultValues.page
-			}
-			else {
-				//set page with values from session
-				this.document.page_settings = JSON.parse(sessionStorage.getItem('page_settings'))
-			}
-			//update default font size, color and family for new text draggables
-			this.updatePageFonts()
+		setPage() {
+			//save available fonts, page sizes and page margins
+			this.setup = JSON.parse(localStorage.getItem('setup'))
 		},
-        async initDocument() {
-			//this.reset()
+		initializeWorkspace() {
+			this.reset()
+			this.document.draggables = JSON.parse(sessionStorage.getItem('draggables'))
+			this.loaded.document = true
+		},
+        async reloadWorkspaceDraggables() {
+			/**
+			* When page settings is updated, current document snapshot is uploaded online 
+			* then workspace draggables are reloaded.
+			* This is done so that, the draggables can obey parent size and stay within parent
+			**/
+			this.document.draggables = []
 			const http = createHttp()
-			http.get(process.env.VUE_APP_API_URL+'/api/'+this.document.source+'/'+this.document.id)
-			.then((response) => {
-				if(this.document.source == 'documents') {
-					this.loaded.document = true;
-				}
-				else if(this.document.source == 'templates') {
-					this.loaded.template = true;
-				}
-				this.document.draggables = response.data.draggables
+			http.get(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id)
+			.then(() => {
+				this.loaded.document = true;
+				this.document.draggables = JSON.parse(sessionStorage.getItem('draggables'))
 			})
 		},
-		async save() {
+		async update() {
 			this.cleanDraggables()
 			const http = createHttp()
-			http.post(process.env.VUE_APP_API_URL+'/api/documents/save', {'document' : this.document})
+			http.post(process.env.VUE_APP_API_URL+'/api/workspace/save', {'id': this.document.id, 'document' : this.document})
 			.then((response) => {
-				console.log(response)
-			})
-		},
-		async update(id) {
-			this.cleanDraggables()
-			const http = createHttp()
-			http.post(process.env.VUE_APP_API_URL+'/api/documents/update', {'id': id, 'document' : this.document})
-			.then((response) => {
-				console.log(response)
+				console.log(response) 
 			})
 		},
 		reset() {
@@ -177,14 +153,25 @@ export const useDocumentStore = defineStore({
 				}
 			}
 		},
-		updatePageSettings(pageSettings) {
+		savePageSettings(data) {
+			this.document.page_settings = data.page_settings
+			sessionStorage.setItem('page_settings', JSON.stringify(this.document.page_settings))
+			sessionStorage.setItem('draggables', JSON.stringify(data.draggables))
+		},
+		setPageSettings(pageSettings) {
 			this.document.page_settings = pageSettings
-			
+		},
+		setDraggables(draggables) {
+			this.document.draggables = draggables
+		},
+		saveToSession(item, itemValue, stringify = true) {
+			itemValue = stringify == true ? JSON.stringify(itemValue) : itemValue
+			sessionStorage.setItem(item, itemValue)
+		},
+		updatePageSettings() {
 			this.updatePageMargins()
 			this.updatePageOrientation()
-			this.updatePageFonts()
-			sessionStorage.setItem('page_settings', JSON.stringify(this.document.page_settings))
-			//refresh page settings
+			this.updateDefaultFontSettings()
 		},
 		updatePageMargins() {
 			const marginsCode = this.document.page_settings.margins
@@ -206,10 +193,7 @@ export const useDocumentStore = defineStore({
 				this.document.page_settings.height = pageSize.height
 			}
 		},
-		updatePageSize() {
-			this.updatePageOrientation()
-		},
-		updatePageFonts() {
+		updateDefaultFontSettings() {
 			//update default font size, color & family with values from page set up
 			this.defaultValues.text.font_size = this.document.page_settings.font_size
 			this.defaultValues.text.font_color = this.document.page_settings.font_color

@@ -18,7 +18,7 @@ import Profile from '@/views/account/Profile.vue';
 
 const routes = [
 	{path: '/', name: 'home', component: Home},
-	{path: '/design-panel/:source?/:id?', name: 'design-panel', component: DesignPanel},
+	{path: '/design-panel/:id', name: 'design-panel', component: DesignPanel},
 	{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
 	{path: '/pricing', name: 'pricing', component: Pricing},
 	{path: '/help', name: 'help', component: Help},
@@ -43,7 +43,7 @@ export const router = createRouter({
 
 router.beforeEach(async (to) => {
 	if(to.name == 'design-panel') {
-		if(to.params.id != '' && sessionStorage.getItem('document_id') != to.params.id) {
+		if(sessionStorage.getItem('document_id') != to.params.id) {
 			sessionStorage.removeItem('page_settings')
 			console.log('page settings removed')
 		}

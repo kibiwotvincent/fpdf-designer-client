@@ -84,11 +84,8 @@ documentStore.isLoaded.template = false
 		<div v-show="pageSettingsLoaded == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading page settings..." :show-text=true />
 		</div>
-		<div v-show="pageSettingsLoaded == true && source == 'documents' && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+		<div v-show="pageSettingsLoaded == true && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading document..." :show-text=true />
-		</div>
-		<div v-show="pageSettingsLoaded == true && source == 'templates' && documentStore.isLoaded.template == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading template..." :show-text=true />
 		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
@@ -139,7 +136,7 @@ documentStore.isLoaded.template = false
 		</div>
 	</section>
 	<!--modals-->
-	<page-settings-modal @updated=updatePage :refresh=refreshPageSettingsModal />
+	<page-settings-modal @updated=refreshDesignPanel :refresh=refreshPageSettingsModal />
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
@@ -182,7 +179,6 @@ documentStore.isLoaded.template = false
 						},
 				currentTop : 0,
 				update : false,
-				source : this.$route.params.source,
 				id : this.$route.params.id,
 				pageSettingsLoaded : false,
 				refreshPageSettingsModal : false
@@ -190,41 +186,32 @@ documentStore.isLoaded.template = false
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
-			documentStore.updateDocument('source', this.source)
 			documentStore.updateDocument('id', this.id)
 			documentStore.setPage()
-			this.fetchPageSettings()
+			this.loadWorkspace()
 		},
 		methods: {
-			async fetchPageSettings() {
-				if(this.id !== "" && this.source !== "") {
-					const http = createHttp()
-					http.get(process.env.VUE_APP_API_URL+'/api/'+this.source+'/'+this.id)
-					.then((response) => {
-						//save document ID in session; fresh page settings will be fetched if document ID changes
-						sessionStorage.setItem('document_id', response.data.id)
-						
-						const documentStore = useDocumentStore()
-						this.pageSettingsLoaded = true
-						const pageSettings = sessionStorage.getItem('page_settings') == null ? response.data.page_settings : sessionStorage.getItem('page_settings')
-						documentStore.updatePageSettings(JSON.parse(pageSettings))
-						this.refreshPageSettingsModal = true
-						this.updatePage()
-						documentStore.reset()
-						this.initDraggables()
-					})
-				}
-				else {
+			async loadWorkspace() {
+				const http = createHttp()
+				http.get(process.env.VUE_APP_API_URL+'/api/workspace/'+this.id)
+				.then((response) => {
+					//save document ID in session; fresh page settings will be fetched if document ID changes
+					sessionStorage.setItem('document_id', response.data.id)
+					
 					const documentStore = useDocumentStore()
-					documentStore.reset()
 					this.pageSettingsLoaded = true
-					const pageSettings = sessionStorage.getItem('page_settings') == null ? documentStore.pageSettings : JSON.parse(sessionStorage.getItem('page_settings'))
-					documentStore.updatePageSettings(pageSettings)
+					documentStore.saveToSession('page_settings', response.data.page_settings)
+					documentStore.saveToSession('draggables', response.data.draggables)
+					documentStore.setPageSettings(response.data.page_settings)
+					documentStore.updatePageMargins()
+					documentStore.updatePageOrientation()
+					documentStore.updateDefaultFontSettings()
 					this.refreshPageSettingsModal = true
-					this.updatePage()
-				}
+					this.refreshDesignPanel()
+					documentStore.initializeWorkspace()
+				})
 			},
-			updatePage() {
+			refreshDesignPanel() {
 				/*convert page items such as width from mm to px*/
 				const documentStore = useDocumentStore()
 				const scaleFactor = documentStore.pageSettings.scale_factor
@@ -237,30 +224,12 @@ documentStore.isLoaded.template = false
 				this.page.workspace_width = this.page.width - (this.page.left_margin + this.page.right_margin)
 				this.page.workspace_height = this.page.height - (this.page.top_margin + this.page.bottom_margin)
 			},
-			initDraggables() {
-				const documentStore = useDocumentStore()
-				if(this.id !== "" && this.source !== "") {
-					//initialize design panel with the selected template or from saved user designs
-					documentStore.initDocument()
-				}
-			},
 			save() {
 				const documentStore = useDocumentStore()
-				let source = this.$route.params.source
-				let id = this.$route.params.id
-				if(source == "documents" && id !== "") {
-					documentStore.update(id)
-				}
-				else {
-					documentStore.save()
-				}
+				documentStore.update()
 			},
 			reset() {
-				sessionStorage.removeItem('page_settings')
-				this.fetchPageSettings()
-				const documentStore = useDocumentStore()
-				documentStore.reset()
-				this.initDraggables()
+				this.loadWorkspace()
 			},
 			onResize: function (x) {
 				const documentStore = useDocumentStore()

@@ -93,6 +93,7 @@ const documentStore = useDocumentStore()
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
 	import { reactive } from 'vue'
+	import createHttp from '@/axios.js'
 	
 	export default {
 		name: 'PageSettingsModalComponent',
@@ -109,11 +110,24 @@ const documentStore = useDocumentStore()
 			this.defaultSettings = { ...this.settings }
 		},
 		methods: {
-			onSubmit() {
+			async onSubmit() {
 				const documentStore = useDocumentStore()
-				documentStore.updatePageSettings({ ...this.settings })
-				this.closeModal()
-				this.$emit('updated')
+				documentStore.setPageSettings({ ...this.settings })
+				
+				const http = createHttp()
+				http.post(process.env.VUE_APP_API_URL+'/api/workspace/save', {'id': documentStore.doc.id, 'document' : documentStore.doc})
+				.then((response) => {
+					const documentStore = useDocumentStore()
+					documentStore.saveToSession('page_settings', response.data.page_settings)
+					documentStore.setPageSettings(response.data.page_settings)
+					documentStore.updatePageMargins()
+					documentStore.updatePageOrientation()
+					documentStore.updateDefaultFontSettings()
+					documentStore.reloadWorkspaceDraggables()
+					
+					this.closeModal()
+					this.$emit('updated')
+				})
 			},
 			cancel() {
 				this.resetForm()
@@ -129,13 +143,10 @@ const documentStore = useDocumentStore()
 		watch: {
 			refresh() {
 				if(this.refresh) {
-					this.settings = JSON.parse(sessionStorage.getItem('page_settings'))
+					const documentStore = useDocumentStore()
+					this.settings = documentStore.pageSettings
 				}
 			}
 		}
 	}
 </script>
-
-<style scoped>
-
-</style>

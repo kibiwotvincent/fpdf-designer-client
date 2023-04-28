@@ -15,7 +15,7 @@
 		<div class="w-full" v-for="document in documents" :key="document.uuid">
 			<div
 			class="block rounded-lg shadow-lg">
-			<router-link :to="'/design-panel/documents/'+document.uuid">
+			<router-link :to="'/design-panel/'+document.uuid">
 				<img
 				class="rounded-lg w-full transform transition hover:scale-105 duration-300 ease-in-out"
 				src="http://localhost:8080/1.PNG"
