@@ -11,15 +11,12 @@ export const useDocumentStore = defineStore({
 					'page_settings' : {},
 					'id' : '',
 				},
-		setup: {
-				'fonts' : [],
-				'page_sizes' : [],
-				'page_margins' : [],
-				},
+		setup: JSON.parse(localStorage.getItem('setup')),
 		loaded: {
-				'document' : false,
-				'template' : false,
-				'page_settings' : false,
+				'workspace' : false,
+		},
+		spinners: {
+			'saving_document' : false,
 		},
 		defaultValues: {
 					'page' : {
@@ -64,26 +61,20 @@ export const useDocumentStore = defineStore({
 		}
     }),
     actions: {
-		setPage() {
-			//save available fonts, page sizes and page margins
-			this.setup = JSON.parse(localStorage.getItem('setup'))
-		},
 		initializeWorkspace() {
 			this.reset()
 			this.document.draggables = JSON.parse(sessionStorage.getItem('draggables'))
-			this.loaded.document = true
 		},
         async reloadWorkspaceDraggables() {
 			/**
-			* When page settings is updated, current document snapshot is uploaded online 
-			* then workspace draggables are reloaded.
+			* Workspace draggables are reloaded from session.
 			* This is done so that, the draggables can obey parent size and stay within parent
 			**/
 			this.document.draggables = []
 			const http = createHttp()
 			http.get(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id)
 			.then(() => {
-				this.loaded.document = true;
+				this.loaded.workspace = true;
 				this.document.draggables = JSON.parse(sessionStorage.getItem('draggables'))
 			})
 		},
@@ -93,6 +84,7 @@ export const useDocumentStore = defineStore({
 			http.post(process.env.VUE_APP_API_URL+'/api/workspace/save', {'id': this.document.id, 'document' : this.document})
 			.then((response) => {
 				console.log(response) 
+				this.spinners.saving_document = false
 			})
 		},
 		reset() {
@@ -153,11 +145,6 @@ export const useDocumentStore = defineStore({
 				}
 			}
 		},
-		savePageSettings(data) {
-			this.document.page_settings = data.page_settings
-			sessionStorage.setItem('page_settings', JSON.stringify(this.document.page_settings))
-			sessionStorage.setItem('draggables', JSON.stringify(data.draggables))
-		},
 		setPageSettings(pageSettings) {
 			this.document.page_settings = pageSettings
 		},
@@ -168,10 +155,11 @@ export const useDocumentStore = defineStore({
 			itemValue = stringify == true ? JSON.stringify(itemValue) : itemValue
 			sessionStorage.setItem(item, itemValue)
 		},
-		updatePageSettings() {
-			this.updatePageMargins()
-			this.updatePageOrientation()
-			this.updateDefaultFontSettings()
+		setLoaded(item, status) {
+			this.loaded[item] = status
+		},
+		setSpinner(spinner, status) {
+			this.spinners[spinner] = status
 		},
 		updatePageMargins() {
 			const marginsCode = this.document.page_settings.margins
@@ -227,6 +215,9 @@ export const useDocumentStore = defineStore({
 		},
 		isLoaded() {
 			return this.loaded
+		},
+		isSavingDocument() {
+			return this.spinners.saving_document
 		},
     }
 });

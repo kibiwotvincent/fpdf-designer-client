@@ -2,16 +2,18 @@
 import Navbar from '@/components/common/Navbar.vue'
 import { useDocumentStore } from '@/stores'
 import createHttp from '@/axios.js'
+//import { watch } from 'vue'
 
 const documentStore = useDocumentStore()
-documentStore.isLoaded.document = false
-documentStore.isLoaded.template = false
+documentStore.isLoaded.workspace = false
 
-/*documentStore.$subscribe((state) => {
-  // persist the whole state to the local storage whenever it changes
-  localStorage.setItem('document', JSON.stringify(state))
-  alert()
-})*/
+/*
+watch(
+	() => documentStore.pageSettings,
+	() => {
+			console.log('loading status has changed')
+			}
+	)*/
 
 </script>
 
@@ -81,15 +83,15 @@ documentStore.isLoaded.template = false
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div v-show="pageSettingsLoaded == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading page settings..." :show-text=true />
+		<div v-show="documentStore.isLoaded.workspace == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Loading workspace..." :show-text=true />
 		</div>
-		<div v-show="pageSettingsLoaded == true && documentStore.isLoaded.document == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading document..." :show-text=true />
+		<div v-show="documentStore.isSavingDocument" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Saving document..." :show-text=true />
 		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
-				<div v-show=pageSettingsLoaded class="workspace" 
+				<div v-show=documentStore.isLoaded.workspace class="workspace" 
 				:style="'width: '+page.workspace_width+'px;height:'+page.workspace_height+'px;margin: '+page.top_margin+'px '+page.right_margin+'px '+page.bottom_margin+'px '+page.left_margin+'px'"
 				>
 					<vue-draggable-resizable v-for="(draggable, index) in documentStore.draggables"
@@ -180,14 +182,12 @@ documentStore.isLoaded.template = false
 				currentTop : 0,
 				update : false,
 				id : this.$route.params.id,
-				pageSettingsLoaded : false,
 				refreshPageSettingsModal : false
 			}
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
 			documentStore.updateDocument('id', this.id)
-			documentStore.setPage()
 			this.loadWorkspace()
 		},
 		methods: {
@@ -199,7 +199,7 @@ documentStore.isLoaded.template = false
 					sessionStorage.setItem('document_id', response.data.id)
 					
 					const documentStore = useDocumentStore()
-					this.pageSettingsLoaded = true
+					documentStore.setLoaded('workspace', true)
 					documentStore.saveToSession('page_settings', response.data.page_settings)
 					documentStore.saveToSession('draggables', response.data.draggables)
 					documentStore.setPageSettings(response.data.page_settings)
@@ -226,6 +226,7 @@ documentStore.isLoaded.template = false
 			},
 			save() {
 				const documentStore = useDocumentStore()
+				documentStore.setSpinner('saving_document', true)
 				documentStore.update()
 			},
 			reset() {
@@ -277,6 +278,11 @@ documentStore.isLoaded.template = false
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
 				this.$refs[modal].click()
+			}
+		},
+		watchh: {
+			loaded() {
+				console.log('loaded')
 			}
 		}
 	};
