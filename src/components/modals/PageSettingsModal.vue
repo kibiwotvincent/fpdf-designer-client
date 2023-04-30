@@ -92,17 +92,23 @@ const documentStore = useDocumentStore()
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
-	import { reactive } from 'vue'
 	
 	export default {
 		name: 'PageSettingsModalComponent',
-		props: reactive({
-				refresh: false,
-		}),
 		data: () => ({
 				settings: {},
 				defaultSettings: {},
 		}),
+		created() {
+			/*watch for page settings changes and reset page settings*/
+			const documentStore = useDocumentStore()
+			this.$watch(
+					() => documentStore.pageSettings,
+					() => {
+							this.settings = documentStore.pageSettings
+						}
+					)
+		},
 		mounted() {
 			const documentStore = useDocumentStore()
 			this.settings = sessionStorage.getItem('page_settings') == null ? documentStore.defaults.page : JSON.parse(sessionStorage.getItem('page_settings'))
@@ -111,7 +117,7 @@ const documentStore = useDocumentStore()
 		methods: {
 			async onSubmit() {
 				const documentStore = useDocumentStore()
-				documentStore.setLoaded('workspace', false)
+				documentStore.setSpinner('loading_workspace', true)
 				documentStore.saveToSession('page_settings', { ...this.settings })
 				documentStore.saveToSession('draggables', documentStore.draggables)
 				
@@ -122,7 +128,6 @@ const documentStore = useDocumentStore()
 				documentStore.reloadWorkspaceDraggables()
 				
 				this.closeModal()
-				this.$emit('updated')
 			},
 			cancel() {
 				this.resetForm()
@@ -133,14 +138,6 @@ const documentStore = useDocumentStore()
 			},
 			closeModal() {
 				this.$refs.closeModal.click()
-			}
-		},
-		watch: {
-			refresh() {
-				if(this.refresh) {
-					const documentStore = useDocumentStore()
-					this.settings = documentStore.pageSettings
-				}
 			}
 		}
 	}

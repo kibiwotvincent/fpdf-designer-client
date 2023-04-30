@@ -2,19 +2,8 @@
 import Navbar from '@/components/common/Navbar.vue'
 import { useDocumentStore } from '@/stores'
 import createHttp from '@/axios.js'
-//import { watch } from 'vue'
 
 const documentStore = useDocumentStore()
-documentStore.isLoaded.workspace = false
-
-/*
-watch(
-	() => documentStore.pageSettings,
-	() => {
-			console.log('loading status has changed')
-			}
-	)*/
-
 </script>
 
 <template>
@@ -83,7 +72,7 @@ watch(
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div v-show="documentStore.isLoaded.workspace == false" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+		<div v-show="documentStore.isLoadingWorkspace" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Loading workspace..." :show-text=true />
 		</div>
 		<div v-show="documentStore.isSavingDocument" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
@@ -91,7 +80,7 @@ watch(
 		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
-				<div v-show=documentStore.isLoaded.workspace class="workspace" 
+				<div v-show="documentStore.isLoadingWorkspace == false" class="workspace" 
 				:style="'width: '+page.workspace_width+'px;height:'+page.workspace_height+'px;margin: '+page.top_margin+'px '+page.right_margin+'px '+page.bottom_margin+'px '+page.left_margin+'px'"
 				>
 					<vue-draggable-resizable v-for="(draggable, index) in documentStore.draggables"
@@ -138,7 +127,7 @@ watch(
 		</div>
 	</section>
 	<!--modals-->
-	<page-settings-modal @updated=refreshDesignPanel :refresh=refreshPageSettingsModal />
+	<page-settings-modal />
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
@@ -182,8 +171,17 @@ watch(
 				currentTop : 0,
 				update : false,
 				id : this.$route.params.id,
-				refreshPageSettingsModal : false
 			}
+		},
+		created() {
+			/*watch for page settings changes and refresh page design*/
+			const documentStore = useDocumentStore()
+			this.$watch(
+					() => documentStore.pageSettings,
+					() => {
+							this.refreshDesignPanel()
+						}
+					)
 		},
 		mounted() {
 			const documentStore = useDocumentStore()
@@ -199,14 +197,13 @@ watch(
 					sessionStorage.setItem('document_id', response.data.id)
 					
 					const documentStore = useDocumentStore()
-					documentStore.setLoaded('workspace', true)
+					documentStore.setSpinner('loading_workspace', false)
 					documentStore.saveToSession('page_settings', response.data.page_settings)
 					documentStore.saveToSession('draggables', response.data.draggables)
 					documentStore.setPageSettings(response.data.page_settings)
 					documentStore.updatePageMargins()
 					documentStore.updatePageOrientation()
 					documentStore.updateDefaultFontSettings()
-					this.refreshPageSettingsModal = true
 					this.refreshDesignPanel()
 					documentStore.initializeWorkspace()
 				})

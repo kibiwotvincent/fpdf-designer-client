@@ -12,11 +12,9 @@ export const useDocumentStore = defineStore({
 					'id' : '',
 				},
 		setup: JSON.parse(localStorage.getItem('setup')),
-		loaded: {
-				'workspace' : false,
-		},
 		spinners: {
 			'saving_document' : false,
+			'loading_workspace' : true,
 		},
 		defaultValues: {
 					'page' : {
@@ -74,7 +72,7 @@ export const useDocumentStore = defineStore({
 			const http = createHttp()
 			http.get(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id)
 			.then(() => {
-				this.loaded.workspace = true;
+				this.spinners.loading_workspace = false;
 				this.document.draggables = JSON.parse(sessionStorage.getItem('draggables'))
 			})
 		},
@@ -155,9 +153,6 @@ export const useDocumentStore = defineStore({
 			itemValue = stringify == true ? JSON.stringify(itemValue) : itemValue
 			sessionStorage.setItem(item, itemValue)
 		},
-		setLoaded(item, status) {
-			this.loaded[item] = status
-		},
 		setSpinner(spinner, status) {
 			this.spinners[spinner] = status
 		},
@@ -213,11 +208,11 @@ export const useDocumentStore = defineStore({
 		defaults() {
 			return this.defaultValues
 		},
-		isLoaded() {
-			return this.loaded
-		},
 		isSavingDocument() {
 			return this.spinners.saving_document
+		},
+		isLoadingWorkspace() {
+			return this.spinners.loading_workspace
 		},
     }
 });
