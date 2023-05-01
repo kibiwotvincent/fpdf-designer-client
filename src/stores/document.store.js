@@ -15,6 +15,7 @@ export const useDocumentStore = defineStore({
 		spinners: {
 			'saving_document' : false,
 			'loading_workspace' : true,
+			'reseting_workspace' : false,
 		},
 		defaultValues: {
 					'page' : {
@@ -79,7 +80,7 @@ export const useDocumentStore = defineStore({
 		async update() {
 			this.cleanDraggables()
 			const http = createHttp()
-			http.post(process.env.VUE_APP_API_URL+'/api/workspace/save', {'id': this.document.id, 'document' : this.document})
+			http.post(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id+'/save', {'document' : this.document})
 			.then((response) => {
 				console.log(response) 
 				this.spinners.saving_document = false
@@ -213,6 +214,9 @@ export const useDocumentStore = defineStore({
 		},
 		isLoadingWorkspace() {
 			return this.spinners.loading_workspace
+		},
+		isResetingWorkspace() {
+			return this.spinners.reseting_workspace
 		},
     }
 });

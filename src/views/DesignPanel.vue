@@ -78,6 +78,9 @@ const documentStore = useDocumentStore()
 		<div v-show="documentStore.isSavingDocument" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Saving document..." :show-text=true />
 		</div>
+		<div v-show="documentStore.isResetingWorkspace" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
+			<Spinner text="Reseting workspace..." :show-text=true />
+		</div>
 		<div class="panel bg-blue-50 flex items-center px-8">
 			<div class="page" :style="'width: '+page.width+'px;height:'+page.height+'px;'">
 				<div v-show="documentStore.isLoadingWorkspace == false" class="workspace" 
@@ -226,8 +229,25 @@ const documentStore = useDocumentStore()
 				documentStore.setSpinner('saving_document', true)
 				documentStore.update()
 			},
-			reset() {
-				this.loadWorkspace()
+			async reset() {
+				const documentStore = useDocumentStore()
+				documentStore.setSpinner('reseting_workspace', true)
+				documentStore.reset()
+				
+				const http = createHttp()
+				http.post(process.env.VUE_APP_API_URL+'/api/workspace/'+this.id+'/reset')
+				.then((response) => {
+					const documentStore = useDocumentStore()
+					documentStore.setSpinner('reseting_workspace', false)
+					documentStore.saveToSession('page_settings', response.data.page_settings)
+					documentStore.saveToSession('draggables', response.data.draggables)
+					documentStore.setPageSettings(response.data.page_settings)
+					documentStore.updatePageMargins()
+					documentStore.updatePageOrientation()
+					documentStore.updateDefaultFontSettings()
+					this.refreshDesignPanel()
+					documentStore.initializeWorkspace()
+				})
 			},
 			onResize: function (x) {
 				const documentStore = useDocumentStore()
@@ -275,11 +295,6 @@ const documentStore = useDocumentStore()
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
 				this.$refs[modal].click()
-			}
-		},
-		watchh: {
-			loaded() {
-				console.log('loaded')
 			}
 		}
 	};
