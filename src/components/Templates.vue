@@ -30,14 +30,23 @@
 	</div>
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center mt-4 mx-8">
 		<div class="w-full" v-for="template in templates" :key="template.id">
-			<div class="block rounded-lg shadow-lg">
-				<img
-				class="rounded-lg w-full cursor-pointer transform transition hover:scale-105 duration-300 ease-in-out"
-				:src=template.thumbnail
-				:alt="template.name"
-				@click="initFromSource('templates', template.id)"
-				/>
+		
+			<div class="block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+				<div
+					class="relative overflow-hidden bg-cover bg-no-repeat"
+					data-te-ripple-init
+					data-te-ripple-color="light">
+					<img
+						class="rounded-t-lg"
+						:src=template.thumbnail
+						:alt="template.name" />
+					<a href="#" @click.prevent="initFromSource('templates', template.id)">
+						<div
+							class="absolute bottom-0 left-0 right-0 top-0 h-full w-full overflow-hidden bg-[hsla(0,0%,98%,0.15)] bg-fixed opacity-0 transition duration-300 ease-in-out hover:opacity-100"></div>
+					</a>
+				</div>
 			</div>
+		
 		</div>
 	</div>
 	<button class="hidden" ref="launchOverlayModal"
