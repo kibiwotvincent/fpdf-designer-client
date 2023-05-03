@@ -4,6 +4,7 @@ import { useDocumentStore } from '@/stores'
 import createHttp from '@/axios.js'
 
 const documentStore = useDocumentStore()
+documentStore.setSpinner('loading_workspace', true)
 </script>
 
 <template>
@@ -193,6 +194,9 @@ const documentStore = useDocumentStore()
 		},
 		methods: {
 			async loadWorkspace() {
+				const documentStore = useDocumentStore()
+				documentStore.reset()
+				
 				const http = createHttp()
 				http.get(process.env.VUE_APP_API_URL+'/api/workspace/'+this.id)
 				.then((response) => {
