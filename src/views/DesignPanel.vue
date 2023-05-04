@@ -68,7 +68,7 @@ documentStore.setSpinner('loading_workspace', true)
 			
 			<div class="float-right">
 				<button @click="reset" class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowPathIcon class="inline-block h-4 w-4 mb-1"/> Reset</button>
-				<button class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1"/> Preview</button>
+				<button @click="preview" class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1"/> Preview</button>
 				<button @click="save" class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><InboxArrowDownIcon class="inline-block h-4 w-4 mb-1"/> Save</button>
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
@@ -252,6 +252,19 @@ documentStore.setSpinner('loading_workspace', true)
 					this.refreshDesignPanel()
 					documentStore.initializeWorkspace()
 				})
+			},
+			async preview() {
+				const url = process.env.VUE_APP_API_URL+'/api/workspace/'+this.id+'/preview'
+				const http = createHttp({responseType: 'blob'})
+				http.get(url)
+				.then((response) => {
+					var fileURL = window.URL.createObjectURL(new Blob([response.data], {type: 'application/pdf'}));
+					var fileLink = document.createElement('a');
+					fileLink.href = fileURL;
+					fileLink.setAttribute('download', this.id+'.pdf');
+					document.body.appendChild(fileLink);
+					fileLink.click();
+				});
 			},
 			onResize: function (x) {
 				const documentStore = useDocumentStore()

@@ -1,15 +1,14 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores';
 
-export default function createHttp() {
+export default function createHttp(config = {}) {
 	const user = useAuthStore()
 	
 	if(user.token !== '') {
-		return axios.create({
-			headers: { "Authorization": `Bearer ${user.token}` }
-		});
+		const headers = {}
+		headers.Authorization = `Bearer ${user.token}`
+		config.headers = headers
 	}
-	else {
-		return axios.create();
-	}
+	
+	return axios.create(config)
 }
