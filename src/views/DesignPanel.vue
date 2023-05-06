@@ -138,6 +138,14 @@ documentStore.setSpinner('loading_workspace', true)
 	<add-link-modal />
 	<add-line-modal />
 	<add-image-modal />
+	
+	<button class="hidden" ref="launchSaveDocumentModal"
+	data-te-toggle="modal"
+	data-te-target="#saveDocumentModal"
+	data-te-ripple-init
+	data-te-ripple-color="light"
+	></button>
+	<save-document-modal />
 	<!--end modals-->
 </template>
 
@@ -150,6 +158,7 @@ documentStore.setSpinner('loading_workspace', true)
 	import AddLineModal from '@/components/modals/AddLineModal.vue'
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
+	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
 	
@@ -208,6 +217,7 @@ documentStore.setSpinner('loading_workspace', true)
 					documentStore.saveToSession('page_settings', response.data.page_settings)
 					documentStore.saveToSession('draggables', response.data.draggables)
 					documentStore.setPageSettings(response.data.page_settings)
+					documentStore.setDocumentName(response.data.name)
 					documentStore.updatePageMargins()
 					documentStore.updatePageOrientation()
 					documentStore.updateDefaultFontSettings()
@@ -230,8 +240,15 @@ documentStore.setSpinner('loading_workspace', true)
 			},
 			save() {
 				const documentStore = useDocumentStore()
-				documentStore.setSpinner('saving_document', true)
-				documentStore.update()
+				if(documentStore.doc.name == '') {
+					this.$refs.launchSaveDocumentModal.click()
+				}
+				else {
+					documentStore.setSpinner('saving_document', true)
+					documentStore.update().then(() => {
+						documentStore.setSpinner('saving_document', false)
+					})
+				}
 			},
 			async reset() {
 				const documentStore = useDocumentStore()

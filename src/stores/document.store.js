@@ -5,7 +5,7 @@ export const useDocumentStore = defineStore({
     id: 'document',
     state: () => ({
         document: {
-					'name' : 'document_name',
+					'name' : '',
 					'draggables' : [], 
 					'active_draggable' : {},
 					'page_settings' : {},
@@ -80,11 +80,7 @@ export const useDocumentStore = defineStore({
 		async update() {
 			this.cleanDraggables()
 			const http = createHttp()
-			http.post(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id+'/save', {'document' : this.document})
-			.then((response) => {
-				console.log(response) 
-				this.spinners.saving_document = false
-			})
+			await http.post(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id+'/save', {'name': this.document.name, 'page_settings' : this.document.page_settings, 'draggables': this.document.draggables})
 		},
 		reset() {
 			this.document.draggables = []
@@ -150,6 +146,9 @@ export const useDocumentStore = defineStore({
 		setDraggables(draggables) {
 			this.document.draggables = draggables
 		},
+		setDocumentName(name) {
+			this.document.name = name
+		},
 		saveToSession(item, itemValue, stringify = true) {
 			itemValue = stringify == true ? JSON.stringify(itemValue) : itemValue
 			sessionStorage.setItem(item, itemValue)
@@ -187,6 +186,9 @@ export const useDocumentStore = defineStore({
 	getters: {
 		doc() {
 			return this.document
+		},
+		documentName() {
+			return this.document.name
 		},
 		draggables() {
 			return this.document.draggables
