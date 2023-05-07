@@ -16,47 +16,6 @@ export const useDocumentStore = defineStore({
 			'saving_document' : false,
 			'loading_workspace' : true,
 			'reseting_workspace' : false,
-		},
-		defaultValues: {
-					'page' : {
-						'size' : 'A4',
-						'orientation' : 'P',
-						'width' : '210',
-						'height' : '297',
-						'workspace_width' : '190',
-						'workspace_height' : '277',
-						'font_size' : '11',
-						'font_color' : '#000000',
-						'font_family' : 'Arial',
-						'margins' : 'medium',
-						'top_margin' : '10',
-						'right_margin' : '10',
-						'bottom_margin' : '10',
-						'left_margin' : '10',
-						'scale_factor' : 3.7795 /*eqivalent of 1mm in pixels at 96PPI*/
-					},
-					'text' : {
-						'type' : 'text',
-						'text' : 'Text',
-						'left' : '0',
-						'top' : '0',
-						'height' : '50',
-						'width' : '400',
-						'text_align' : 'left',
-						'font_size' : '11',
-						'font_weight' : 'normal',
-						'font_color' : '#000000',
-						'font_style' : 'normal',
-						'font_family' : 'Arial',
-						'background' : 'none',
-						'background_color' : '#ffffff',
-						'border_left' : 'none',
-						'border_top' : 'none',
-						'border_right' : 'none',
-						'border_bottom' : 'none',
-						'border_color' : '#000000',
-						'border_weight' : '1',
-					}
 		}
     }),
     actions: {
@@ -149,6 +108,7 @@ export const useDocumentStore = defineStore({
 			}
 		},
 		setPageSettings(pageSettings) {
+			this.updateDefaultFontSettings()
 			this.document.page_settings = pageSettings
 		},
 		setDraggables(draggables) {
@@ -186,9 +146,11 @@ export const useDocumentStore = defineStore({
 		},
 		updateDefaultFontSettings() {
 			//update default font size, color & family with values from page set up
-			this.defaultValues.text.font_size = this.document.page_settings.font_size
-			this.defaultValues.text.font_color = this.document.page_settings.font_color
-			this.defaultValues.text.font_family = this.document.page_settings.font_family
+			const defaults = JSON.parse(localStorage.getItem('defaults'))
+			defaults.text.font_size = this.document.page_settings.font_size
+			defaults.text.font_color = this.document.page_settings.font_color
+			defaults.text.font_family = this.document.page_settings.font_family
+			localStorage.setItem('defaults', JSON.stringify(defaults))
 		}
 	},
 	getters: {

@@ -110,8 +110,7 @@ const documentStore = useDocumentStore()
 					)
 		},
 		mounted() {
-			const documentStore = useDocumentStore()
-			this.settings = sessionStorage.getItem('page_settings') == null ? documentStore.defaults.page : JSON.parse(sessionStorage.getItem('page_settings'))
+			this.settings = sessionStorage.getItem('page_settings') == null ? JSON.parse(localStorage.getItem('defaults')).page : JSON.parse(sessionStorage.getItem('page_settings'))
 			this.defaultSettings = { ...this.settings }
 		},
 		methods: {

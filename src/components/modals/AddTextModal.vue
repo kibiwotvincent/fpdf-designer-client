@@ -168,11 +168,17 @@
 			Modal
 		},
 		data: () => ({
-				draggable: {},
-			}),
-		mounted() {
+				draggable: JSON.parse(localStorage.getItem('defaults')).text,
+		}),
+		created() {
+			/*watch for page settings changes and reset page settings*/
 			const documentStore = useDocumentStore()
-			this.draggable = documentStore.defaults.text
+			this.$watch(
+					() => documentStore.pageSettings,
+					() => {
+							this.draggable = JSON.parse(localStorage.getItem('defaults')).text
+						}
+					)
 		},
 		methods: {
 			cancel() {
@@ -180,9 +186,7 @@
 				this.closeModal()
 			},
 			resetForm() {
-				const documentStore = useDocumentStore()
-				const defaultDraggable = documentStore.defaults.text
-				this.draggable = { ...defaultDraggable }
+				this.draggable = JSON.parse(localStorage.getItem('defaults')).text
 			},
 			onSubmit() {
 				const documentStore = useDocumentStore()
