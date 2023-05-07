@@ -71,6 +71,7 @@
 								class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
 								href="#"
 								data-te-dropdown-item-ref
+								@click.prevent="deleteDocument(document, index)"
 								>Delete</a>
 							</li>
 						</ul>
@@ -113,12 +114,26 @@
 	:index=documentToRename.index
 	@renamed="documentRenamed"	
 	/>
+	
+	<button class="hidden" ref="launchDeleteDocumentModal"
+	data-te-toggle="modal"
+	data-te-target="#deleteDocumentModal"
+	data-te-ripple-init
+	data-te-ripple-color="light"
+	></button>
+	<delete-document-modal 
+	:id=documentToDelete.id 
+	:name=documentToDelete.name 
+	:index=documentToDelete.index
+	@deleted="documentDeleted"	
+	/>
 </template>
 
 <script>
 	import createHttp from '@/axios.js'
 	import OverlayModal from '@/components/form/OverlayModal.vue'
 	import RenameDocumentModal from '@/components/modals/RenameDocumentModal.vue'
+	import DeleteDocumentModal from '@/components/modals/DeleteDocumentModal.vue'
 	
 	export default {
 		name: 'DocumentTemplates',
@@ -130,7 +145,8 @@
 				documents: [],
 				isLoading: true,
 				dismissOverlayModal: false,
-				documentToRename: {}
+				documentToRename: {},
+				documentToDelete: {}
 			}
 		},
 		mounted() {
@@ -183,6 +199,15 @@
 			},
 			documentRenamed(document) {
 				this.documents[document.index]['name'] = document.name 
+			},
+			deleteDocument(document, index) {
+				this.documentToDelete.id = document.id
+				this.documentToDelete.name = document.name
+				this.documentToDelete.index = index
+				this.$refs.launchDeleteDocumentModal.click()
+			},
+			documentDeleted(document) {
+				this.documents.splice(document.index, 1)
 			}
 		}
 	};
