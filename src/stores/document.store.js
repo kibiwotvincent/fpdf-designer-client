@@ -82,6 +82,10 @@ export const useDocumentStore = defineStore({
 			const http = createHttp()
 			await http.post(process.env.VUE_APP_API_URL+'/api/workspace/'+this.document.id+'/save', {'name': this.document.name, 'page_settings' : this.document.page_settings, 'draggables': this.document.draggables})
 		},
+		async rename(documentID, name) {
+			const http = createHttp()
+			await http.post(process.env.VUE_APP_API_URL+'/api/documents/'+documentID+'/rename', {'name': name})
+		},
 		reset() {
 			this.document.draggables = []
 			this.document.active_draggable = {}

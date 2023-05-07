@@ -7,7 +7,7 @@
 	<Spinner :size=6 color="red-400" text="Loading saved documents..." :show-text=true />
 	</div>
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center mt-4">
-		<div class="w-full" v-for="document in documents" :key="document.id">
+		<div class="w-full" v-for="(document, index) in documents" :key="document.id">
 		
 			<div class="block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
 				<div class="px-4 py-2 border-b flex justify-between">
@@ -18,7 +18,7 @@
 						<button
 							class="flex items-center whitespace-nowrap rounded bg-neutral-50 px-4 pb-[5px] pt-[6px] text-s font-medium leading-normal text-neutral-800 shadow-[0_4px_9px_-4px_#fbfbfb] transition duration-150 ease-in-out hover:bg-neutral-100 hover:shadow-[0_8px_9px_-4px_rgba(251,251,251,0.3),0_4px_18px_0_rgba(251,251,251,0.2)] focus:bg-neutral-100 focus:shadow-[0_8px_9px_-4px_rgba(251,251,251,0.3),0_4px_18px_0_rgba(251,251,251,0.2)] focus:outline-none focus:ring-0 active:bg-neutral-200 active:shadow-[0_8px_9px_-4px_rgba(251,251,251,0.3),0_4px_18px_0_rgba(251,251,251,0.2)] motion-reduce:transition-none"
 							type="button"
-							id="dropdownMenuSmallButton"
+							:id="'actionMenu'+index"
 							data-te-dropdown-toggle-ref
 							aria-expanded="false"
 							data-te-ripple-init
@@ -40,7 +40,7 @@
 						</button>
 						<ul
 						class="absolute z-[1000] float-left m-0 hidden min-w-max list-none overflow-hidden rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700 [&[data-te-dropdown-show]]:block"
-						aria-labelledby="dropdownMenuSmallButton"
+						:aria-labelledby="'actionMenu'+index"
 						data-te-dropdown-menu-ref
 						>
 							<li>
@@ -63,6 +63,7 @@
 								class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
 								href="#"
 								data-te-dropdown-item-ref
+								@click.prevent="rename(document, index)"
 								>Rename</a>
 							</li>
 							<li>
@@ -99,11 +100,25 @@
 	data-te-ripple-color="light"
 	></button>
 	<overlay-modal text="Initializing design panel..." :dismiss=dismissOverlayModal />
+	
+	<button class="hidden" ref="launchRenameDocumentModal"
+	data-te-toggle="modal"
+	data-te-target="#renameDocumentModal"
+	data-te-ripple-init
+	data-te-ripple-color="light"
+	></button>
+	<rename-document-modal 
+	:id=documentToRename.id 
+	:name=documentToRename.name 
+	:index=documentToRename.index
+	@renamed="documentRenamed"	
+	/>
 </template>
 
 <script>
 	import createHttp from '@/axios.js'
 	import OverlayModal from '@/components/form/OverlayModal.vue'
+	import RenameDocumentModal from '@/components/modals/RenameDocumentModal.vue'
 	
 	export default {
 		name: 'DocumentTemplates',
@@ -114,7 +129,8 @@
 			return {
 				documents: [],
 				isLoading: true,
-				dismissOverlayModal : false
+				dismissOverlayModal: false,
+				documentToRename: {}
 			}
 		},
 		mounted() {
@@ -158,6 +174,15 @@
 					document.body.appendChild(fileLink);
 					fileLink.click();
 				});
+			},
+			rename(document, index) {
+				this.documentToRename.id = document.id
+				this.documentToRename.name = document.name
+				this.documentToRename.index = index
+				this.$refs.launchRenameDocumentModal.click()
+			},
+			documentRenamed(document) {
+				this.documents[document.index]['name'] = document.name 
 			}
 		}
 	};

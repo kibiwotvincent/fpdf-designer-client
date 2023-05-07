@@ -7,10 +7,10 @@
 </script>
 
 <template>
-	<modal id="saveDocumentModal" size="small">
+	<modal id="renameDocumentModal" size="small">
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
-			<label class="block">Enter Document Name</label>
-			<Field type="text" name="name" v-model="name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" />
+			<label class="block">Edit Document Name</label>
+			<Field type="text" name="name" v-model="document.name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" />
 			<div class="text-danger">{{errors.name}}</div>
 			<div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
 			<div class="flex justify-between mt-3">
@@ -24,7 +24,7 @@
 				<span v-show="isSubmitting">
 				<spinner :size=4 />
 				</span>
-				Save
+				Rename
 				</button>
 			</div>
 		</Form>
@@ -36,36 +36,28 @@
 	import { Form, Field } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
 	import { useDocumentStore } from '@/stores'
+	import { reactive } from 'vue'
 	
 	export default {
-		name: 'SaveDocumentModalComponent',
-		data: () => ({
-			name: ''
+		name: 'RenameDocumentModalComponent',
+		props: reactive({
+				id: '',
+				name: '',
+				index: '',
 		}),
-		created() {
-			/*watch for document name changes and update name*/
-			const documentStore = useDocumentStore()
-			this.$watch(
-					() => documentStore.documentName,
-					() => {
-							this.name = documentStore.documentName
-						}
-					)
-		},
-		mounted() {
-			const documentStore = useDocumentStore()
-			this.name = documentStore.doc.name
-		},
+		data: () => ({
+			document: {}
+		}),
 		methods: {
 			cancel() {
 				this.closeModal()
 			},
 			onSubmit(values, { setErrors }) {
 				const documentStore = useDocumentStore()
-				documentStore.setDocumentName(this.name)
 				
-				return documentStore.update()
+				return documentStore.rename(this.document.id, this.document.name)
 					.then(() => {
+						this.$emit('renamed', this.document)
 						this.closeModal()
 					})
 					.catch(error => {
@@ -93,6 +85,17 @@
 			},
 			closeModal() {
 				this.$refs.closeModal.click()
+			}
+		},
+		watch: {
+			id() {
+				this.document.id = this.id
+			},
+			name() {
+				this.document.name = this.name
+			},
+			index() {
+				this.document.index = this.index
 			}
 		}
 	}
