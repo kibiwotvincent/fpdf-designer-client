@@ -14,6 +14,7 @@ import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
 //import Dashboard from '@/views/account/Dashboard.vue';
 import UserDocuments from '@/views/account/UserDocuments.vue';
+import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
 import Profile from '@/views/account/Profile.vue';
 
 const routes = [
@@ -29,6 +30,7 @@ const routes = [
 	{path: '/forgot-password', name: 'forgot-password', component: ForgotPassword},
 	{path: '/dashboard', name: 'dashboard', component: UserDocuments},
 	{path: '/profile', name: 'profile', component: Profile},
+	{path: '/admin/templates', name: 'admin.templates', component: AdminTemplates},
 ]
 
 export const router = createRouter({

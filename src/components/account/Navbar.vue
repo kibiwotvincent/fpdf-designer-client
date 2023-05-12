@@ -50,7 +50,7 @@
 		<div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
 			<div class="flex items-center">
 				<router-link to="/" class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl">
-					<img id="logo-black" class="logo" src="assets/images/logo-black.png" />
+					<img id="logo-black" class="logo" src="/assets/images/logo-black.png" />
 				</router-link>
 			</div>
 			<div class="block lg:hidden pr-4">
