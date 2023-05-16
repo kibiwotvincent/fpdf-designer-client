@@ -31,7 +31,17 @@ documentStore.setSpinner('loading_workspace', true)
 			>
 			Add Text
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateTextModal" ref="updateModalButton-text" class="hidden">Update</button>
+			<button data-te-toggle="modal" data-te-target="#updateTextModal" ref="updateModalButton-text" class="hidden">Update Text</button>
+			
+			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true"
+			data-te-toggle="modal"
+			data-te-target="#addRectangleModal"
+			data-te-ripple-init
+			data-te-ripple-color="light"
+			>
+			Add Rect
+			</button>
+			<button data-te-toggle="modal" data-te-target="#updateRectangleModal" ref="updateModalButton-rectangle" class="hidden">Update Rectangle</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="rect" data-is-new-element="true"
 			data-te-toggle="modal"
@@ -105,10 +115,10 @@ documentStore.setSpinner('loading_workspace', true)
 					<div v-if="draggable.type != 'image'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
 					:style="
 							'height: '+(draggable.height - 2)+'px;'+ 
-							'border-left: '+(draggable.border_left == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
-							'border-top: '+(draggable.border_top == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
-							'border-right: '+(draggable.border_right == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
-							'border-bottom: '+(draggable.border_bottom == 'yes' ? draggable.border_weight : 0)+'px '+draggable.border_color+' solid;'+ 
+							'border-left: '+(draggable.border_left == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
+							'border-top: '+(draggable.border_top == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
+							'border-right: '+(draggable.border_right == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
+							'border-bottom: '+(draggable.border_bottom == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
 							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
 						">
 						<span 
@@ -135,6 +145,8 @@ documentStore.setSpinner('loading_workspace', true)
 	<add-table-modal />
 	<add-text-modal />
 	<update-text-modal />
+	<add-rectangle-modal />
+	<update-rectangle-modal />
 	<add-link-modal />
 	<add-line-modal />
 	<add-image-modal />
@@ -152,6 +164,8 @@ documentStore.setSpinner('loading_workspace', true)
 <script>
 	import VueDraggableResizable from "vue-draggable-resizable-vue3"
 	import AddTableModal from '@/components/modals/AddTableModal.vue'
+	import AddRectangleModal from '@/components/modals/AddRectangleModal.vue'
+	import UpdateRectangleModal from '@/components/modals/UpdateRectangleModal.vue'
 	import AddTextModal from '@/components/modals/AddTextModal.vue'
 	import UpdateTextModal from '@/components/modals/UpdateTextModal.vue'
 	import AddLinkModal from '@/components/modals/AddLinkModal.vue'
@@ -328,6 +342,7 @@ documentStore.setSpinner('loading_workspace', true)
 				//documentStore.activateDraggable(index)
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
+				console.log(modal)
 				this.$refs[modal].click()
 			}
 		}

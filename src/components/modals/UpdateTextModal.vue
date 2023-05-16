@@ -148,7 +148,7 @@ const documentStore = useDocumentStore()
 						<input type="color" v-model="documentStore.activeDraggable.border_color" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 					</div>
 					<div class="w-3/6">
-						<label class="block">Border Weight</label>
+						<label class="block">Border Weight (mm)</label>
 						<input type="text" v-model="documentStore.activeDraggable.border_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 					</div>
 				</div>
@@ -190,6 +190,9 @@ const documentStore = useDocumentStore()
 				const documentStore = useDocumentStore()
 				const background = documentStore.activeDraggable.background == 'none' ? documentStore.activeDraggable.background_color : 'none'
 				documentStore.updateDraggable(documentStore.activeDraggable.index, 'background', background)
+				if(background == 'none') {
+					documentStore.updateDraggable(documentStore.activeDraggable.index, 'background_color', JSON.parse(localStorage.getItem('defaults')).text.background_color)
+				}
 			},
 			removeTransparency() {
 				const documentStore = useDocumentStore()

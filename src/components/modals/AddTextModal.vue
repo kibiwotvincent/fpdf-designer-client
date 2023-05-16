@@ -137,7 +137,7 @@
 						<input type="color" v-model="draggable.border_color" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 					</div>
 					<div class="w-3/6">
-						<label class="block">Border Weight</label>
+						<label class="block">Border Weight (mm)</label>
 						<input type="text" v-model="draggable.border_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 					</div>
 				</div>
@@ -200,6 +200,9 @@
 			},
 			toggleBackground() {
 				this.draggable.background = this.draggable.background == 'none' ? this.draggable.background_color : 'none'
+				if(this.draggable.background == 'none') {
+					this.draggable.background_color = JSON.parse(localStorage.getItem('defaults')).text.background_color
+				}
 			},
 			removeTransparency() {
 				this.draggable.background = this.draggable.background_color
