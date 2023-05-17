@@ -74,16 +74,6 @@
 		data: () => ({
 				draggable: JSON.parse(localStorage.getItem('defaults')).rectangle,
 		}),
-		created() {
-			/*watch for page settings changes and reset page settings*/
-			const documentStore = useDocumentStore()
-			this.$watch(
-					() => documentStore.pageSettings,
-					() => {
-							this.draggable = JSON.parse(localStorage.getItem('defaults')).rectangle
-						}
-					)
-		},
 		methods: {
 			cancel() {
 				this.resetForm()

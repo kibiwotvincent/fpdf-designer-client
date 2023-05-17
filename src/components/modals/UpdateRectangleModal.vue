@@ -73,7 +73,7 @@ const documentStore = useDocumentStore()
 	import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid'
 	
 	export default {
-		name: 'UpdateTextModalComponent',
+		name: 'UpdateRectangleModalComponent',
 		components: {
 			Modal
 		},

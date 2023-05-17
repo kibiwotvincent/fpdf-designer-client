@@ -39,7 +39,7 @@ documentStore.setSpinner('loading_workspace', true)
 			data-te-ripple-init
 			data-te-ripple-color="light"
 			>
-			Add Rect
+			Add Rectangle
 			</button>
 			<button data-te-toggle="modal" data-te-target="#updateRectangleModal" ref="updateModalButton-rectangle" class="hidden">Update Rectangle</button>
 			
@@ -67,6 +67,8 @@ documentStore.setSpinner('loading_workspace', true)
 			>
 			Add Line
 			</button>
+			<button data-te-toggle="modal" data-te-target="#updateLineModal" ref="updateModalButton-line" class="hidden">Update Line</button>
+			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="image" data-is-new-element="true"
 			data-te-toggle="modal"
 			data-te-target="#addImageModal"
@@ -112,7 +114,7 @@ documentStore.setSpinner('loading_workspace', true)
 					:resizable= draggable.resizable
 					@click.right.prevent="showUpdateDraggable(index)"
 					>
-					<div v-if="draggable.type != 'image'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
+					<div v-if="draggable.type == 'text'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
 					:style="
 							'height: '+(draggable.height - 2)+'px;'+ 
 							'border-left: '+(draggable.border_left == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
@@ -132,6 +134,29 @@ documentStore.setSpinner('loading_workspace', true)
 						>
 						</span>
 					</div>
+					<div v-if="draggable.type == 'rectangle'" class="flex flex-row items-center justify-left"
+					:style="
+							'height: '+(draggable.height - 2)+'px;'+ 
+							'border: '+draggable.border_weight +'mm '+draggable.border_color+' solid;'+ 
+							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
+						">
+						<span 
+						:style="
+							'color: '+draggable.font_color+';'+ 
+							'font-weight: '+draggable.font_weight+';'+ 
+							'font-style: '+draggable.font_style+';'+ 
+							'font-size: '+draggable.font_size+'pt;'
+							"
+						v-html=draggable.text 
+						>
+						</span>
+					</div>
+					<div v-if="draggable.type == 'line'" class="flex flex-row items-center justify-left"
+					:style="
+					'height: '+(draggable.height - 2)+'px;'+
+					'border-top: '+draggable.line_weight +'mm '+draggable.line_color+' solid;'
+					">
+					</div>
 					<span v-if="draggable.type == 'image'">
 						<img :src="draggable.url" class="w-full h-full" />
 					</span>
@@ -149,6 +174,7 @@ documentStore.setSpinner('loading_workspace', true)
 	<update-rectangle-modal />
 	<add-link-modal />
 	<add-line-modal />
+	<update-line-modal />
 	<add-image-modal />
 	
 	<button class="hidden" ref="launchSaveDocumentModal"
@@ -170,6 +196,7 @@ documentStore.setSpinner('loading_workspace', true)
 	import UpdateTextModal from '@/components/modals/UpdateTextModal.vue'
 	import AddLinkModal from '@/components/modals/AddLinkModal.vue'
 	import AddLineModal from '@/components/modals/AddLineModal.vue'
+	import UpdateLineModal from '@/components/modals/UpdateLineModal.vue'
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
@@ -373,6 +400,6 @@ documentStore.setSpinner('loading_workspace', true)
 
 #fpdf_designer_elements button {
 	border: 1px solid #d3d3d3;
-	padding: 4px 15.65px;
+	padding: 4px 10px;
 }
 </style>
