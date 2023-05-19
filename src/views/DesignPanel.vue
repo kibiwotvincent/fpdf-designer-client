@@ -51,14 +51,7 @@ documentStore.setSpinner('loading_workspace', true)
 			>
 			Add Table
 			</button>
-			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="link" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addLinkModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
-			>
-			Add Link
-			</button>
+			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="line" data-is-new-element="true"
 			data-te-toggle="modal"
 			data-te-target="#addLineModal"
@@ -77,6 +70,7 @@ documentStore.setSpinner('loading_workspace', true)
 			>
 			Add Image
 			</button>
+			<button data-te-toggle="modal" data-te-target="#updateImageModal" ref="updateModalButton-image" class="hidden">Update Image</button>
 			
 			<div class="float-right">
 				<button @click="reset" class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowPathIcon class="inline-block h-4 w-4 mb-1"/> Reset</button>
@@ -172,10 +166,10 @@ documentStore.setSpinner('loading_workspace', true)
 	<update-text-modal />
 	<add-rectangle-modal />
 	<update-rectangle-modal />
-	<add-link-modal />
 	<add-line-modal />
 	<update-line-modal />
 	<add-image-modal />
+	<update-image-modal />
 	
 	<button class="hidden" ref="launchSaveDocumentModal"
 	data-te-toggle="modal"
@@ -194,10 +188,10 @@ documentStore.setSpinner('loading_workspace', true)
 	import UpdateRectangleModal from '@/components/modals/UpdateRectangleModal.vue'
 	import AddTextModal from '@/components/modals/AddTextModal.vue'
 	import UpdateTextModal from '@/components/modals/UpdateTextModal.vue'
-	import AddLinkModal from '@/components/modals/AddLinkModal.vue'
 	import AddLineModal from '@/components/modals/AddLineModal.vue'
 	import UpdateLineModal from '@/components/modals/UpdateLineModal.vue'
 	import AddImageModal from '@/components/modals/AddImageModal.vue'
+	import UpdateImageModal from '@/components/modals/UpdateImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
@@ -365,11 +359,12 @@ documentStore.setSpinner('loading_workspace', true)
 			},
 			showUpdateDraggable(index) {
 				const documentStore = useDocumentStore()
+				//reset active draggable first
+				documentStore.resetActiveDraggable()
 				documentStore.setActiveDraggable(documentStore.draggables[index], index)
 				//documentStore.activateDraggable(index)
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
-				console.log(modal)
 				this.$refs[modal].click()
 			}
 		}

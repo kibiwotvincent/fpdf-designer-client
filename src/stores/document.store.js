@@ -53,6 +53,9 @@ export const useDocumentStore = defineStore({
 			this.document.draggables = []
 			this.document.active_draggable = {}
 		},
+		resetActiveDraggable() {
+			this.document.active_draggable = {}
+		},
 		updateDocument(item, itemValue) {
 			this.document[item] = itemValue
 		},

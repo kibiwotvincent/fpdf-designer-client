@@ -46,7 +46,6 @@ export const router = createRouter({
 router.beforeEach(async (to) => {
 	if(to.name == 'design-panel') {
 		if(sessionStorage.getItem('document_id') != to.params.id) {
-			sessionStorage.removeItem('page_settings')
 			console.log('page settings removed')
 		}
 	}
