@@ -110,7 +110,7 @@ documentStore.setSpinner('loading_workspace', true)
 					>
 					<div v-if="draggable.type == 'text'" :class="'flex flex-row items-center justify-'+(draggable.text_align == 'right' ? 'end' : draggable.text_align)"
 					:style="
-							'height: '+(draggable.height - 2)+'px;'+ 
+							'height: '+draggable.height+'px;'+ 
 							'border-left: '+(draggable.border_left == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
 							'border-top: '+(draggable.border_top == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
 							'border-right: '+(draggable.border_right == 'yes' ? draggable.border_weight : 0)+'mm '+draggable.border_color+' solid;'+ 
@@ -130,7 +130,7 @@ documentStore.setSpinner('loading_workspace', true)
 					</div>
 					<div v-if="draggable.type == 'rectangle'" class="flex flex-row items-center justify-left"
 					:style="
-							'height: '+(draggable.height - 2)+'px;'+ 
+							'height: '+draggable.height+'px;'+ 
 							'border: '+draggable.border_weight +'mm '+draggable.border_color+' solid;'+ 
 							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
 						">
@@ -147,8 +147,8 @@ documentStore.setSpinner('loading_workspace', true)
 					</div>
 					<div v-if="draggable.type == 'line'" class="flex flex-row items-center justify-left"
 					:style="
-					'height: '+(draggable.height - 2)+'px;'+
-					'border-top: '+draggable.line_weight +'mm '+draggable.line_color+' solid;'
+					'height: '+draggable.height+'px;'+
+					'border-'+convertLineType(draggable.line_type)+': '+draggable.line_weight +'mm '+draggable.line_color+' solid;'
 					">
 					</div>
 					<span v-if="draggable.type == 'image'">
@@ -237,6 +237,9 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
+			convertLineType(lineType) {
+				return (lineType == 'vertical') ? 'left' : 'top'
+			},
 			async loadWorkspace() {
 				const documentStore = useDocumentStore()
 				documentStore.reset()

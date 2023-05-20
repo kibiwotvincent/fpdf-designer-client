@@ -7,21 +7,28 @@
 				<input type="color" v-model="draggable.line_color" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 			</div>
 			<div class="flex w-full gap-4 mb-3">
-				<div class="w-1/4">
+				<div class="w-1/5">
 					<label class="block">Left</label>
 					<input type="number" v-model="draggable.left" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div class="w-1/4">
+				<div class="w-1/5">
 					<label class="block">Top</label>
 					<input type="number" v-model="draggable.top" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div class="w-1/4">
+				<div class="w-1/5">
 					<label class="block">Width</label>
 					<input type="number" v-model="draggable.width" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 				</div>
-				<div class="w-1/4">
+				<div class="w-1/5">
 					<label class="block">Line Weight (mm)</label>
 					<input type="text" v-model="draggable.line_weight" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				</div>
+				<div class="w-1/5">
+					<label class="block">Line Type</label>
+					<select data-te-select-init v-model="draggable.line_type" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+						<option value="horizontal">Horizontal</option>
+						<option value="vertical">Vertical</option>
+					</select>
 				</div>
 			</div>
 		</div>
@@ -63,6 +70,10 @@
 			onSubmit() {
 				const documentStore = useDocumentStore()
 				//pass the draggable as new object
+				if(this.draggable.line_type == "vertical") {
+					this.draggable.height = this.draggable.width
+					this.draggable.width = JSON.parse(localStorage.getItem('defaults')).line.height
+				}
 				documentStore.addDraggable({ ...this.draggable })
 				this.resetForm()
 				this.closeModal()
