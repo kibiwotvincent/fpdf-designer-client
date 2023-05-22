@@ -119,12 +119,7 @@ documentStore.setSpinner('loading_workspace', true)
 							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
 						">
 						<span 
-						:style="
-							'color: '+draggable.font_color+';'+ 
-							'font-weight: '+draggable.font_weight+';'+ 
-							'font-style: '+draggable.font_style+';'+ 
-							'font-size: '+draggable.font_size+'pt;'
-							"
+						:style="getTextStyle(draggable)"
 						v-html=draggable.text 
 						>
 						</span>
@@ -253,6 +248,23 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
+			getTextStyle(draggable) {
+				let style = ''
+				style += 'font-size:'+draggable.font_size+'pt;'
+				style += 'color:'+draggable.font_color+';'
+				
+				if(draggable.font_style.includes('bold')) {
+					style += 'font-weight: bold;'
+				}
+				if(draggable.font_style.includes('italic')) {
+					style += 'font-style: italic;'
+				}
+				if(draggable.font_style.includes('underline')) {
+					style += 'text-decoration: underline;'
+				}
+				
+				return style
+			},
 			getTdStyle(draggable, rowIndex, columnIndex) {
 				let style = ''
 				if(draggable.border_left == "yes") {
