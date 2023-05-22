@@ -51,6 +51,7 @@ documentStore.setSpinner('loading_workspace', true)
 			>
 			Add Table
 			</button>
+			<button data-te-toggle="modal" data-te-target="#updateTableModal" ref="updateModalButton-table" class="hidden">Update Table</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="line" data-is-new-element="true"
 			data-te-toggle="modal"
@@ -154,6 +155,19 @@ documentStore.setSpinner('loading_workspace', true)
 					<span v-if="draggable.type == 'image'">
 						<img :src="draggable.url" class="w-full h-full" />
 					</span>
+					<span v-if="draggable.type == 'table'">
+						<table :width="draggable.width+'px'" :height="draggable.height+'px'" style="border-spacing: 0px;">
+						<tr v-for="(row,rowIndex) in draggable.rows" :key=rowIndex >
+							<td 
+							v-for="(column,columnIndex) in draggable.columns" 
+							:key=columnIndex 
+							:style="getTdStyle(draggable, rowIndex, columnIndex)"
+							>
+							
+							</td>
+						</tr>
+						</table>
+					</span>
 					</vue-draggable-resizable>
 				</div>
 			</div>
@@ -162,6 +176,7 @@ documentStore.setSpinner('loading_workspace', true)
 	<!--modals-->
 	<page-settings-modal />
 	<add-table-modal />
+	<update-table-modal />
 	<add-text-modal />
 	<update-text-modal />
 	<add-rectangle-modal />
@@ -184,6 +199,7 @@ documentStore.setSpinner('loading_workspace', true)
 <script>
 	import VueDraggableResizable from "vue-draggable-resizable-vue3"
 	import AddTableModal from '@/components/modals/AddTableModal.vue'
+	import UpdateTableModal from '@/components/modals/UpdateTableModal.vue'
 	import AddRectangleModal from '@/components/modals/AddRectangleModal.vue'
 	import UpdateRectangleModal from '@/components/modals/UpdateRectangleModal.vue'
 	import AddTextModal from '@/components/modals/AddTextModal.vue'
@@ -237,6 +253,31 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
+			getTdStyle(draggable, rowIndex, columnIndex) {
+				let style = ''
+				if(draggable.border_left == "yes") {
+					style += 'border-left: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(draggable.border_right == "yes") {
+					style += 'border-right: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(draggable.border_top == "yes") {
+					style += 'border-top: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(draggable.border_bottom == "yes") {
+					style += 'border-bottom: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(draggable.border_right == "yes" && columnIndex == draggable.columns - 1) {
+					style += 'border-right: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(draggable.border_bottom == "yes" && rowIndex == draggable.rows - 1) {
+					style += 'border-bottom: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				}
+				if(columnIndex == 1) {
+					style += 'width: 300px'
+				}
+				return style
+			},
 			convertLineType(lineType) {
 				return (lineType == 'vertical') ? 'left' : 'top'
 			},
