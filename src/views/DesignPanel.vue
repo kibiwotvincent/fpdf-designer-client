@@ -150,19 +150,28 @@ documentStore.setSpinner('loading_workspace', true)
 					<span v-if="draggable.type == 'image'">
 						<img :src="draggable.url" class="w-full h-full" />
 					</span>
-					<span v-if="draggable.type == 'table'">
+					<div v-if="draggable.type == 'table'">
 						<table :width="draggable.width+'px'" :height="draggable.height+'px'" style="border-spacing: 0px;">
-						<tr v-for="(row,rowIndex) in draggable.rows" :key=rowIndex >
+						<thead>
+						
+						<tr
+						v-for="(row,rowIndex) in draggable.cells" 
+						:key=rowIndex 
+						>
 							<td 
-							v-for="(column,columnIndex) in draggable.columns" 
+							v-for="(cell,columnIndex) in row" 
 							:key=columnIndex 
-							:style="getTdStyle(draggable, rowIndex, columnIndex)"
-							>
+							:style="getTdBorderStyle(rowIndex, columnIndex, draggable)+' '+
+									getTextStyle(rowIndex, draggable)+
+									getTdWidthAndHeight(rowIndex, columnIndex, draggable)"
 							
-							</td>
+							v-html="cell.value"
+							></td>
 						</tr>
+						</thead>
+						
 						</table>
-					</span>
+					</div>
 					</vue-draggable-resizable>
 				</div>
 			</div>
@@ -248,10 +257,21 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
-			getTextStyle(draggable) {
+			getTextStyle(rowIndex, table) {
 				let style = ''
+				
+				let draggable  = null
+				if(rowIndex == 0) {
+					draggable = table.column_settings
+				}
+				else {
+					draggable = table.row_settings
+				}
+				
+				style += 'font-family:'+draggable.font_family+';'
 				style += 'font-size:'+draggable.font_size+'pt;'
 				style += 'color:'+draggable.font_color+';'
+				style += 'text-align:'+draggable.text_align+';'
 				
 				if(draggable.font_style.includes('bold')) {
 					style += 'font-weight: bold;'
@@ -262,32 +282,139 @@ documentStore.setSpinner('loading_workspace', true)
 				if(draggable.font_style.includes('underline')) {
 					style += 'text-decoration: underline;'
 				}
+				if(draggable.background != 'none') {
+					style += 'background-color: '+draggable.background_color+';'
+				}
 				
 				return style
 			},
-			getTdStyle(draggable, rowIndex, columnIndex) {
+			getTdBorderStyle(rowIndex, columnIndex, table) {
+				if(rowIndex == 0) {
+					return this.getColumnBorderStyle(rowIndex, columnIndex, table)
+				}
+				else {
+					return this.getRowBorderStyle(rowIndex, columnIndex, table)
+				}
+			},
+			getColumnBorderStyle(rowIndex, columnIndex, table) {
 				let style = ''
-				if(draggable.border_left == "yes") {
-					style += 'border-left: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				let draggable  = table.column_settings
+				
+				let includeVerticalBorders = draggable.border_columns == "yes"
+				
+				if(includeVerticalBorders) {
+					if(draggable.border_left == "yes" && rowIndex == 0) {
+						style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					else {
+						if(rowIndex == 0 && columnIndex != 0) {
+							style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+						}
+					}
+					if(draggable.border_right == "yes" && rowIndex == 0) {
+						style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					else {
+						if(rowIndex == 0 && columnIndex != table.columns - 1) {
+							style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+						}
+					}
 				}
-				if(draggable.border_right == "yes") {
-					style += 'border-right: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				else {
+					if(draggable.border_left == "yes" && rowIndex == 0 && columnIndex == 0) {
+						style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					if(draggable.border_right == "yes" && rowIndex == 0 && columnIndex == table.columns - 1) {
+						style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
 				}
-				if(draggable.border_top == "yes") {
-					style += 'border-top: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				
+				if(draggable.border_top == "yes" && rowIndex == 0) {
+					style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
 				}
-				if(draggable.border_bottom == "yes") {
-					style += 'border-bottom: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				if(draggable.border_bottom == "yes" && rowIndex == 0) {
+					style += 'border-bottom: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
 				}
-				if(draggable.border_right == "yes" && columnIndex == draggable.columns - 1) {
-					style += 'border-right: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				
+				return style
+			},
+			getRowBorderStyle(rowIndex, columnIndex, table) {
+				let style = ''
+				let draggable  = table.row_settings
+				
+				let includeVerticalBorders = draggable.border_columns == "yes"
+				let includeHorizontalBorders = draggable.border_rows == "yes"
+				
+				if(includeVerticalBorders) {
+					if(draggable.border_left == "yes" && rowIndex > 0) {
+						style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					else {
+						if(rowIndex > 0 && columnIndex != 0) {
+							style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+						}
+					}
+					if(draggable.border_right == "yes" && rowIndex > 0) {
+						style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					else {
+						if(rowIndex > 0 && columnIndex != table.columns - 1) {
+							style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+						}
+					}
 				}
-				if(draggable.border_bottom == "yes" && rowIndex == draggable.rows - 1) {
-					style += 'border-bottom: '+draggable.border_weight+'px solid '+draggable.border_color+';'
+				else {
+					if(draggable.border_left == "yes" && rowIndex > 0 && columnIndex == 0) {
+						style += 'border-left: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					if(draggable.border_right == "yes" && rowIndex > 0 && columnIndex == table.columns - 1) {
+						style += 'border-right: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
 				}
-				if(columnIndex == 1) {
-					style += 'width: 300px'
+				
+				if(includeHorizontalBorders) {
+					if(draggable.border_top == "yes" && rowIndex > 1) {
+						style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					else {
+						if(rowIndex > 1) {
+							style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+						}
+					}
 				}
+				else {
+					if(draggable.border_top == "yes" && rowIndex == 1) {
+						style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+					if(draggable.border_bottom == "yes" && rowIndex == table.rows - 1) {
+						style += 'border-bottom: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
+					}
+				}
+				
+				return style
+			},
+			getTdWidthAndHeight(rowIndex, columnIndex, draggable) {
+				let style = ''
+				let cell = draggable.cells[rowIndex][columnIndex]
+				
+				if(rowIndex > 0) {
+					cell.is_width = draggable.cells[0][columnIndex].width
+					cell.is_width_auto = draggable.cells[0][columnIndex].is_width_auto
+				}
+				
+				if(cell.is_width_auto == "yes") {
+					style += 'width: auto;'
+				}
+				else {
+					style += 'width: '+cell.width+'px;'
+				}
+				if(cell.is_height_auto == "yes") {
+					style += 'height: auto;'
+				}
+				else {
+					style += 'height: '+cell.height+'px;'
+				}
+				
 				return style
 			},
 			convertLineType(lineType) {

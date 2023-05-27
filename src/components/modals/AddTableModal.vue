@@ -4,12 +4,12 @@
 		<div class="rounded">
 			<div class="mt-3">
 				<ul>
-					<li @click="setActiveTab('table-settings')" class="inline text-gray-700 p-3 border-l border-t border-r border-b cursor-pointer" :class="activeTab == 'table-settings' ? 'bg-gray-200 text-red-400' : ''">Table Settings</li>
-					<li @click="setActiveTab('column-settings')" class="inline text-gray-700 p-3 border-t border-r border-b cursor-pointer" :class="activeTab == 'column-settings' ? 'bg-gray-200 text-red-400' : ''">Column Settings</li>
-					<li @click="setActiveTab('row-settings')" class="inline text-gray-700 p-3 border-t border-r border-b cursor-pointer" :class="activeTab == 'row-settings' ? 'bg-gray-200 text-red-400' : ''">Row Settings</li>
+					<li @click="setActiveTab('table-settings')" class="inline text-gray-700 p-3 border-l border-t border-b cursor-pointer" :class="activeTab == 'table-settings' ? 'bg-gray-200 text-red-400' : ''">Table Settings</li>
+					<li @click="setActiveTab('column-settings')" class="inline text-gray-700 p-3 border-t border-r cursor-pointer" :class="activeTab == 'column-settings' ? 'bg-gray-200 text-red-400' : ''">Column Settings</li>
+					<li @click="setActiveTab('row-settings')" class="inline text-gray-700 p-3 border-t border-r cursor-pointer" :class="activeTab == 'row-settings' ? 'bg-gray-200 text-red-400' : ''">Row Settings</li>
 				</ul>
 			</div>
-			<div class="border p-3 mt-2">
+			<div class="border p-3 mt-[0.65rem]">
 				<div v-show="activeTab == 'table-settings'">
 				<table-settings :draggable=draggable @toggle="toggleTableSetting" />
 				</div>
@@ -17,7 +17,7 @@
 				<column-settings :draggable=draggable @toggle="toggleColumnSetting" />
 				</div>
 				<div v-show="activeTab == 'row-settings'">
-				<RowSettings :draggable=draggable />
+				<row-settings :draggable=draggable  @toggle="toggleRowSetting"/>
 				</div>
 			</div>
 		</div>
@@ -92,13 +92,39 @@
 					}
 				}
 				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
-					let columnIndex = value
-					this.draggable.column_settings.columns[columnIndex][itemToToggle] = this.draggable.column_settings.columns[columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					let rowIndex = value.row
+					let columnIndex = value.column
+					this.draggable.cells[rowIndex][columnIndex][itemToToggle] = this.draggable.cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
 				}
 				if(itemToToggle == "background") {
 					this.draggable.column_settings.background = this.draggable.column_settings.background == 'none' ? this.draggable.column_settings.background_color : 'none'
 					if(this.draggable.column_settings.background == 'none') {
 						this.draggable.column_settings.background_color = JSON.parse(localStorage.getItem('defaults')).text.background_color
+					}
+				}
+			},
+			toggleRowSetting(itemToToggle, value) {
+				if(itemToToggle == "border") {
+					let border = value
+					this.draggable.row_settings['border_'+border] = this.draggable.row_settings['border_'+border] == 'none' ? 'yes' : 'none'
+				}
+				if(itemToToggle == "font_style") {
+					if(this.draggable.row_settings.font_style.includes(value)) {
+						this.draggable.row_settings.font_style.splice(this.draggable.row_settings.font_style.indexOf(value), 1)
+					}
+					else {
+						this.draggable.row_settings.font_style.push(value)
+					}
+				}
+				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
+					let rowIndex = value.row
+					let columnIndex = value.column
+					this.draggable.cells[rowIndex][columnIndex][itemToToggle] = this.draggable.cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+				}
+				if(itemToToggle == "background") {
+					this.draggable.row_settings.background = this.draggable.row_settings.background == 'none' ? this.draggable.row_settings.background_color : 'none'
+					if(this.draggable.row_settings.background == 'none') {
+						this.draggable.row_settings.background_color = JSON.parse(localStorage.getItem('defaults')).text.background_color
 					}
 				}
 			},

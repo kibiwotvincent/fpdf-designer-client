@@ -71,7 +71,7 @@ const documentStore = useDocumentStore()
 							type="checkbox"
 							id="boldCheckbox"
 							value="bold" 
-							:checked="Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes('bold')"
+							:checked="checkFontStyle('bold')"
 							@click="toggleFontStyle('bold')"
 							/>
 						<label class="inline-block mt-[0.125rem] hover:cursor-pointer" for="boldCheckbox">Bold</label>
@@ -82,7 +82,7 @@ const documentStore = useDocumentStore()
 							type="checkbox"
 							id="italicCheckbox"
 							value="italic" 
-							:checked="Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes('italic')"
+							:checked="checkFontStyle('italic')"
 							@click="toggleFontStyle('italic')"
 							/>
 						<label class="inline-block mt-[0.125rem] hover:cursor-pointer" for="italicCheckbox">Italic</label>
@@ -93,7 +93,7 @@ const documentStore = useDocumentStore()
 							type="checkbox"
 							id="underlineCheckbox"
 							value="underline" 
-							:checked="Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes('underline')"
+							:checked="checkFontStyle('underline')"
 							@click="toggleFontStyle('underline')"
 							/>
 						<label class="inline-block mt-[0.125rem] hover:cursor-pointer" for="underlineCheckbox">Underline</label>
@@ -230,6 +230,11 @@ const documentStore = useDocumentStore()
 				
 				documentStore.updateDraggable(documentStore.activeDraggable.index, 'font_style', fontStyle);
 			},
+			checkFontStyle(style) {
+				const documentStore = useDocumentStore()
+				return Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes(style)
+				//return false
+			}
 		}
 	}
 </script>
