@@ -5,7 +5,7 @@
 					<label class="block">Number of Columns</label>
 					<div>
 						<button type="button" @click="$emit('decrease', 'columns')" class="inline h-[2.125rem] px-3 bg-gray-200 rounded-tl rounded-bl text-gray-700 outline-none focus:shadow">-</button>
-						<input type="number" v-model="draggable.columns" readonly class="inline w-4/6 border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+						<input type="number" v-model="draggable.columns" readonly class="inline w-[82.5%] text-center border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 						<button type="button" @click="$emit('increase', 'columns')" class="inline h-[2.125rem] px-3 bg-gray-200 rounded-tr rounded-br text-gray-700 outline-none focus:shadow">+</button>
 					</div>
 				</div>
@@ -13,7 +13,7 @@
 					<label class="block">Number of Rows</label>
 					<div>
 						<button type="button" @click="$emit('decrease', 'rows')" class="inline h-[2.125rem] px-3 bg-gray-200 rounded-tl rounded-bl text-gray-700 outline-none focus:shadow">-</button>
-						<input type="number" v-model="draggable.rows" readonly class="inline w-4/6 border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+						<input type="number" v-model="draggable.rows" readonly class="inline w-[82.5%] text-center border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 						<button type="button" @click="$emit('increase', 'rows')" class="inline h-[2.125rem] px-3 bg-gray-200 rounded-tr rounded-br text-gray-700 outline-none focus:shadow">+</button>
 					</div>
 				</div>
