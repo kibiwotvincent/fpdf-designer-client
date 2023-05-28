@@ -232,8 +232,9 @@ const documentStore = useDocumentStore()
 			},
 			checkFontStyle(style) {
 				const documentStore = useDocumentStore()
-				return Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes(style)
-				//return false
+				if(documentStore.activeDraggable.type == 'text') {
+					return Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes(style)
+				}
 			}
 		}
 	}

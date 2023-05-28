@@ -4,14 +4,14 @@
 		<div class="rounded">
 			<div class="mt-3">
 				<ul>
-					<li @click="setActiveTab('table-settings')" class="inline text-gray-700 p-3 border-l border-t border-b cursor-pointer" :class="activeTab == 'table-settings' ? 'bg-gray-200 text-red-400' : ''">Table Settings</li>
+					<li @click="setActiveTab('table-settings')" class="inline text-gray-700 p-3 border-l border-t cursor-pointer" :class="activeTab == 'table-settings' ? 'bg-gray-200 text-red-400' : ''">Table Settings</li>
 					<li @click="setActiveTab('column-settings')" class="inline text-gray-700 p-3 border-t border-r cursor-pointer" :class="activeTab == 'column-settings' ? 'bg-gray-200 text-red-400' : ''">Column Settings</li>
 					<li @click="setActiveTab('row-settings')" class="inline text-gray-700 p-3 border-t border-r cursor-pointer" :class="activeTab == 'row-settings' ? 'bg-gray-200 text-red-400' : ''">Row Settings</li>
 				</ul>
 			</div>
 			<div class="border p-3 mt-[0.65rem]">
 				<div v-show="activeTab == 'table-settings'">
-				<table-settings :draggable=draggable @toggle="toggleTableSetting" />
+				<table-settings :draggable=draggable @decrease="decrease" @increase="increase" />
 				</div>
 				<div v-show="activeTab == 'column-settings'">
 				<column-settings :draggable=draggable @toggle="toggleColumnSetting" />
@@ -71,12 +71,6 @@
 		methods: {
 			setActiveTab(tab) {
 				this.activeTab = tab
-			},
-			toggleTableSetting(itemToToggle, value) {
-				if(itemToToggle == "border") {
-					let border = value
-					this.draggable['border_'+border] = this.draggable['border_'+border] == 'none' ? 'yes' : 'none'
-				}
 			},
 			toggleColumnSetting(itemToToggle, value) {
 				if(itemToToggle == "border") {
@@ -148,6 +142,44 @@
 			toggleBorder(border) {
 				this.draggable['border_'+border] = this.draggable['border_'+border] == 'none' ? 'yes' : 'none'
 			},
+			increase(itemToIncrease) {
+				if(itemToIncrease == 'rows') {
+					let newRowIndex = this.draggable.rows
+					let row = this.draggable.cells[newRowIndex] = []
+					
+					for(let i = 0; i < this.draggable.columns; i++) {
+						//insert default columns into the new row
+						row.push(this.draggable.default_cell_values)
+					}
+				}
+				else if(itemToIncrease == 'columns') {
+					for(let rowIndex = 0; rowIndex < this.draggable.cells.length; rowIndex++) {
+						//insert extra column into existing rows
+						let row = this.draggable.cells[rowIndex]
+						row.push(this.draggable.default_cell_values)
+					}
+				}
+				
+				this.draggable[itemToIncrease] = this.draggable[itemToIncrease] + 1
+			},
+			decrease(itemToDecrease) {
+				//don't decrease beyond 1 column/row
+				if(this.draggable[itemToDecrease] == 1) return
+				
+				if(itemToDecrease == 'rows') {
+					//remove the last row
+					this.draggable.cells.pop()
+				}
+				else if(itemToDecrease == 'columns') {
+					for(let rowIndex = 0; rowIndex < this.draggable.cells.length; rowIndex++) {
+						//remove last column in existing rows
+						let row = this.draggable.cells[rowIndex]
+						row.pop()
+					}
+				}
+				
+				this.draggable[itemToDecrease] = this.draggable[itemToDecrease] - 1
+			}
 		}
 	}
 </script>

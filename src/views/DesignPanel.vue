@@ -164,7 +164,7 @@ documentStore.setSpinner('loading_workspace', true)
 							:style="getTdBorderStyle(rowIndex, columnIndex, draggable)+' '+
 									getTextStyle(rowIndex, draggable)+
 									getTdWidthAndHeight(rowIndex, columnIndex, draggable)"
-							
+							@click="editCell(cell)"
 							v-html="cell.value"
 							></td>
 						</tr>
@@ -373,13 +373,17 @@ documentStore.setSpinner('loading_workspace', true)
 				}
 				
 				if(includeHorizontalBorders) {
-					if(draggable.border_top == "yes" && rowIndex > 1) {
+					if(draggable.border_top == "yes" && rowIndex >= 1) {
 						style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
 					}
 					else {
 						if(rowIndex > 1) {
 							style += 'border-top: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
 						}
+					}
+					
+					if(draggable.border_bottom == "yes" && rowIndex == table.rows - 1) {
+						style += 'border-bottom: '+draggable.border_weight+'mm solid '+draggable.border_color+';'
 					}
 				}
 				else {
@@ -416,6 +420,9 @@ documentStore.setSpinner('loading_workspace', true)
 				}
 				
 				return style
+			},
+			editCell(cell) {
+				console.log(cell.value)
 			},
 			convertLineType(lineType) {
 				return (lineType == 'vertical') ? 'left' : 'top'
