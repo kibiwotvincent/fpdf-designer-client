@@ -139,9 +139,6 @@
 			closeModal() {
 				this.$refs.closeModal.click()
 			},
-			toggleBorder(border) {
-				this.draggable['border_'+border] = this.draggable['border_'+border] == 'none' ? 'yes' : 'none'
-			},
 			increase(itemToIncrease) {
 				if(itemToIncrease == 'rows') {
 					let newRowIndex = this.draggable.rows

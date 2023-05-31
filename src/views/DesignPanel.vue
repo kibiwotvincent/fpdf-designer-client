@@ -162,7 +162,7 @@ documentStore.setSpinner('loading_workspace', true)
 							v-for="(cell,columnIndex) in row" 
 							:key=columnIndex 
 							:style="getTdBorderStyle(rowIndex, columnIndex, draggable)+' '+
-									getTextStyle(rowIndex, draggable)+
+									getTextStyle(draggable, rowIndex)+
 									getTdWidthAndHeight(rowIndex, columnIndex, draggable)"
 							@click="editCell(cell)"
 							v-html="cell.value"
@@ -216,6 +216,7 @@ documentStore.setSpinner('loading_workspace', true)
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
+	//import { defineAsyncComponent } from 'vue'
 	
 	export default {
 		components: {
@@ -223,6 +224,10 @@ documentStore.setSpinner('loading_workspace', true)
 			AddTableModal,
 			AddTextModal,
 			AddLineModal,
+			UpdateTableModal,
+			/*UpdateTableModal: defineAsyncComponent(() => 
+				import('@/components/modals/UpdateTableModal.vue')
+			)*/
 		},
 		data() {
 			return {
@@ -257,15 +262,17 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
-			getTextStyle(rowIndex, table) {
+			getTextStyle(draggable, rowIndex = null) {
 				let style = ''
 				
-				let draggable  = null
-				if(rowIndex == 0) {
-					draggable = table.column_settings
-				}
-				else {
-					draggable = table.row_settings
+				if(rowIndex !== null) {
+					//draggable is a table
+					if(rowIndex == 0) {
+						draggable = draggable.column_settings
+					}
+					else {
+						draggable = draggable.row_settings
+					}
 				}
 				
 				style += 'font-family:'+draggable.font_family+';'
