@@ -14,10 +14,10 @@
 				<table-settings :draggable=draggable @decrease="decrease" @increase="increase" />
 				</div>
 				<div v-show="activeTab == 'column-settings'">
-				<column-settings :draggable=draggable @toggle="toggleColumnSetting" />
+				<column-settings mode="add" :draggable=draggable @toggle="toggleColumnSetting" />
 				</div>
 				<div v-show="activeTab == 'row-settings'">
-				<row-settings :draggable=draggable  @toggle="toggleRowSetting"/>
+				<row-settings mode="add" :draggable=draggable  @toggle="toggleRowSetting"/>
 				</div>
 			</div>
 		</div>
@@ -88,7 +88,17 @@
 				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
 					let rowIndex = value.row
 					let columnIndex = value.column
-					this.draggable.cells[rowIndex][columnIndex][itemToToggle] = this.draggable.cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					if(itemToToggle == "is_height_auto") {
+						let isHeightAuto = this.draggable.cells[0][0].is_height_auto == 'yes' ? 'no' : 'yes'
+						for(let i = 0; i < this.draggable.cells[rowIndex].length; i++) {
+							//update column heights
+							this.draggable.cells[0][i].is_height_auto = isHeightAuto
+							this.draggable.cells[0][i].height = this.draggable.cells[0][0].height
+						}
+					}
+					else {
+						this.draggable.cells[rowIndex][columnIndex][itemToToggle] = this.draggable.cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					}
 				}
 				if(itemToToggle == "background") {
 					this.draggable.column_settings.background = this.draggable.column_settings.background == 'none' ? this.draggable.column_settings.background_color : 'none'
@@ -110,10 +120,20 @@
 						this.draggable.row_settings.font_style.push(value)
 					}
 				}
-				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
+				if(itemToToggle == "loop_first_row") {
+					this.draggable.row_settings.loop_first_row = this.draggable.row_settings.loop_first_row == 'no' ? 'no' : 'yes'
+				}
+				if(itemToToggle == "is_height_auto") {
 					let rowIndex = value.row
-					let columnIndex = value.column
-					this.draggable.cells[rowIndex][columnIndex][itemToToggle] = this.draggable.cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					
+					let isHeightAuto = this.draggable.cells[rowIndex][0].is_height_auto == 'yes' ? 'no' : 'yes'
+					let height = this.draggable.cells[rowIndex][0].height
+					
+					for(let columnIndex = 0; columnIndex < this.draggable.cells[rowIndex].length; columnIndex++) {
+						//update column heights for the row
+						this.draggable.cells[rowIndex][columnIndex].is_height_auto = isHeightAuto
+						this.draggable.cells[rowIndex][columnIndex].height = height
+					}
 				}
 				if(itemToToggle == "background") {
 					this.draggable.row_settings.background = this.draggable.row_settings.background == 'none' ? this.draggable.row_settings.background_color : 'none'

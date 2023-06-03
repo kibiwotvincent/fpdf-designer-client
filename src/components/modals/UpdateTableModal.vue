@@ -27,13 +27,13 @@ const documentStore = useDocumentStore()
 			</div>
 			<div class="border p-3 mt-[0.65rem]">
 				<div v-show="activeTab == 'table-settings'">
-				<update-table-settings @decrease="decrease" @increase="increase" />
+				<update-table-settings :draggable=documentStore.activeDraggable @decrease="decrease" @increase="increase" />
 				</div>
 				<div v-show="activeTab == 'column-settings'">
-				<update-column-settings :draggable=documentStore.activeDraggable @toggle="toggleColumnSetting" />
+				<update-column-settings mode="update" :draggable=documentStore.activeDraggable @toggle="toggleColumnSetting" />
 				</div>
 				<div v-show="activeTab == 'row-settings'">
-				<update-row-settings :draggable=documentStore.activeDraggable @toggle="toggleRowSetting"/>
+				<update-row-settings mode="update" :draggable=documentStore.activeDraggable @toggle="toggleRowSetting"/>
 				</div>
 			</div>
 		</div>
@@ -44,7 +44,6 @@ const documentStore = useDocumentStore()
 	import Modal from '@/components/form/HeadlessModal.vue'
 	import { TrashIcon } from '@heroicons/vue/20/solid'
 	import { DocumentDuplicateIcon } from '@heroicons/vue/20/solid'
-	import UpdateTableSettings from '@/components/modals/table/UpdateTableSettings.vue'
 	import { defineAsyncComponent } from 'vue'
 	
 	export default {
@@ -53,12 +52,14 @@ const documentStore = useDocumentStore()
 			Modal,
 			TrashIcon,
 			DocumentDuplicateIcon,
-			UpdateTableSettings,
+			UpdateTableSettings: defineAsyncComponent(() => 
+				import('@/components/modals/table/TableSettings.vue')
+			),
 			UpdateColumnSettings: defineAsyncComponent(() => 
-				import('@/components/modals/table/UpdateColumnSettings.vue')
+				import('@/components/modals/table/ColumnSettings.vue')
 			),
 			UpdateRowSettings: defineAsyncComponent(() => 
-				import('@/components/modals/table/UpdateRowSettings.vue')
+				import('@/components/modals/table/RowSettings.vue')
 			)
 		},
 		data: () => ({
@@ -102,7 +103,18 @@ const documentStore = useDocumentStore()
 				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
 					let rowIndex = value.row
 					let columnIndex = value.column
-					cells[rowIndex][columnIndex][itemToToggle] = cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					
+					if(itemToToggle == "is_height_auto") {
+						let isHeightAuto = cells[0][0].is_height_auto == 'yes' ? 'no' : 'yes'
+						for(let i = 0; i < cells[rowIndex].length; i++) {
+							//update column heights
+							cells[0][i].is_height_auto = isHeightAuto
+							cells[0][i].height = cells[0][0].height
+						}
+					}
+					else {
+						cells[rowIndex][columnIndex][itemToToggle] = cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					}
 				}
 				if(itemToToggle == "background") {
 					columnSettings.background = columnSettings.background == 'none' ? columnSettings.background_color : 'none'
@@ -132,10 +144,20 @@ const documentStore = useDocumentStore()
 						rowSettings.font_style.push(value)
 					}
 				}
-				if(itemToToggle == "is_width_auto" || itemToToggle == "is_height_auto") {
+				if(itemToToggle == "loop_first_row") {
+					rowSettings.loop_first_row = rowSettings.loop_first_row == 'yes' ? 'no' : 'yes'
+				}
+				if(itemToToggle == "is_height_auto") {
 					let rowIndex = value.row
-					let columnIndex = value.column
-					cells[rowIndex][columnIndex][itemToToggle] = cells[rowIndex][columnIndex][itemToToggle] == 'yes' ? 'no' : 'yes'
+					
+					let toggledIsHeightAuto = cells[rowIndex][0].is_height_auto == 'yes' ? 'no' : 'yes'
+					let height = cells[rowIndex][0].height
+					
+					for(let columnIndex = 0; columnIndex < cells[rowIndex].length; columnIndex++) {
+						//update column heights for the row to be same as the first column
+						cells[rowIndex][columnIndex].is_height_auto = toggledIsHeightAuto
+						cells[rowIndex][columnIndex].height = height
+					}
 				}
 				if(itemToToggle == "background") {
 					rowSettings.background = rowSettings.background == 'none' ? rowSettings.background_color : 'none'
