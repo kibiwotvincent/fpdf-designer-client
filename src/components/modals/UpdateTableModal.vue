@@ -178,7 +178,7 @@ const documentStore = useDocumentStore()
 					let row = []
 					for(let i = 0; i < draggable.columns; i++) {
 						//insert default columns into the new row
-						row.push(draggable.default_cell_values)
+						row.push({...draggable.default_cell_values})
 					}
 					cells.push(row)
 				}
@@ -186,7 +186,7 @@ const documentStore = useDocumentStore()
 					for(let rowIndex = 0; rowIndex < cells.length; rowIndex++) {
 						//insert extra column into existing rows
 						let row = cells[rowIndex]
-						row.push(draggable.default_cell_values)
+						row.push({...draggable.default_cell_values})
 					}
 				}
 				

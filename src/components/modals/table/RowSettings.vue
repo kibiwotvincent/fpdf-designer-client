@@ -174,7 +174,7 @@
 					:id="mode+'LoopFirstRowCheckbox'"
 					value="yes" 
 					:checked="draggable.row_settings.loop_first_row == 'yes'"
-					@click="$emit('toggle', 'loop_first_row')"
+					@click="toggleLoopFirstRow"
 					/>
 				<label class="inline-block mt-[0.125rem] hover:cursor-pointer" :for="mode+'LoopFirstRowCheckbox'">
 				Loop first row
@@ -185,10 +185,10 @@
 				Loop Statement
 				(<small class="italic text-neutral-600">Enter loop statement to enclose rows in a loop</small>)
 				</label>
-				<input type="text" v-model="draggable.row_settings.loop_statement" :disabled="draggable.loop_first_row != 'yes'" placeholder="i.e for user in users" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+				<input type="text" v-model="draggable.row_settings.loop_statement" :disabled="draggable.row_settings.loop_first_row == 'no'" placeholder="i.e for user in users" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 			</div>
 		</div>
-		<div class="flex w-full gap-4 justify-between mb-3">
+		<div v-show="draggable.row_settings.loop_first_row == 'no'" class="flex w-full gap-4 justify-between mb-3">
 			<button type="button" @click="decreaseRowIndex" :disabled="rowIndex == 1" class="inline h-[2.125rem] px-3 bg-gray-200 rounded-tl rounded-bl text-gray-700 outline-none focus:shadow">
 			&lt;&lt; row {{ getRowIndex('low') }}
 			</button>
@@ -218,7 +218,7 @@
 		<div class="flex w-full gap-4 mb-3" v-for="(column, columnIndex) in draggable.cells[rowIndex]" :key=columnIndex >
 			<div class="w-full">
 				<label class="block">{{ draggable.cells[0][columnIndex].value ? draggable.cells[0][columnIndex].value : 'Column '+(columnIndex+1) }}</label>
-				<input type="text" v-model="column.value" placeholder="Enter row value" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" >
+				<input type="text" v-model="column.value" @keyup="loopFirstRow()" placeholder="Enter row column value" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow" >
 			</div>
 		</div>
 	</div>
@@ -237,6 +237,24 @@
 				rowIndex: 1,
 		}),
 		methods: {
+			toggleLoopFirstRow() {
+				this.$emit('toggle', 'loop_first_row')
+				if(this.draggable.row_settings.loop_first_row == "yes") {
+					//reset rowIndex
+					this.rowIndex = 1
+				}
+			},
+			loopFirstRow() {
+				let rowToLoop = 1
+				if(this.draggable.row_settings.loop_first_row == "yes") {
+					//fill other rows after the first with the same values as the first row
+					for(let rowIndex = rowToLoop+1; rowIndex < this.draggable.cells.length; rowIndex++) {
+						for(let columnIndex = 0; columnIndex < this.draggable.cells[rowIndex].length; columnIndex++) {
+							this.draggable.cells[rowIndex][columnIndex].value = this.draggable.cells[rowToLoop][columnIndex].value
+						} 
+					} 
+				}
+			},
 			decreaseRowIndex() {
 				this.rowIndex--
 			},

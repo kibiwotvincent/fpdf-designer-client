@@ -129,17 +129,8 @@ documentStore.setSpinner('loading_workspace', true)
 							'height: '+draggable.height+'px;'+ 
 							'border: '+draggable.border_weight +'mm '+draggable.border_color+' solid;'+ 
 							'background-color: '+(draggable.background == 'none' ? 'none' : draggable.background_color)
-						">
-						<span 
-						:style="
-							'color: '+draggable.font_color+';'+ 
-							'font-weight: '+draggable.font_weight+';'+ 
-							'font-style: '+draggable.font_style+';'+ 
-							'font-size: '+draggable.font_size+'pt;'
 							"
-						v-html=draggable.text 
-						>
-						</span>
+					>
 					</div>
 					<div v-if="draggable.type == 'line'" class="flex flex-row items-center justify-left"
 					:style="
@@ -164,7 +155,6 @@ documentStore.setSpinner('loading_workspace', true)
 							:style="getTdBorderStyle(rowIndex, columnIndex, draggable)+' '+
 									getTextStyle(draggable, rowIndex)+
 									getTdWidthAndHeight(rowIndex, columnIndex, draggable)"
-							@click="editCell(cell)"
 							v-html="cell.value"
 							></td>
 						</tr>
@@ -427,9 +417,6 @@ documentStore.setSpinner('loading_workspace', true)
 				}
 				
 				return style
-			},
-			editCell(cell) {
-				console.log(cell.value)
 			},
 			convertLineType(lineType) {
 				return (lineType == 'vertical') ? 'left' : 'top'

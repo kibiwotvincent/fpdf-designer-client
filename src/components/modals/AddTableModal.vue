@@ -121,7 +121,7 @@
 					}
 				}
 				if(itemToToggle == "loop_first_row") {
-					this.draggable.row_settings.loop_first_row = this.draggable.row_settings.loop_first_row == 'no' ? 'no' : 'yes'
+					this.draggable.row_settings.loop_first_row = this.draggable.row_settings.loop_first_row == 'yes' ? 'no' : 'yes'
 				}
 				if(itemToToggle == "is_height_auto") {
 					let rowIndex = value.row
@@ -166,14 +166,14 @@
 					
 					for(let i = 0; i < this.draggable.columns; i++) {
 						//insert default columns into the new row
-						row.push(this.draggable.default_cell_values)
+						row.push({...this.draggable.default_cell_values})
 					}
 				}
 				else if(itemToIncrease == 'columns') {
 					for(let rowIndex = 0; rowIndex < this.draggable.cells.length; rowIndex++) {
 						//insert extra column into existing rows
 						let row = this.draggable.cells[rowIndex]
-						row.push(this.draggable.default_cell_values)
+						row.push({...this.draggable.default_cell_values})
 					}
 				}
 				
