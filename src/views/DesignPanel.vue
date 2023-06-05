@@ -120,7 +120,7 @@ documentStore.setSpinner('loading_workspace', true)
 						">
 						<span 
 						:style="getTextStyle(draggable)"
-						v-html=draggable.text 
+						v-html="draggable.text"
 						>
 						</span>
 					</div>
@@ -151,9 +151,10 @@ documentStore.setSpinner('loading_workspace', true)
 						>
 							<td 
 							v-for="(cell,columnIndex) in row" 
-							:key=columnIndex 
+							:key=columnIndex
+							@dblclick="updateCell(index, rowIndex, columnIndex)"							
 							:style="getTdBorderStyle(rowIndex, columnIndex, draggable)+' '+
-									getTextStyle(draggable, rowIndex)+
+									getTextStyle(draggable, rowIndex, columnIndex)+
 									getTdWidthAndHeight(rowIndex, columnIndex, draggable)"
 							v-html="cell.value"
 							></td>
@@ -161,7 +162,7 @@ documentStore.setSpinner('loading_workspace', true)
 						</thead>
 						
 						</table>
-					</div>
+					</div> 
 					</vue-draggable-resizable>
 				</div>
 			</div>
@@ -171,6 +172,8 @@ documentStore.setSpinner('loading_workspace', true)
 	<page-settings-modal />
 	<add-table-modal />
 	<update-table-modal />
+	<button data-te-toggle="modal" data-te-target="#updateTableCellModal" ref="updateCell" class="hidden">Update Table Cell</button>
+	<update-table-cell-modal :cell=cell />
 	<add-text-modal />
 	<update-text-modal />
 	<add-rectangle-modal />
@@ -194,6 +197,7 @@ documentStore.setSpinner('loading_workspace', true)
 	import VueDraggableResizable from "vue-draggable-resizable-vue3"
 	import AddTableModal from '@/components/modals/AddTableModal.vue'
 	import UpdateTableModal from '@/components/modals/UpdateTableModal.vue'
+	import UpdateTableCellModal from '@/components/modals/UpdateTableCellModal.vue'
 	import AddRectangleModal from '@/components/modals/AddRectangleModal.vue'
 	import UpdateRectangleModal from '@/components/modals/UpdateRectangleModal.vue'
 	import AddTextModal from '@/components/modals/AddTextModal.vue'
@@ -206,7 +210,6 @@ documentStore.setSpinner('loading_workspace', true)
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
-	//import { defineAsyncComponent } from 'vue'
 	
 	export default {
 		components: {
@@ -215,9 +218,6 @@ documentStore.setSpinner('loading_workspace', true)
 			AddTextModal,
 			AddLineModal,
 			UpdateTableModal,
-			/*UpdateTableModal: defineAsyncComponent(() => 
-				import('@/components/modals/UpdateTableModal.vue')
-			)*/
 		},
 		data() {
 			return {
@@ -234,6 +234,7 @@ documentStore.setSpinner('loading_workspace', true)
 				currentTop : 0,
 				update : false,
 				id : this.$route.params.id,
+				cell: {}
 			}
 		},
 		created() {
@@ -252,35 +253,60 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
-			getTextStyle(draggable, rowIndex = null) {
+			getTextStyle(draggable, rowIndex = null, columnIndex = null) {
 				let style = ''
+				let isTable = false
 				
 				if(rowIndex !== null) {
 					//draggable is a table
+					isTable = true
+					var table = draggable
 					if(rowIndex == 0) {
-						draggable = draggable.column_settings
+						draggable = table.column_settings
 					}
 					else {
-						draggable = draggable.row_settings
+						draggable = table.row_settings
+					}
+				}
+				
+				let textAlign = draggable.text_align
+				let fontSize = draggable.font_size
+				let fontColor = draggable.font_color
+				let fontStyle = draggable.font_style
+				
+				if(isTable) {
+					let cell = table['cells'][rowIndex][columnIndex]
+					if(typeof cell.text_align !== 'undefined') {
+						textAlign = cell.text_align
+					}
+					if(typeof cell.font_size !== 'undefined') {
+						fontSize = cell.font_size
+					}
+					if(typeof cell.font_color !== 'undefined') {
+						fontColor = cell.font_color
+					}
+					if(typeof cell.font_style !== 'undefined') {
+						fontStyle = cell.font_style
+					}
+					
+					if(draggable.background != 'none') {
+						style += 'background-color: '+draggable.background_color+';'
 					}
 				}
 				
 				style += 'font-family:'+draggable.font_family+';'
-				style += 'font-size:'+draggable.font_size+'pt;'
-				style += 'color:'+draggable.font_color+';'
-				style += 'text-align:'+draggable.text_align+';'
+				style += 'font-size:'+fontSize+'pt;'
+				style += 'color:'+fontColor+';'
+				style += 'text-align:'+textAlign+';'
 				
-				if(draggable.font_style.includes('bold')) {
+				if(fontStyle.includes('bold')) {
 					style += 'font-weight: bold;'
 				}
-				if(draggable.font_style.includes('italic')) {
+				if(fontStyle.includes('italic')) {
 					style += 'font-style: italic;'
 				}
-				if(draggable.font_style.includes('underline')) {
+				if(fontStyle.includes('underline')) {
 					style += 'text-decoration: underline;'
-				}
-				if(draggable.background != 'none') {
-					style += 'background-color: '+draggable.background_color+';'
 				}
 				
 				return style
@@ -550,6 +576,12 @@ documentStore.setSpinner('loading_workspace', true)
 				//launch update modal
 				const modal = 'updateModalButton-'+documentStore.activeDraggable.type
 				this.$refs[modal].click()
+			},
+			updateCell(draggableIndex, rowIndex, columnIndex) {
+				this.cell.draggable = draggableIndex
+				this.cell.row = rowIndex
+				this.cell.column = columnIndex
+				this.$refs.updateCell.click()
 			}
 		}
 	};
