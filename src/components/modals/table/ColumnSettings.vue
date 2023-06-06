@@ -7,7 +7,7 @@
 	<div class="flex w-full gap-4 mb-3">
 		<div class="w-1/4">
 			<label class="block">Text Align</label>
-			<select data-te-select-init v-model="draggable.column_settings.text_align" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
+			<select data-te-select-init v-model="draggable.column_settings.text_align" @change="resetColumnCellSettings('text_align')" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
 				<option value="left">Left</option>
 				<option value="center">Center</option>
 				<option value="right">Right</option>
@@ -15,7 +15,7 @@
 		</div>
 		<div class="w-1/4">
 			<label class="block">Font Size</label>
-			<input type="number" v-model="draggable.column_settings.font_size" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+			<input type="number" v-model="draggable.column_settings.font_size" @input="resetColumnCellSettings('font_color')" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 		</div>
 		<div class="w-1/4">
 			<label class="block">Font Family</label>
@@ -25,7 +25,7 @@
 		</div>
 		<div class="w-1/4">
 			<label class="block">Font Color</label>
-			<input type="color" v-model="draggable.column_settings.font_color" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
+			<input type="color" v-model="draggable.column_settings.font_color" @input="resetColumnCellSettings('font_color')" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 		</div>
 	</div>
 	<div class="flex w-full gap-4 mb-3">
@@ -108,7 +108,7 @@
 					:id="mode+'ColumnBoldCheckbox'"
 					value="bold" 
 					:checked="draggable.column_settings.font_style.includes('bold')"
-					@click="$emit('toggle', 'font_style', 'bold')"
+					@click="toggleFontStyle('bold')"
 					/>
 				<label class="inline-block mt-[0.125rem] hover:cursor-pointer" :for="mode+'ColumnBoldCheckbox'">Bold</label>
 			</div>
@@ -119,7 +119,7 @@
 					:id="mode+'ColumnItalicCheckbox'"
 					value="italic" 
 					:checked="draggable.column_settings.font_style.includes('italic')"
-					@click="$emit('toggle', 'font_style', 'italic')"
+					@click="toggleFontStyle('italic')"
 					/>
 				<label class="inline-block mt-[0.125rem] hover:cursor-pointer" :for="mode+'ColumnItalicCheckbox'">Italic</label>
 			</div>
@@ -130,7 +130,7 @@
 					:id="mode+'ColumnUnderlineCheckbox'"
 					value="underline" 
 					:checked="draggable.column_settings.font_style.includes('underline')"
-					@click="$emit('toggle', 'font_style', 'underline')"
+					@click="toggleFontStyle('underline')"
 					/>
 				<label class="inline-block mt-[0.125rem] hover:cursor-pointer" :for="mode+'ColumnUnderlineCheckbox'">Underline</label>
 			</div>
@@ -208,5 +208,20 @@
 					draggable: {},
 					mode: "add"
 				}),
+		methods: {
+			toggleFontStyle(style) {
+				this.$emit('toggle', 'font_style', style)
+				this.resetColumnCellSettings('font_style')
+			},
+			resetColumnCellSettings(setting) {
+				if(this.mode == "update") {
+					//reset rows 
+					const documentStore = useDocumentStore()
+					documentStore.activeDraggable.cells[0].forEach(function(cell) {
+						delete cell[setting]
+					})
+				}
+			}
+		}
 	}
 </script>

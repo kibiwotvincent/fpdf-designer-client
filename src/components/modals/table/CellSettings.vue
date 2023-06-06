@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="flex w-full gap-4 mb-3">
-			<div class="w-1/4">
+			<div class="w-1/2">
 				<label class="block">Text Align</label>
 				<select data-te-select-init v-model="cell.text_align" @change="updateCell" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow">
 					<option value="left">Left</option>
@@ -9,17 +9,17 @@
 					<option value="right">Right</option>
 				</select>
 			</div>
-			<div class="w-1/4">
+			<div class="w-1/2">
 				<label class="block">Font Size</label>
 				<input type="number" v-model="cell.font_size" @input="updateCell" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 			</div>
-			<div class="w-1/4">
+		</div>
+		<div class="flex w-full gap-4 mb-3">
+			<div class="w-1/2">
 				<label class="block">Font Color</label>
 				<input type="color" v-model="cell.font_color" @input="updateCell" class="block w-full h-[2.15rem] rounded border border-solid border-neutral-300 px-3 py-1 text-neutral-700 outline-none focus:shadow"/>
 			</div>
-		</div>
-		<div class="flex w-full gap-4 mb-3">
-			<div class="w-full">
+			<div class="w-1/2">
 				<label class="block">Font Style</label>
 				<div class="inline-block mr-6">
 					<input
