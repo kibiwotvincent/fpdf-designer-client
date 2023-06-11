@@ -5,11 +5,11 @@
 
 <template>
 	<div class="flex justify-between mb-4">
-		<div class="inline-block pt-4">
+		<div class="inline-block pt-4 text-gray-700 text-sm font-semibold uppercase">
 			Templates
 		</div>
 		<button 
-		class="bg-red-400 hover:underline text-white rounded py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+		class="bg-red-400 hover:underline text-white rounded py-1 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
 		@click="initFromScratch"
 		>
 			<PlusIcon class="inline-block h-5 w-5 mb-1"/>
@@ -19,7 +19,7 @@
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading saved templates..." :show-text=true />
 	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center mt-4">
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mt-4">
 		<div class="w-full" v-for="(template, index) in templates" :key="template.id">
 		
 			<div class="block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">

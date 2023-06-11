@@ -95,8 +95,8 @@
 		<div class="w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2">
 			<div class="flex items-center">
 				<router-link to="/" class="toggleColour text-white no-underline hover:no-underline font-bold text-2xl lg:text-4xl">
-					<img class="logo" id="logo-white" src="assets/images/logo-white.png" />
-					<img class="logo hidden" id="logo-black" src="assets/images/logo-black.png" />
+					<img class="logo" id="logo-white" src="/assets/images/logo-white.png" />
+					<img class="logo hidden" id="logo-black" src="/assets/images/logo-black.png" />
 				</router-link>
 			</div>
 			<div class="block lg:hidden pr-4">

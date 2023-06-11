@@ -1,12 +1,24 @@
 <script setup>
 	import Spinner from '@/components/form/Spinner'
+	import { PlusIcon } from '@heroicons/vue/20/solid'
 </script>
 
 <template>
+	<div class="flex justify-between mb-4">
+		<div class="inline-block pt-4 text-gray-700 text-sm font-semibold uppercase">
+			Saved Documents
+		</div>
+		<router-link to="/document/choose-template">
+			<button class="bg-red-400 hover:underline text-white rounded py-1 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+				<PlusIcon class="inline-block h-5 w-5 mb-1"/>
+				Create New Document
+			</button>
+		</router-link>
+	</div>
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading saved documents..." :show-text=true />
 	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center mt-4">
+	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mt-4">
 		<div class="w-full" v-for="(document, index) in documents" :key="document.id">
 		
 			<div class="block rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
@@ -50,13 +62,6 @@
 								data-te-dropdown-item-ref
 								@click.prevent="viewPdf(document.id)"
 								>View Pdf</a>
-							</li>
-							<li>
-								<a
-								class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-neutral-600"
-								href="#"
-								data-te-dropdown-item-ref
-								>Download PHP Code</a>
 							</li>
 							<li>
 								<a
@@ -134,6 +139,7 @@
 	import OverlayModal from '@/components/form/OverlayModal.vue'
 	import RenameDocumentModal from '@/components/modals/RenameDocumentModal.vue'
 	import DeleteDocumentModal from '@/components/modals/DeleteDocumentModal.vue'
+	
 	
 	export default {
 		name: 'DocumentTemplates',

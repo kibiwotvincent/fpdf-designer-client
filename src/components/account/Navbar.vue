@@ -70,7 +70,7 @@
 					<router-link to="/dashboard" class="nav-link inline-block no-underline text-gray-800 hover:text-pink-500 hover:text-underline py-2 px-4">Dashboard</router-link>
 					</li>
 					<li class="mr-3">
-					<router-link to="/profile" class="nav-link inline-block no-underline text-gray-800 hover:text-pink-500 hover:text-underline py-2 px-4">Profile</router-link>
+					<router-link to="/admin" class="nav-link inline-block no-underline text-gray-800 hover:text-pink-500 hover:text-underline py-2 px-4">Admin</router-link>
 					</li>
 				</ul>
 			</div>

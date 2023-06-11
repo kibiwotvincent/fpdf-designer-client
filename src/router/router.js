@@ -2,35 +2,53 @@ import {createRouter, createWebHistory} from 'vue-router';
 //import pinia from "@/store.js";
 import { useAuthStore } from '@/stores';
 
+import App from "@/layouts/App.vue";
+import Account from "@/layouts/Account.vue";
+
 import Home from '@/views/Homepage.vue';
 import DesignPanel from '@/views/DesignPanel.vue';
 import ChooseTemplate from '@/views/ChooseTemplate.vue';
 import Pricing from '@/views/Pricing.vue';
-import Help from '@/views/Help.vue';
 import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
 import ContactUs from '@/views/ContactUs.vue';
 import Login from '@/views/auth/Login.vue';
 import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
-//import Dashboard from '@/views/account/Dashboard.vue';
-import UserDocuments from '@/views/account/UserDocuments.vue';
+import Dashboard from '@/views/account/Dashboard.vue';
 import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
-import Profile from '@/views/account/Profile.vue';
 
 const routes = [
-	{path: '/', name: 'home', component: Home},
-	{path: '/design-panel/:id', name: 'design-panel', component: DesignPanel},
-	{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
-	{path: '/pricing', name: 'pricing', component: Pricing},
-	{path: '/help', name: 'help', component: Help},
-	{path: '/privacy-policy', name: 'privacy-policy', component: PrivacyPolicy},
-	{path: '/contact-us', name: 'contact-us', component: ContactUs},
-	{path: '/login', name: 'login', component: Login},
-	{path: '/register', name: 'register', component: Register},
-	{path: '/forgot-password', name: 'forgot-password', component: ForgotPassword},
-	{path: '/dashboard', name: 'dashboard', component: UserDocuments},
-	{path: '/profile', name: 'profile', component: Profile},
-	{path: '/admin/templates', name: 'admin.templates', component: AdminTemplates},
+	{
+		path: "/",
+		component: App,
+		children: [
+					{path: '/', name: 'home', component: Home},
+					{path: '/design-panel/:id', name: 'design-panel', component: DesignPanel},
+					{path: '/document/choose-template', name: 'choose-template', component: ChooseTemplate},
+					{path: '/pricing', name: 'pricing', component: Pricing},
+					{path: '/privacy-policy', name: 'privacy-policy', component: PrivacyPolicy},
+					{path: '/contact-us', name: 'contact-us', component: ContactUs},
+					{path: '/login', name: 'login', component: Login},
+					{path: '/register', name: 'register', component: Register},
+					{path: '/forgot-password', name: 'forgot-password', component: ForgotPassword},
+				]
+	},
+	{
+		path: "/dashboard",
+		component: Account,
+		children: [
+			{
+				path: "/dashboard",
+				name: 'dashboard',
+				component: Dashboard,
+			},
+			{
+				path: "/admin/templates",
+				name: 'admin.templates',
+				component: AdminTemplates,
+			},
+		],
+	},
 ]
 
 export const router = createRouter({
