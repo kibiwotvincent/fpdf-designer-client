@@ -1,3 +1,6 @@
+<script setup>
+	import { Bars3Icon, XMarkIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
+</script>
 <template>
   <nav
     class="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6"
@@ -11,7 +14,7 @@
         type="button"
         v-on:click="toggleCollapseShow('bg-white m-2 py-3 px-6')"
       >
-        <i class="fas fa-bars"></i>
+        <Bars3Icon class="inline-block h-6 w-6 text-red-500 font-bold" />
       </button>
       <!-- Brand -->
       <router-link
@@ -45,7 +48,7 @@
                 class="cursor-pointer text-black opacity-50 md:hidden px-3 py-1 text-xl leading-none bg-transparent rounded border border-solid border-transparent"
                 v-on:click="toggleCollapseShow('hidden')"
               >
-                <i class="fas fa-times"></i>
+                <XMarkIcon class="inline-block h-6 w-6 text-red-500 font-bold" />
               </button>
             </div>
           </div>
@@ -75,7 +78,7 @@
                   class="fas fa-tv mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Dashboard
+                <GlobeAltIcon class="inline-block h-4 w-4 mb-1" /> Dashboard
               </a>
             </router-link>
           </li>
@@ -99,7 +102,7 @@
                   class="fas fa-tools mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Settings
+                <Cog6ToothIcon class="inline-block h-4 w-4 mb-1" />Settings
               </a>
             </router-link>
           </li>
@@ -123,7 +126,7 @@
                   class="fas fa-table mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Payments
+                <CreditCardIcon class="inline-block h-4 w-4 mb-1" /> Payments
               </a>
             </router-link>
           </li>
@@ -146,7 +149,7 @@
                   class="fas fa-table mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Users
+                <UsersIcon class="inline-block h-4 w-4 mb-1" /> Users
               </a>
             </router-link>
           </li>
@@ -167,7 +170,7 @@
                   class="fas fa-map-marked mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Subscriptions
+                <TicketIcon class="inline-block h-4 w-4 mb-1" /> Subscriptions
               </a>
             </router-link>
         </li>
@@ -198,11 +201,16 @@
                   class="fas fa-map-marked mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                Templates
+                <ViewColumnsIcon class="inline-block h-4 w-4 mb-1" /> Templates
               </a>
             </router-link>
         </li>
-        </ul>
+		<li class="items-center">
+		<button @click="logout" class="bg-red-400 text-white-800 rounded mt-4 lg:mt-0 py-1 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+			<PowerIcon class="inline-block h-4 w-4 mb-1" /> Logout
+		</button>
+        </li>
+		</ul>
 
         <!-- Divider -->
         <hr class="my-4 md:min-w-full" />
@@ -213,6 +221,8 @@
 ); }
 
 <script>
+import { useAuthStore } from '@/stores';
+	
 export default {
   name: 'SidebarComponent',
   data() {
@@ -224,6 +234,10 @@ export default {
     toggleCollapseShow: function (classes) {
       this.collapseShow = classes;
     },
+	logout() {
+		const authStore = useAuthStore()
+		return authStore.logout()
+	}
   },
 };
 </script>

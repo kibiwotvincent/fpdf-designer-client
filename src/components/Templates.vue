@@ -25,9 +25,15 @@
 			Build From Scratch
 		</button>
 	</div>
+	
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading templates..." :show-text=true />
 	</div>
+	
+	<div v-if="isLoading === false && templates.length === 0">
+		<Alert type="warning" message="No saved templates to display yet!" />
+	</div>
+	
 	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center mt-4 mx-8">
 		<div class="w-full" v-for="template in templates" :key="template.id">
 		

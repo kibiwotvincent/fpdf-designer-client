@@ -1,5 +1,6 @@
 <script setup>
 	import Spinner from '@/components/form/Spinner'
+	import Alert from '@/components/common/Alert'
 	import { PlusIcon } from '@heroicons/vue/20/solid'
 </script>
 
@@ -15,9 +16,15 @@
 			</button>
 		</router-link>
 	</div>
+	
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading saved documents..." :show-text=true />
 	</div>
+	
+	<div v-if="isLoading === false && documents.length === 0">
+		<Alert type="warning" message="No saved documents to display yet!" />
+	</div>
+	
 	<div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center mt-4">
 		<div class="w-full" v-for="(document, index) in documents" :key="document.id">
 		
