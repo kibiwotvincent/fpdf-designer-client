@@ -16,6 +16,7 @@ import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
 import Dashboard from '@/views/account/Dashboard.vue';
 import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
+import RolesView from '@/views/account/admin/RolesView.vue';
 
 const routes = [
 	{
@@ -46,6 +47,11 @@ const routes = [
 				path: "/admin/templates",
 				name: 'admin.templates',
 				component: AdminTemplates,
+			},
+			{
+				path: "/admin/roles",
+				name: 'admin.roles',
+				component: RolesView,
 			},
 		],
 	},

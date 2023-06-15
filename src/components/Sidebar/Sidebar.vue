@@ -1,5 +1,5 @@
 <script setup>
-	import { Bars3Icon, XMarkIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
+	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
 </script>
 <template>
   <nav
@@ -102,7 +102,7 @@
                   class="fas fa-tools mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                <Cog6ToothIcon class="inline-block h-4 w-4 mb-1" />Settings
+                <Cog6ToothIcon class="inline-block h-4 w-4 mb-1" /> Settings
               </a>
             </router-link>
           </li>
@@ -206,14 +206,35 @@
             </router-link>
         </li>
 		<li class="items-center">
+            <router-link to="/admin/roles" v-slot="{ href, navigate, isActive }">
+              <a
+                :href="href"
+                @click="navigate"
+                class="text-xs uppercase py-3 font-bold block"
+                :class="[
+                  isActive
+                    ? 'text-red-400 hover:text-red-500 hover:underline'
+                    : 'text-gray-700 hover:text-red-400 hover:underline',
+                ]"
+              >
+                <i
+                  class="fas fa-map-marked mr-2 text-sm"
+                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
+                ></i>
+                <AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" /> Roles & Permissions
+              </a>
+            </router-link>
+        </li>
+		
+		</ul>
+		
+        <!-- Divider -->
+        <hr class="my-4 md:min-w-full" />
+		<div class="items-center">
 		<button @click="logout" class="bg-red-400 text-white-800 rounded mt-4 lg:mt-0 py-1 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			<PowerIcon class="inline-block h-4 w-4 mb-1" /> Logout
 		</button>
-        </li>
-		</ul>
-
-        <!-- Divider -->
-        <hr class="my-4 md:min-w-full" />
+        </div>
       </div>
     </div>
   </nav>
