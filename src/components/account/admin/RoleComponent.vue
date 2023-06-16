@@ -1,4 +1,5 @@
 <script setup>
+	import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
 	import * as Yup from 'yup'
 	
 	const schema = Yup.object().shape({
@@ -8,6 +9,32 @@
 
 <template>
 	<div class="p-4">
+		<div class="flex justify-end">
+			<button 
+			class="bg-gray-200 hover:underline text-gray-600 rounded py-1 px-4 mr-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+			data-te-toggle="modal"
+			data-te-target="#updateRoleModal"
+			data-te-ripple-init
+			data-te-ripple-color="light"
+			>
+				<PencilSquareIcon class="inline-block h-5 w-5 mb-1"/>
+				Edit Role
+			</button>
+			
+			<button 
+			class="border border-red-500 hover:underline text-red-500 rounded py-1 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+			data-te-toggle="modal"
+			data-te-target="#deleteRoleModal"
+			data-te-ripple-init
+			data-te-ripple-color="light"
+			>
+				<TrashIcon class="inline-block h-5 w-5 mb-1"/>
+				Delete Role
+			</button>
+		</div>
+		<div class="pt-4 text-gray-500 text-sm font-semibold border-b pb-1">
+			Update role permissions
+		</div>
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
 			<div class="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
 				<div class="w-full pt-4" v-for="permission in all_permissions" :key="`${role.name}_${permission.name}`">
@@ -54,7 +81,7 @@
 	import { reactive } from 'vue'
 	
 	export default {
-		name: 'RolePermissionsComponent',
+		name: 'RoleComponent',
 		props: reactive({
 					role_id: null,
 					role: null,
@@ -69,6 +96,9 @@
 			role() {
 				this.permissions = this.role.permissions
 			}
+		},
+		mounted() {
+			this.permissions = this.role.permissions
 		},
 		methods: {
 			roleHasPermission(permission) {

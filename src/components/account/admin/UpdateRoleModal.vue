@@ -7,9 +7,9 @@
 </script>
 
 <template>
-	<modal id="newRoleModal" size="small">
+	<modal id="updateRoleModal" size="small">
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
-			<label class="block">Enter Role Name</label>
+			<label class="block">Role Name</label>
 			<Field type="text" name="name" v-model="role.name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1.5 text-neutral-700 outline-none focus:shadow" />
 			<div class="text-danger">{{errors.name}}</div>
 			
@@ -31,7 +31,7 @@
 				<span v-show="isSubmitting">
 				<spinner :size=4 />
 				</span>
-				Add Role
+				Update Role
 				</button>
 			</div>
 		</Form>
@@ -44,13 +44,29 @@
 	import { Form, Field } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
 	import createHttp from '@/axios.js'
+	import { reactive } from 'vue'
 	
 	export default {
-		name: 'NewRoleModalComponent',
+		name: 'UpdateRoleModalComponent',
+		props: reactive({
+				id: null,
+				name: null,
+				}),
 		data: () => ({
 			role: {},
 			successMessage: ''
 		}),
+		watch: {
+			id() {
+				this.role.id = this.id
+				this.role.name = this.name
+				this.successMessage = ''
+			}
+		},
+		mounted() {
+			this.role.id = this.id
+			this.role.name = this.name
+		},
 		methods: {
 			cancel() {
 				this.closeModal()
@@ -58,10 +74,10 @@
 			async onSubmit(values, { setErrors }) {
 				this.successMessage =  ''
 				const http = createHttp()
-				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/roles/create', {'name': this.role.name})
+				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/roles/'+this.role.id+'/rename', {'name': this.role.name})
 					.then((response) => {
 						this.successMessage = response.data.message
-						this.$emit('added')
+						this.$emit('updated')
 						this.closeModal()
 					})
 					.catch(error => {

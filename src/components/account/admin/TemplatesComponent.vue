@@ -9,7 +9,7 @@
 			Templates
 		</div>
 		<button 
-		class="bg-red-400 hover:underline text-white rounded py-1 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+		class="bg-red-400 hover:underline text-white rounded py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
 		@click="initFromScratch"
 		>
 			<PlusIcon class="inline-block h-5 w-5 mb-1"/>

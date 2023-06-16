@@ -2,16 +2,16 @@
 	import * as Yup from 'yup'
 	
 	const schema = Yup.object().shape({
-		name: Yup.string().required()
+		//
 	})
 </script>
 
 <template>
-	<modal id="newRoleModal" size="small">
+	<modal id="deleteRoleModal" size="small">
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
-			<label class="block">Enter Role Name</label>
-			<Field type="text" name="name" v-model="role.name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1.5 text-neutral-700 outline-none focus:shadow" />
-			<div class="text-danger">{{errors.name}}</div>
+			<div class="pt-4 text-gray-600 text-xl text-center pb-2">
+				Are you sure you want to delete <i>{{ role.name }}</i> role?
+			</div>
 			
 			<div v-if="errors.apiError">
 				<Alert :message=errors.apiError type="danger" />
@@ -31,7 +31,7 @@
 				<span v-show="isSubmitting">
 				<spinner :size=4 />
 				</span>
-				Add Role
+				Delete Role
 				</button>
 			</div>
 		</Form>
@@ -41,16 +41,32 @@
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
 	import Alert from '@/components/common/Alert.vue'
-	import { Form, Field } from 'vee-validate'
+	import { Form } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
 	import createHttp from '@/axios.js'
+	import { reactive } from 'vue'
 	
 	export default {
-		name: 'NewRoleModalComponent',
+		name: 'DeleteRoleModalComponent',
+		props: reactive({
+				id: null,
+				name: null,
+				}),
 		data: () => ({
 			role: {},
 			successMessage: ''
 		}),
+		watch: {
+			id() {
+				this.role.id = this.id
+				this.role.name = this.name
+				this.successMessage = ''
+			}
+		},
+		mounted() {
+			this.role.id = this.id
+			this.role.name = this.name
+		},
 		methods: {
 			cancel() {
 				this.closeModal()
@@ -58,10 +74,10 @@
 			async onSubmit(values, { setErrors }) {
 				this.successMessage =  ''
 				const http = createHttp()
-				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/roles/create', {'name': this.role.name})
+				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/roles/'+this.role.id+'/delete', {})
 					.then((response) => {
 						this.successMessage = response.data.message
-						this.$emit('added')
+						this.$emit('deleted')
 						this.closeModal()
 					})
 					.catch(error => {

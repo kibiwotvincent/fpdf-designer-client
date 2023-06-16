@@ -6,10 +6,10 @@
 <template>
 	<div class="flex justify-between mb-4">
 		<div class="inline-block pt-4 text-gray-700 text-sm font-semibold uppercase">
-			User Roles & Permissions
+			User Roles
 		</div>
 		<button 
-		class="bg-red-400 hover:underline text-white rounded py-1 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
+		class="bg-red-400 hover:underline text-white rounded py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
 		data-te-toggle="modal"
 		data-te-target="#newRoleModal"
 		data-te-ripple-init
@@ -66,7 +66,7 @@
 			:aria-labelledby="'tabs-'+roles[0].name+'-tab'"
 			data-te-tab-active
 			>
-				<RolePermissionsComponent :role_id=active_role.id :role=active_role :all_permissions=permissions />
+				<RoleComponent :role_id=active_role.id :role=active_role :all_permissions=permissions />
 			</div>
 			<div
 			v-for="role in roles.filter((role, index) => index > 0)" :key="'tab-content-'+role.id"
@@ -75,26 +75,30 @@
 			role="tabpanel"
 			:aria-labelledby="'tabs-'+role.name+'-tab'"
 			>
-				<RolePermissionsComponent :role_id=active_role.id :role=active_role :all_permissions=permissions />
+				<RoleComponent :role_id=active_role.id :role=active_role :all_permissions=permissions />
 			</div>
 		</div>
 	</div>
 	<!-- End Roles Tab -->
 	<NewRoleModal @added="fetchRoles"/>
+	<UpdateRoleModal :id=active_role.id :name=active_role.name @updated="fetchRoles" />
+	<DeleteRoleModal :id=active_role.id :name=active_role.name @deleted="fetchRoles" />
 </template>
 
 <script>
 	import createHttp from '@/axios.js'
 	import NewRoleModal from '@/components/account/admin/NewRoleModal.vue'
-	import { defineAsyncComponent } from 'vue'
+	import UpdateRoleModal from '@/components/account/admin/UpdateRoleModal.vue'
+	import DeleteRoleModal from '@/components/account/admin/DeleteRoleModal.vue'
+	import RoleComponent from '@/components/account/admin/RoleComponent.vue'
 	
 	export default {
 		name: 'RolesComponent',
 		components: {
 			NewRoleModal,
-			RolePermissionsComponent: defineAsyncComponent(() => 
-				import('@/components/account/admin/RolePermissionsComponent')
-			),
+			RoleComponent,
+			UpdateRoleModal,
+			DeleteRoleModal,
 		},
 		data() {
 			return {
