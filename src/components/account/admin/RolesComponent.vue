@@ -1,23 +1,29 @@
 <script setup>
 	import Spinner from '@/components/form/Spinner'
 	import { PlusIcon } from '@heroicons/vue/20/solid'
+	import { WrenchScrewdriverIcon } from '@heroicons/vue/24/outline'
 </script>
 
 <template>
 	<div class="flex justify-between mb-4">
-		<div class="inline-block pt-4 text-gray-700 text-sm font-semibold uppercase">
-			User Roles
+		<div class="inline-block pt-2.5 text-gray-700 text-sm font-semibold uppercase">
+			User Roles & Permissions
 		</div>
+		<div>
+		<router-link to="/admin/permissions">
+			<a href="#" class="mr-4 text-sm font-semibold text-red-400 hover:underline">
+			<WrenchScrewdriverIcon class="inline-block h-4 w-4 mb-1" /> Manage Permissions
+			</a>
+		</router-link>
 		<button 
 		class="bg-red-400 hover:underline text-white rounded py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
 		data-te-toggle="modal"
 		data-te-target="#newRoleModal"
-		data-te-ripple-init
-		data-te-ripple-color="light"
 		>
 			<PlusIcon class="inline-block h-5 w-5 mb-1"/>
 			Add New Role
 		</button>
+		</div>
 	</div>
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading user roles & permissions..." :show-text=true />

@@ -1,5 +1,5 @@
 <script setup>
-	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
+	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, AdjustmentsVerticalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
 </script>
 <template>
   <nav
@@ -221,7 +221,27 @@
                   class="fas fa-map-marked mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                <AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" /> Roles & Permissions
+                <AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" /> User Roles
+              </a>
+            </router-link>
+        </li>
+		<li class="items-center">
+            <router-link to="/admin/permissions" v-slot="{ href, navigate, isActive }">
+              <a
+                :href="href"
+                @click="navigate"
+                class="text-xs uppercase py-3 font-bold block"
+                :class="[
+                  isActive
+                    ? 'text-red-400 hover:text-red-500 hover:underline'
+                    : 'text-gray-700 hover:text-red-400 hover:underline',
+                ]"
+              >
+                <i
+                  class="fas fa-map-marked mr-2 text-sm"
+                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
+                ></i>
+                <AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1" /> User Permissions
               </a>
             </router-link>
         </li>
