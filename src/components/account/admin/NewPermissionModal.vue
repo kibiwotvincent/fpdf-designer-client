@@ -54,7 +54,7 @@
 		methods: {
 			cancel() {
 				this.reset()
-				this.closeModal()
+				this.closeModal(0)
 			},
 			async onSubmit(values, { setErrors }) {
 				this.successMessage =  ''
@@ -92,13 +92,13 @@
 				this.permission = {}
 				this.successMessage =  ''
 			},
-			closeModal() {
+			closeModal(delay = 1000) {
 				var self = this
 				//delay closing of modal for 1 second
 				setTimeout(function() {
 					self.reset()
 					self.$refs.closeModal.click()
-				}, 1000)
+				}, delay)
 			}
 		}
 	}
