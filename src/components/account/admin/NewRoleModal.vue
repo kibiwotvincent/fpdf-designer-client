@@ -2,7 +2,7 @@
 	import * as Yup from 'yup'
 	
 	const schema = Yup.object().shape({
-		name: Yup.string().required()
+		//
 	})
 </script>
 
@@ -53,6 +53,7 @@
 		}),
 		methods: {
 			cancel() {
+				this.reset()
 				this.closeModal()
 			},
 			async onSubmit(values, { setErrors }) {
@@ -87,8 +88,17 @@
 						setErrors(errors)
 					});
 			},
+			reset() {
+				this.role = {}
+				this.successMessage =  ''
+			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				var self = this
+				//delay closing of modal for 1 second
+				setTimeout(function() {
+					self.reset()
+					self.$refs.closeModal.click()
+				}, 1000)
 			}
 		}
 	}

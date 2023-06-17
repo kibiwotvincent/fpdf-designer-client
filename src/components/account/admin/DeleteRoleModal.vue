@@ -60,7 +60,6 @@
 			id() {
 				this.role.id = this.id
 				this.role.name = this.name
-				this.successMessage = ''
 			}
 		},
 		mounted() {
@@ -69,6 +68,7 @@
 		},
 		methods: {
 			cancel() {
+				this.reset()
 				this.closeModal()
 			},
 			async onSubmit(values, { setErrors }) {
@@ -103,8 +103,16 @@
 						setErrors(errors)
 					});
 			},
+			reset() {
+				this.successMessage =  ''
+			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				var self = this
+				//delay closing of modal for 1 second
+				setTimeout(function() {
+					self.reset()
+					self.$refs.closeModal.click()
+				}, 1000)
 			}
 		}
 	}
