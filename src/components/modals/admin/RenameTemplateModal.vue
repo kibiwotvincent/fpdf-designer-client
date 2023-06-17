@@ -2,7 +2,7 @@
 	import * as Yup from 'yup'
 	
 	const schema = Yup.object().shape({
-		name: Yup.string().required()
+		//
 	})
 </script>
 
@@ -12,7 +12,14 @@
 			<label class="block">Edit Template Name</label>
 			<Field type="text" name="name" v-model="template.name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1.5 text-neutral-700 outline-none focus:shadow" />
 			<div class="text-danger">{{errors.name}}</div>
-			<div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+			
+			<div v-if="errors.apiError">
+				<Alert :message=errors.apiError type="danger" />
+			</div>
+			<div v-if="successMessage !== ''">
+				<Alert :message=successMessage type="success" />
+			</div>
+			
 			<div class="flex justify-between mt-3">
 				<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
 				Close
@@ -33,6 +40,7 @@
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
+	import Alert from '@/components/common/Alert.vue'
 	import { Form, Field } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
 	import createHttp from '@/axios.js'
@@ -46,16 +54,20 @@
 				index: '',
 		}),
 		data: () => ({
-			template: {}
+			template: {},
+			successMessage: ''
 		}),
 		methods: {
 			cancel() {
-				this.closeModal()
+				this.reset()
+				this.closeModal(0)
 			},
 			async onSubmit(values, { setErrors }) {
+				this.successMessage = ''
 				const http = createHttp()
 				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/templates/'+this.template.id+'/rename', {'name': this.template.name})
-					.then(() => {
+					.then((response) => {
+						this.successMessage = response.data.message
 						this.$emit('renamed', this.template)
 						this.closeModal()
 					})
@@ -82,8 +94,16 @@
 						setErrors(errors)
 					});
 			},
-			closeModal() {
-				this.$refs.closeModal.click()
+			reset() {
+				this.successMessage =  ''
+			},
+			closeModal(delay = 1000) {
+				var self = this
+				//delay closing of modal for 1 second
+				setTimeout(function() {
+					self.reset()
+					self.$refs.closeModal.click()
+				}, delay)
 			}
 		},
 		watch: {

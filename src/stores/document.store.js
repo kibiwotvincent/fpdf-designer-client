@@ -43,11 +43,11 @@ export const useDocumentStore = defineStore({
 		},
 		async rename(documentID, name) {
 			const http = createHttp()
-			await http.post(process.env.VUE_APP_API_URL+'/api/documents/'+documentID+'/rename', {'name': name})
+			return await http.post(process.env.VUE_APP_API_URL+'/api/documents/'+documentID+'/rename', {'name': name})
 		},
 		async delete(documentID) {
 			const http = createHttp()
-			await http.post(process.env.VUE_APP_API_URL+'/api/documents/'+documentID+'/delete')
+			return await http.post(process.env.VUE_APP_API_URL+'/api/documents/'+documentID+'/delete')
 		},
 		reset() {
 			this.document.draggables = []

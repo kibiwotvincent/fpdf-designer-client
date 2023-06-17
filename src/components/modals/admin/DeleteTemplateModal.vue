@@ -12,7 +12,14 @@
 			<div class="pt-4 text-gray-600 text-xl text-center pb-2">
 			Are you sure you want to delete <i>{{template.name}}</i> template?
 			</div>
-			<div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
+			
+			<div v-if="errors.apiError">
+				<Alert :message=errors.apiError type="danger" />
+			</div>
+			<div v-if="successMessage !== ''">
+				<Alert :message=successMessage type="success" />
+			</div>
+			
 			<div class="flex justify-between mt-3">
 				<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
 				Close
@@ -33,6 +40,7 @@
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
+	import Alert from '@/components/common/Alert.vue'
 	import { Form } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
 	import createHttp from '@/axios.js'
@@ -46,16 +54,20 @@
 				index: '',
 		}),
 		data: () => ({
-			template: {}
+			template: {},
+			successMessage: ''
 		}),
 		methods: {
 			cancel() {
-				this.closeModal()
+				this.reset()
+				this.closeModal(0)
 			},
 			async onSubmit(values, { setErrors }) {
+				this.successMessage = ''
 				const http = createHttp()
 				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/templates/'+this.template.id+'/delete')
-					.then(() => {
+					.then((response) => {
+						this.successMessage = response.data.message
 						this.$emit('deleted', this.template)
 						this.closeModal()
 					})
@@ -82,8 +94,16 @@
 						setErrors(errors)
 					});
 			},
-			closeModal() {
-				this.$refs.closeModal.click()
+			reset() {
+				this.successMessage =  ''
+			},
+			closeModal(delay = 1000) {
+				var self = this
+				//delay closing of modal for 1 second
+				setTimeout(function() {
+					self.reset()
+					self.$refs.closeModal.click()
+				}, delay)
 			}
 		},
 		watch: {
