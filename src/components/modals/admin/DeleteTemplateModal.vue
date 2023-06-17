@@ -2,25 +2,25 @@
 	import * as Yup from 'yup'
 	
 	const schema = Yup.object().shape({
-		
+		//
 	})
 </script>
 
 <template>
 	<modal id="deleteTemplateModal" size="small">
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
-			<h2 class="w-full my-2 text-xl leading-tight text-center text-gray-600">
-			Are you sure you want to delete {{template.name}} ?
-			</h2>
+			<div class="pt-4 text-gray-600 text-xl text-center pb-2">
+			Are you sure you want to delete <i>{{template.name}}</i> template?
+			</div>
 			<div v-if="errors.apiError" class="alert alert-danger mt-3 mb-0">{{errors.apiError}}</div>
 			<div class="flex justify-between mt-3">
 				<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
 				Close
 				</button>
-				<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-1 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+				<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				Cancel
 				</button>
-				<button class="bg-red-400 text-white rounded mt-4 py-1 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+				<button class="bg-red-400 text-white rounded mt-4 py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				<span v-show="isSubmitting">
 				<spinner :size=4 />
 				</span>
