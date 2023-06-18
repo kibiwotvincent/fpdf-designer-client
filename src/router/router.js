@@ -18,6 +18,7 @@ import Dashboard from '@/views/account/Dashboard.vue';
 import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
 import RolesView from '@/views/account/admin/RolesView.vue';
 import PermissionsView from '@/views/account/admin/PermissionsView.vue';
+import UsersView from '@/views/account/admin/UsersView.vue';
 
 const routes = [
 	{
@@ -58,6 +59,11 @@ const routes = [
 				path: "/admin/permissions",
 				name: 'admin.permissions',
 				component: PermissionsView,
+			},
+			{
+				path: "/admin/users",
+				name: 'admin.users',
+				component: UsersView,
 			},
 		],
 	},

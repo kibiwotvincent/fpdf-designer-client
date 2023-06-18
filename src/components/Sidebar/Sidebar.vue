@@ -129,31 +129,7 @@
                 <CreditCardIcon class="inline-block h-4 w-4 mb-1" /> Payments
               </a>
             </router-link>
-          </li>
-		<li class="items-center">
-            <router-link
-              to="/admin/tables"
-              v-slot="{ href, navigate, isActive }"
-            >
-              <a
-                :href="href"
-                @click="navigate"
-                class="text-xs uppercase py-3 font-bold block"
-                :class="[
-                  isActive
-                    ? 'text-red-400 hover:text-red-500 hover:underline'
-                    : 'text-gray-700 hover:text-red-400 hover:underline',
-                ]"
-              >
-                <i
-                  class="fas fa-table mr-2 text-sm"
-                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
-                ></i>
-                <UsersIcon class="inline-block h-4 w-4 mb-1" /> Users
-              </a>
-            </router-link>
-          </li>
-
+        </li>
         <li class="items-center">
             <router-link to="/admin/maps" v-slot="{ href, navigate, isActive }">
               <a
@@ -184,7 +160,29 @@
           Administrator
         </h6>
         <!-- Navigation -->
-		
+		<li class="items-center">
+            <router-link
+              to="/admin/users"
+              v-slot="{ href, navigate, isActive }"
+            >
+              <a
+                :href="href"
+                @click="navigate"
+                class="text-xs uppercase py-3 font-bold block"
+                :class="[
+                  isActive
+                    ? 'text-red-400 hover:text-red-500 hover:underline'
+                    : 'text-gray-700 hover:text-red-400 hover:underline',
+                ]"
+              >
+                <i
+                  class="fas fa-table mr-2 text-sm"
+                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
+                ></i>
+                <UsersIcon class="inline-block h-4 w-4 mb-1" /> Users
+              </a>
+            </router-link>
+        </li>
 		<li class="items-center">
             <router-link to="/admin/templates" v-slot="{ href, navigate, isActive }">
               <a

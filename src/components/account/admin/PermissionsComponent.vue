@@ -3,6 +3,7 @@
 	import { PlusIcon } from '@heroicons/vue/20/solid'
 	import { WrenchScrewdriverIcon } from '@heroicons/vue/24/outline'
 	import { PencilSquareIcon, TrashIcon } from '@heroicons/vue/24/outline'
+	import Alert from '@/components/common/Alert'
 </script>
 
 <template>
@@ -25,13 +26,18 @@
 			Add New Permission
 		</button>
 		</div>
+		<NewPermissionModal @added="fetchPermissions"/>
 	</div>
 	
 	<div class="flex justify-center mt-8" v-show="isLoading">
 	<Spinner :size=6 color="red-400" text="Loading user permissions..." :show-text=true />
 	</div>
 	
-	<div v-if=!isLoading class="bg-white rounded px-4 py-4">
+	<div v-if="isLoading === false && permissions.length === 0">
+		<Alert type="warning" message="No permissions to display yet!" />
+	</div>
+	
+	<div v-if="!isLoading && permissions.length > 0" class="bg-white rounded px-4 py-4">
 		<div class="grid grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
 			<div class="w-full" v-for="permission, index in permissions" :key="`permission_${permission.name}`">
 				<div class="text-gray-600">
@@ -52,11 +58,9 @@
 				</div>
 			</div>
 		</div>
+		<UpdatePermissionModal :id=active_permission.id :name=active_permission.name @updated="fetchPermissions" />
+		<DeletePermissionModal :id=active_permission.id :name=active_permission.name @deleted="fetchPermissions" />
 	</div>
-	
-	<NewPermissionModal @added="fetchPermissions"/>
-	<UpdatePermissionModal :id=active_permission.id :name=active_permission.name @updated="fetchPermissions" />
-	<DeletePermissionModal :id=active_permission.id :name=active_permission.name @deleted="fetchPermissions" />
 </template>
 
 <script>
