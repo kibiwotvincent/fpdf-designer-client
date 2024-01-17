@@ -1,5 +1,5 @@
 <template>
-	<modal id="uploadImageModal">
+	<modal>
 		<form @submit.prevent="onSubmit">
 		<label class="block">Select Image to Upload</label>
 		<input type="file" ref="file" name="image" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow" />	
@@ -42,7 +42,7 @@
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
 	import Spinner from '@/components/form/Spinner'
-	import { useDocumentStore } from '@/stores'
+	import { useDocumentStore, useDocumentModalStore } from '@/stores'
 	import createHttp from '@/axios.js'
 	
 	export default {
@@ -84,7 +84,8 @@
 				});
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

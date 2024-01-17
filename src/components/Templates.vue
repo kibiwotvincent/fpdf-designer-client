@@ -68,11 +68,12 @@
 	import createHttp from '@/axios.js'
 	import Spinner from '@/components/form/Spinner';
 	import OverlayModal from '@/components/form/OverlayModal.vue'
+    import Alert from '@/components/common/Alert.vue'
 	
 	export default {
 		name: 'DocumentTemplates',
 		components: {
-			OverlayModal
+			OverlayModal,Alert
 		},
 		data() {
 			return {

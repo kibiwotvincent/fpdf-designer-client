@@ -3,7 +3,7 @@
 </script>
 
 <template>
-	<modal id="addTextModal">
+	<modal>
 		<form @submit.prevent="onSubmit">
 		<input type="hidden" v-model="draggable.type"/>
 		<div>
@@ -168,9 +168,6 @@
 			</div>
 		</div>
 		<div class="flex justify-between">
-			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
-			Close
-			</button>
 			<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			Cancel
 			</button>
@@ -184,7 +181,7 @@
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
-	import { useDocumentStore } from '@/stores'
+	import { useDocumentStore, useDocumentModalStore } from '@/stores'
 	
 	export default {
 		name: 'AddTextModalComponent',
@@ -237,7 +234,8 @@
 				}
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

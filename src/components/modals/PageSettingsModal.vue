@@ -1,10 +1,10 @@
 <script setup>
-import { useDocumentStore } from '@/stores'
+import { useDocumentStore, useDocumentModalStore } from '@/stores'
 const documentStore = useDocumentStore()
 </script>
 
 <template>
-	<modal id="pageSettingsModal">
+	<modal>
 		<form @submit.prevent="onSubmit">
 		<div class="">
 			<div class="flex w-full gap-4 mb-3">
@@ -76,9 +76,6 @@ const documentStore = useDocumentStore()
 			<small class="block mb-1">Updating font size, font color and font family sets their defaults in new texts. It does not affect existing texts in the document.</small>
 		</div>
 		<div class="flex justify-between">
-			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
-			Close
-			</button>
 			<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			Cancel
 			</button>
@@ -92,9 +89,13 @@ const documentStore = useDocumentStore()
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
+    import { reactive } from 'vue'
 	
 	export default {
 		name: 'PageSettingsModalComponent',
+        props: reactive({
+				open: false,
+		}),
 		data: () => ({
 				settings: {},
 				defaultSettings: {},
@@ -136,7 +137,8 @@ const documentStore = useDocumentStore()
 				this.settings = { ...this.defaultSettings }
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

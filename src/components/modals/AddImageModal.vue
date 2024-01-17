@@ -1,13 +1,16 @@
+<script setup>
+   import { useDocumentStore, useDocumentModalStore } from '@/stores' 
+</script>
 <template>
-	<modal id="addImageModal">
+	<modal>
 		<form @submit.prevent="onSubmit">
 		<div class="flex w-full gap-4 mb-3">
-			<div class="w-3/4">
+			<div class="w-1/2">
 				<label class="block">Enter Image Url</label>
 				<input type="text" v-model="draggable.url" placeholder="http://www.example.com/path-to-image" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1 mb-3 text-neutral-700 outline-none focus:shadow" />
 			</div>
-			<div class="w-1/4 flex justify-end">
-				<button  type="button" data-te-toggle="modal" data-te-target="#uploadImageModal" class="block bg-gray-200 text-gray-700 rounded mt-6 h-[2.15rem] px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+			<div class="w-1/2 flex justify-end">
+				<button  type="button" @click="launchUploadImageModal" class="block bg-gray-200 text-gray-700 rounded mt-6 h-[2.15rem] px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				or Upload Image
 				</button>
 			</div>
@@ -31,9 +34,6 @@
 			</div>
 		</div>
 		<div class="flex justify-between">
-			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
-			Close
-			</button>
 			<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			Cancel
 			</button>
@@ -43,24 +43,25 @@
 		</div>
 		</form>
 	</modal>
-	<UploadImageModal />
+    
 </template>
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
-	import UploadImageModal from '@/components/modals/UploadImageModal.vue'
-	import { useDocumentStore } from '@/stores'
 	
 	export default {
 		name: 'AddImageModalComponent',
 		components: {
 			Modal,
-			UploadImageModal
 		},
 		data: () => ({
 			draggable: JSON.parse(localStorage.getItem('defaults')).image,
 		}),
 		methods: {
+            launchUploadImageModal() {
+                const documentModalStore = useDocumentModalStore()
+				documentModalStore.show('UploadImage')
+            },
 			cancel() {
 				this.resetForm()
 				this.closeModal()
@@ -76,7 +77,8 @@
 				this.closeModal()
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

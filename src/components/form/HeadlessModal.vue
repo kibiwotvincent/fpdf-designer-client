@@ -1,56 +1,42 @@
+<script setup>
+import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { useDocumentModalStore } from '@/stores'
+    
+const documentModalStore = useDocumentModalStore()
+</script>
+
 <template>
-	<div
-	data-te-modal-init
-	class="fixed top-0 left-0 z-[1055] hidden h-full w-full overflow-y-auto overflow-x-hidden outline-none"
-	:id="this.id"
-	tabindex="-1"
-	:aria-labelledby="this.id+'Label'"
-	aria-modal="true"
-	role="dialog"
-	@focus="hidden">
-		
-		<div data-te-modal-dialog-ref :class=modalClass>
-			<div
-			class="pointer-events-auto relative flex w-full flex-col rounded-md border-none bg-white bg-clip-padding text-current shadow-lg outline-none dark:bg-neutral-600">
-				<div class="relative p-4 text-gray-600">
-					<!--modal body-->
-					<slot></slot>
-					<!--end modal body-->
-				</div>
-			</div>
-		</div>	
-		
-    </div>
+  <TransitionRoot as="template" :show="documentModalStore.open">
+    <Dialog as="div" class="relative z-40" @close="close()">
+      <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+        <div class="fixed h-full w-full inset-0 bg-gray-400 bg-opacity-75 transition-opacity" />
+      </TransitionChild>
+
+      <div class="fixed inset-0 z-40 w-screen overflow-y-auto">
+        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+            <DialogPanel class="relative transform overflow-hidden rounded-lg bg-white text-gray-600 p-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <!--modal body-->
+				<slot></slot>
+              <!--end modal body-->
+            </DialogPanel>
+          </TransitionChild>
+        </div>
+      </div>
+    </Dialog>
+  </TransitionRoot>
 </template>
 
 <script>
-	import { reactive } from 'vue'
-	
 	export default {
 		name: 'HeadlessModalComponent',
-		props: reactive({
-				id: null,
-				size: 'medium',
-		}),
-		data: () => ({
-				modalClass: ''
-		}),
-		mounted() {
-			if(this.size == 'small') {
-				this.modalClass = 'pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:max-w-[500px]'
-			}
-			else {
-				this.modalClass = 'pointer-events-none relative w-auto translate-y-[-50px] opacity-0 transition-all duration-300 ease-in-out min-[576px]:mx-auto min-[576px]:mt-7 min-[576px]:max-w-[500px] min-[992px]:max-w-[800px]'
-			}
-		},
-		methods: {
-			hidden() {
-			//console.log("focus")
-			}
-		}
+        methods: {
+            close() {
+				const documentModalStore = useDocumentModalStore()
+               // if(documentModalStore.static == false) {
+                    documentModalStore.close()
+                //}
+            }
+        }
 	}
 </script>
-
-<style scoped>
-
-</style>

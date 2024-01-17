@@ -1,10 +1,12 @@
 <script setup>
 import Navbar from '@/components/common/Navbar.vue'
-import { useDocumentStore } from '@/stores'
+import { useDocumentStore, useDocumentModalStore } from '@/stores'
 import createHttp from '@/axios.js'
 
 const documentStore = useDocumentStore()
 documentStore.setSpinner('loading_workspace', true)
+    
+const documentModalStore = useDocumentModalStore()
 </script>
 
 <template>
@@ -13,65 +15,46 @@ documentStore.setSpinner('loading_workspace', true)
 	<section class="bg-gray-100">
 		<div id="fpdf_designer_elements" class="bg-gray-100 shadow">
 			<button class="mr-4 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"
-			data-te-toggle="modal"
-			data-te-target="#pageSettingsModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
+			@click="launchModal('PageSettings')"
 			>
 			<Cog8ToothIcon class="inline-block h-4 w-4 mb-1"/> 
 			Page Settings
 			</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addTextModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
-			ref="textModalButton"
+			@click="launchModal('AddText')"
 			>
 			Add Text
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateTextModal" ref="updateModalButton-text" class="hidden">Update Text</button>
+			<button @click="launchModal('UpdateText')" ref="updateModalButton-text" class="hidden">Update Text</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addRectangleModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
+			@click="launchModal('AddRectangle')"
 			>
 			Add Rectangle
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateRectangleModal" ref="updateModalButton-rectangle" class="hidden">Update Rectangle</button>
+			<button @click="launchModal('UpdateRectangle')" ref="updateModalButton-rectangle" class="hidden">Update Rectangle</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="rect" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addTableModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
+			@click="launchModal('AddTable')"
 			>
 			Add Table
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateTableModal" ref="updateModalButton-table" class="hidden">Update Table</button>
+			<button @click="launchModal('UpdateTable')" ref="updateModalButton-table" class="hidden">Update Table</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="line" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addLineModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
+			@click="launchModal('AddLine')"
 			>
 			Add Line
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateLineModal" ref="updateModalButton-line" class="hidden">Update Line</button>
+			<button @click="launchModal('UpdateLine')" ref="updateModalButton-line" class="hidden">Update Line</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="image" data-is-new-element="true"
-			data-te-toggle="modal"
-			data-te-target="#addImageModal"
-			data-te-ripple-init
-			data-te-ripple-color="light"
+			@click="launchModal('AddImage')"
 			>
 			Add Image
 			</button>
-			<button data-te-toggle="modal" data-te-target="#updateImageModal" ref="updateModalButton-image" class="hidden">Update Image</button>
+			<button @click="launchModal('UpdateImage')" ref="updateModalButton-image" class="hidden">Update Image</button>
 			
 			<div class="float-right">
 				<button @click="reset" class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowPathIcon class="inline-block h-4 w-4 mb-1"/> Reset</button>
@@ -169,27 +152,25 @@ documentStore.setSpinner('loading_workspace', true)
 		</div>
 	</section>
 	<!--modals-->
-	<page-settings-modal />
-	<add-table-modal />
-	<update-table-modal />
+	<page-settings-modal  v-if="documentModalStore.name == 'PageSettings'" />
+	<add-table-modal v-if="documentModalStore.name == 'AddTable'" />
+	<update-table-modal v-if="documentModalStore.name == 'UpdateTable'" />
 	<button data-te-toggle="modal" data-te-target="#updateTableCellModal" ref="updateCell" class="hidden">Update Table Cell</button>
-	<update-table-cell-modal :cell=cell />
-	<add-text-modal />
-	<update-text-modal />
-	<add-rectangle-modal />
-	<update-rectangle-modal />
-	<add-line-modal />
-	<update-line-modal />
-	<add-image-modal />
-	<update-image-modal />
+	<update-table-cell-modal :cell=cell v-if="documentModalStore.name == 'UpdateTableCell'"/>
+	<add-text-modal  v-if="documentModalStore.name == 'AddText'" />
+	<update-text-modal v-if="documentModalStore.name == 'UpdateText'" />
+	<add-rectangle-modal v-if="documentModalStore.name == 'AddRectangle'" />
+	<update-rectangle-modal v-if="documentModalStore.name == 'UpdateRectangle'" />
+	<add-line-modal v-if="documentModalStore.name == 'AddLine'" />
+	<update-line-modal v-if="documentModalStore.name == 'UpdateLine'" />
+	<add-image-modal v-if="documentModalStore.name == 'AddImage'" />
+	<update-image-modal v-if="documentModalStore.name == 'UpdateImage'" />
+    <upload-image-modal v-if="documentModalStore.name == 'UploadImage'" />
 	
 	<button class="hidden" ref="launchSaveDocumentModal"
-	data-te-toggle="modal"
-	data-te-target="#saveDocumentModal"
-	data-te-ripple-init
-	data-te-ripple-color="light"
+	@click="launchModal('SaveDocument')"
 	></button>
-	<save-document-modal />
+	<save-document-modal v-if="documentModalStore.name == 'SaveDocument'" />
 	<!--end modals-->
 </template>
 
@@ -210,6 +191,7 @@ documentStore.setSpinner('loading_workspace', true)
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
+    import UploadImageModal from '@/components/modals/UploadImageModal.vue'
 	
 	export default {
 		components: {
@@ -234,7 +216,8 @@ documentStore.setSpinner('loading_workspace', true)
 				currentTop : 0,
 				update : false,
 				id : this.$route.params.id,
-				cell: {}
+				cell: {},
+                launchPageSettingsModal: false
 			}
 		},
 		created() {
@@ -253,6 +236,10 @@ documentStore.setSpinner('loading_workspace', true)
 			this.loadWorkspace()
 		},
 		methods: {
+            launchModal(modalName) {
+                const documentModalStore = useDocumentModalStore()
+				documentModalStore.show(modalName)
+            },
 			getTextStyle(draggable, rowIndex = null, columnIndex = null) {
 				let style = ''
 				let isTable = false
@@ -589,7 +576,7 @@ documentStore.setSpinner('loading_workspace', true)
 
 <style scoped>
 .panel {
-	padding-top: 165px;
+	padding-top: 150px;
 	padding-bottom: 40px;
 }
 .page {
@@ -603,14 +590,15 @@ documentStore.setSpinner('loading_workspace', true)
 #fpdf_designer_elements {
 	position:fixed; 
 	z-index:30; 
-	padding: 20px 30px;
+	padding: 15px 30px;
 	width: 100%;
-	min-width: 336mm;
+	min-width: 286mm/*336mm*/;
 	margin-top: 60px;
 }
 
 #fpdf_designer_elements button {
 	border: 1px solid #d3d3d3;
-	padding: 4px 10px;
+	padding: 4px 8px;
+    font-size: 0.8rem;
 }
 </style>

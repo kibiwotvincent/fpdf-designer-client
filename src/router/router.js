@@ -7,6 +7,7 @@ import Account from "@/layouts/Account.vue";
 
 import Home from '@/views/Homepage.vue';
 import DesignPanel from '@/views/DesignPanel.vue';
+import BuyCoins from '@/views/BuyCoins.vue';
 import ChooseTemplate from '@/views/ChooseTemplate.vue';
 import Pricing from '@/views/Pricing.vue';
 import PrivacyPolicy from '@/views/PrivacyPolicy.vue';
@@ -31,9 +32,11 @@ const routes = [
 					{path: '/pricing', name: 'pricing', component: Pricing},
 					{path: '/privacy-policy', name: 'privacy-policy', component: PrivacyPolicy},
 					{path: '/contact-us', name: 'contact-us', component: ContactUs},
+                    {path: '/help', name: 'help', component: ContactUs},
 					{path: '/login', name: 'login', component: Login},
 					{path: '/register', name: 'register', component: Register},
 					{path: '/forgot-password', name: 'forgot-password', component: ForgotPassword},
+                    {path: '/buy-coins', name: 'buy-coins', component: BuyCoins},
 				]
 	},
 	{
