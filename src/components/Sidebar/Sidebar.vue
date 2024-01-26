@@ -1,5 +1,5 @@
 <script setup>
-	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, AdjustmentsVerticalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
+	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon,CurrencyDollarIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
 </script>
 <template>
   <nav
@@ -126,7 +126,7 @@
                   class="fas fa-table mr-2 text-sm"
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
-                <CreditCardIcon class="inline-block h-4 w-4 mb-1" /> Payments
+                <CurrencyDollarIcon class="inline-block h-4 w-4 mb-1" /> Payments
               </a>
             </router-link>
         </li>
@@ -203,43 +203,37 @@
               </a>
             </router-link>
         </li>
-		<li class="items-center">
-            <router-link to="/admin/roles" v-slot="{ href, navigate, isActive }">
+        <li class="items-center">
+            <router-link to="/admin/subscriptions" v-slot="{ href, navigate }">
               <a
                 :href="href"
                 @click="navigate"
                 class="text-xs uppercase py-3 font-bold block"
                 :class="[
-                  isActive
+                  routeIsActive('subscriptions')
                     ? 'text-red-400 hover:text-red-500 hover:underline'
                     : 'text-gray-700 hover:text-red-400 hover:underline',
                 ]"
               >
-                <i
-                  class="fas fa-map-marked mr-2 text-sm"
-                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
-                ></i>
-                <AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" /> User Roles
+                <i class="fas fa-map-marked mr-2 text-sm"></i>
+                <CreditCardIcon class="inline-block h-4 w-4 mb-1" /> Subscription Plans
               </a>
             </router-link>
         </li>
 		<li class="items-center">
-            <router-link to="/admin/permissions" v-slot="{ href, navigate, isActive }">
+            <router-link to="/admin/roles" v-slot="{ href, navigate }">
               <a
                 :href="href"
                 @click="navigate"
                 class="text-xs uppercase py-3 font-bold block"
                 :class="[
-                  isActive
+                    routeIsActive('roles')
                     ? 'text-red-400 hover:text-red-500 hover:underline'
                     : 'text-gray-700 hover:text-red-400 hover:underline',
                 ]"
               >
-                <i
-                  class="fas fa-map-marked mr-2 text-sm"
-                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
-                ></i>
-                <AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1" /> User Permissions
+                <i class="fas fa-map-marked mr-2 text-sm"></i>
+                <AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" /> Roles & Permissions
               </a>
             </router-link>
         </li>
@@ -249,7 +243,7 @@
         <!-- Divider -->
         <hr class="my-4 md:min-w-full" />
 		<div class="items-center">
-		<button @click="logout" class="bg-red-400 text-white-800 rounded mt-4 lg:mt-0 py-1 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
+		<button @click="logout" class="bg-red-400 text-white-800 rounded mt-4 lg:mt-0 py-2 px-8 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 			<PowerIcon class="inline-block h-4 w-4 mb-1" /> Logout
 		</button>
         </div>
@@ -276,7 +270,11 @@ export default {
 	logout() {
 		const authStore = useAuthStore()
 		return authStore.logout()
-	}
+	},
+    routeIsActive(route) {
+        const routeArray = this.$route.name.split('.')
+        return routeArray.includes(route)
+    }
   },
 };
 </script>

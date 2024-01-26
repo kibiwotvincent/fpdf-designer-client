@@ -7,7 +7,7 @@
 </script>
 
 <template>
-	<modal id="renameTemplateModal" size="small">
+	<modal>
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
 			<label class="block">Edit Template Name</label>
 			<Field type="text" name="name" v-model="template.name" :class="{ 'is-invalid': errors.name }" class="block w-full rounded border border-solid border-neutral-300 px-3 py-1.5 text-neutral-700 outline-none focus:shadow" />
@@ -21,9 +21,6 @@
 			</div>
 			
 			<div class="flex justify-between mt-3">
-				<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
-				Close
-				</button>
 				<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				Cancel
 				</button>
@@ -45,6 +42,7 @@
 	import Spinner from '@/components/form/Spinner'
 	import createHttp from '@/axios.js'
 	import { reactive } from 'vue'
+    import { closeModal, formatAPIErrors } from '@/utils'
 	
 	export default {
 		name: 'RenameTemplateModalComponent',
@@ -57,10 +55,15 @@
 			template: {},
 			successMessage: ''
 		}),
+        mounted() {
+				this.template.id = this.id
+				this.template.name = this.name
+				this.template.index = this.index
+        },
 		methods: {
 			cancel() {
 				this.reset()
-				this.closeModal(0)
+				closeModal()
 			},
 			async onSubmit(values, { setErrors }) {
 				this.successMessage = ''
@@ -69,52 +72,14 @@
 					.then((response) => {
 						this.successMessage = response.data.message
 						this.$emit('renamed', this.template)
-						this.closeModal()
+						closeModal(1500, this)
 					})
 					.catch(error => {
-						const errors = {}
-						const errorResponse = error.response
-						
-						if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'message')) {
-							errors.apiError = errorResponse.data.message
-						}
-						else {
-							errors.apiError = "Network error. Try again later."
-						}
-						
-						if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'errors')) {
-							const errorFields = Object.keys(errorResponse.data.errors)
-							
-							// insert laravel errors
-							errorFields.map(field => {
-								errors[field] = errorResponse.data.errors[field][0]
-							});
-						}
-						
-						setErrors(errors)
+						setErrors(formatAPIErrors(error.response))
 					});
 			},
 			reset() {
 				this.successMessage =  ''
-			},
-			closeModal(delay = 1000) {
-				var self = this
-				//delay closing of modal for 1 second
-				setTimeout(function() {
-					self.reset()
-					self.$refs.closeModal.click()
-				}, delay)
-			}
-		},
-		watch: {
-			id() {
-				this.template.id = this.id
-			},
-			name() {
-				this.template.name = this.name
-			},
-			index() {
-				this.template.index = this.index
 			}
 		}
 	}

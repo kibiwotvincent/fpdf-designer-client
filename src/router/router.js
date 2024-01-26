@@ -17,8 +17,10 @@ import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
 import Dashboard from '@/views/account/Dashboard.vue';
 import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
+import SubscriptionPlans from '@/views/account/admin/SubscriptionsView.vue';
+import AddSubscriptionView from '@/views/account/admin/AddSubscriptionView.vue';
+import UpdateSubscriptionView from '@/views/account/admin/UpdateSubscriptionView.vue';
 import RolesView from '@/views/account/admin/RolesView.vue';
-import PermissionsView from '@/views/account/admin/PermissionsView.vue';
 import UsersView from '@/views/account/admin/UsersView.vue';
 
 const routes = [
@@ -53,15 +55,25 @@ const routes = [
 				name: 'admin.templates',
 				component: AdminTemplates,
 			},
+            {
+				path: "/admin/subscriptions",
+				name: 'admin.subscriptions',
+				component: SubscriptionPlans,
+			},
+            {
+                path: "/admin/subscriptions/add",
+                name: 'admin.subscriptions.add',
+                component: AddSubscriptionView,
+            },
+            {
+                path: "/admin/subscriptions/:id",
+                name: 'admin.subscriptions.update',
+                component: UpdateSubscriptionView,
+            },
 			{
-				path: "/admin/roles",
+				path: "/admin/roles/:role?",
 				name: 'admin.roles',
 				component: RolesView,
-			},
-			{
-				path: "/admin/permissions",
-				name: 'admin.permissions',
-				component: PermissionsView,
 			},
 			{
 				path: "/admin/users",

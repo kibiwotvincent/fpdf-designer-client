@@ -1,6 +1,7 @@
 <script setup>
 	import Spinner from '@/components/form/Spinner'
 	import { AdjustmentsHorizontalIcon } from '@heroicons/vue/24/outline'
+    import { launchModal, modalIsActive } from '@/utils'
 </script>
 
 <template>
@@ -73,18 +74,17 @@
 					>
 						<button 
 						class="text-red-400"
-						data-te-toggle="modal"
-						data-te-target="#updateUserRolesModal"
-						@click=setActiveUser(user.id)
+						@click="launchModal('UpdateUserRoles'+user.id)"
 						>
 							<AdjustmentsHorizontalIcon class="inline-block h-4 w-4 mb-1" />
 						</button>
 					</td>
+                    <UpdateUserRolesModal :id=user.id :user=user :all_roles=roles v-if="modalIsActive('UpdateUserRoles'+user.id)" />
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<UpdateUserRolesModal :id=active_user.id :user=active_user :all_roles=roles />
+		
 	</div>
 </template>
 
@@ -100,7 +100,6 @@
 		data() {
 			return {
 				users: [],
-				active_user: {},
 				isLoading: true,
 				roles: []
 			}
@@ -110,12 +109,6 @@
 			this.fetchRoles()
 		},
 		methods: {
-			setActiveUser(userID) {
-				let activeUser = this.users.filter(function(user) {
-					return user.id == userID
-				})
-				this.active_user = activeUser[0]
-			},
 			async fetchUsers() {
 				this.isLoading = true
 				this.users = []

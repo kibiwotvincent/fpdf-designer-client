@@ -10,9 +10,10 @@ export const useDocumentModalStore = defineStore({
 				},
     }),
     actions: {
-		show(modalName) {
+		show(modalName, isStatic=true) {
             this.modal.name = modalName
 			this.modal.show = true
+            this.modal.static = isStatic
 		},
         close() {
 			this.modal.show = false

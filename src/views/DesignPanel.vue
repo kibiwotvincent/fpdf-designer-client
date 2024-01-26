@@ -7,6 +7,7 @@ const documentStore = useDocumentStore()
 documentStore.setSpinner('loading_workspace', true)
     
 const documentModalStore = useDocumentModalStore()
+documentModalStore.show('LoadingWorkspace')
 </script>
 
 <template>
@@ -26,7 +27,7 @@ const documentModalStore = useDocumentModalStore()
 			>
 			Add Text
 			</button>
-			<button @click="launchModal('UpdateText')" ref="updateModalButton-text" class="hidden">Update Text</button>
+			<button @click="launchModal('UpdateText', false)" ref="updateModalButton-text" class="hidden">Update Text</button>
 			
 			<button class="bg-white text-gray-600 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out" data-fpdf="text" data-is-new-element="true"
 			@click="launchModal('AddRectangle')"
@@ -63,12 +64,10 @@ const documentModalStore = useDocumentModalStore()
 				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
-		<div v-show="documentStore.isLoadingWorkspace" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Loading workspace..." :show-text=true />
+		<div v-show="documentStore.isLoadingWorkspace">
+            <overlay-modal text="Loading workspace..." v-if="documentModalStore.name == 'LoadingWorkspace'" />
 		</div>
-		<div v-show="documentStore.isSavingDocument" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
-			<Spinner text="Saving document..." :show-text=true />
-		</div>
+        <overlay-modal text="Saving document..." v-if="documentModalStore.name == 'SavingDocument'" />
 		<div v-show="documentStore.isResetingWorkspace" class="w-full flex justify-center mt-[132px] mb-4 text-gray-600 bg-blue-50" style="position:fixed;z-index:30;">
 			<Spinner text="Reseting workspace..." :show-text=true />
 		</div>
@@ -192,6 +191,7 @@ const documentModalStore = useDocumentModalStore()
 	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
     import UploadImageModal from '@/components/modals/UploadImageModal.vue'
+    import OverlayModal from '@/components/form/SpinnerModal.vue'
 	
 	export default {
 		components: {
@@ -236,9 +236,9 @@ const documentModalStore = useDocumentModalStore()
 			this.loadWorkspace()
 		},
 		methods: {
-            launchModal(modalName) {
+            launchModal(modalName, isStatic = false) {
                 const documentModalStore = useDocumentModalStore()
-				documentModalStore.show(modalName)
+				documentModalStore.show(modalName, isStatic)
             },
 			getTextStyle(draggable, rowIndex = null, columnIndex = null) {
 				let style = ''
@@ -446,6 +446,7 @@ const documentModalStore = useDocumentModalStore()
 					
 					const documentStore = useDocumentStore()
 					documentStore.setSpinner('loading_workspace', false)
+                    this.closeModal()
 					documentStore.saveToSession('page_settings', response.data.page_settings)
 					documentStore.saveToSession('draggables', response.data.draggables)
 					documentStore.setPageSettings(response.data.page_settings)
@@ -476,9 +477,9 @@ const documentModalStore = useDocumentModalStore()
 					this.$refs.launchSaveDocumentModal.click()
 				}
 				else {
-					documentStore.setSpinner('saving_document', true)
+                    this.launchModal('SavingDocument')
 					documentStore.update().then(() => {
-						documentStore.setSpinner('saving_document', false)
+                        this.closeModal()
 					})
 				}
 			},
@@ -515,6 +516,10 @@ const documentModalStore = useDocumentModalStore()
 					fileLink.click();
 				});
 			},
+            closeModal() {
+				const documentModalStore = useDocumentModalStore()
+                documentModalStore.close()
+            },
 			onResize: function (x) {
 				const documentStore = useDocumentStore()
 				documentStore.resizeDraggable(x)

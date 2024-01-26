@@ -7,10 +7,10 @@
 </script>
 
 <template>
-	<modal id="deletePermissionModal" size="small">
+	<modal>
 		<Form @submit="onSubmit" :validation-schema="schema" v-slot="{ errors, isSubmitting }">
 			<div class="pt-4 text-gray-600 text-xl text-center pb-2">
-				Are you sure you want to delete <i>{{ permission.name }}</i> permission?
+				Are you sure you want to delete <i>{{ subscription.title }}</i> subscription?
 			</div>
 			
 			<div v-if="errors.apiError">
@@ -21,9 +21,6 @@
 			</div>
 			
 			<div class="flex justify-between mt-2">
-				<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">
-				Close
-				</button>
 				<button type="button" @click="cancel" class="bg-gray-200 text-gray-700 rounded mt-4 py-1.5 px-4 shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out">
 				Cancel
 				</button>
@@ -31,7 +28,7 @@
 				<span v-show="isSubmitting">
 				<spinner :size=4 />
 				</span>
-				Delete Permission
+				Delete Subscription
 				</button>
 			</div>
 		</Form>
@@ -43,76 +40,38 @@
 	import Alert from '@/components/common/Alert.vue'
 	import { Form } from 'vee-validate'
 	import Spinner from '@/components/form/Spinner'
-	import createHttp from '@/axios.js'
+	import { http, url } from '@/axios.js'
 	import { reactive } from 'vue'
+    import { closeModal, formatAPIErrors } from '@/utils'
 	
 	export default {
-		name: 'DeletePermissionModalComponent',
+		name: 'DeleteSubscriptionModalComponent',
 		props: reactive({
-				id: null,
-				name: null,
+				subscription: {}
 				}),
 		data: () => ({
-			permission: {},
 			successMessage: ''
 		}),
-		watch: {
-			id() {
-				this.permission.id = this.id
-				this.permission.name = this.name
-			}
-		},
-		mounted() {
-			this.permission.id = this.id
-			this.permission.name = this.name
-		},
 		methods: {
 			cancel() {
 				this.reset()
-				this.closeModal(0)
+				closeModal()
 			},
 			async onSubmit(values, { setErrors }) {
 				this.successMessage =  ''
-				const http = createHttp()
-				return await http.post(process.env.VUE_APP_API_URL+'/api/admin/permissions/'+this.permission.id+'/delete', {})
+				return await http().post(url('/api/admin/subscriptions/'+this.subscription.id+'/delete'), {})
 					.then((response) => {
 						this.successMessage = response.data.message
-						this.$emit('deleted')
-						this.closeModal()
+						closeModal(1500, this)
 					})
 					.catch(error => {
-						const errors = {}
-						const errorResponse = error.response
-						
-						if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'message')) {
-							errors.apiError = errorResponse.data.message
-						}
-						else {
-							errors.apiError = "Network error. Try again later."
-						}
-						
-						if(Object.prototype.hasOwnProperty.call(errorResponse.data, 'errors')) {
-							const errorFields = Object.keys(errorResponse.data.errors)
-							
-							// insert laravel errors
-							errorFields.map(field => {
-								errors[field] = errorResponse.data.errors[field][0]
-							});
-						}
-						
-						setErrors(errors)
+						setErrors(formatAPIErrors(error.response))
 					});
 			},
 			reset() {
 				this.successMessage =  ''
-			},
-			closeModal(delay = 1000) {
-				var self = this
-				//delay closing of modal for 1 second
-				setTimeout(function() {
-					self.reset()
-					self.$refs.closeModal.click()
-				}, delay)
+                //go to subscriptions page
+                this.$router.push('/admin/subscriptions')
 			}
 		}
 	}
