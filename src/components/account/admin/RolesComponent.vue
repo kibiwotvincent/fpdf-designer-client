@@ -30,7 +30,7 @@
 			<li role="presentation" v-for="role, index in roles" :key=role.id>
 				<router-link :to="'/admin/roles/'+role.name" 
 				:class="[
-                  (index == 0 && this.$route.params.role == '') || this.$route.params.role == role.name
+                  (index == 0 && $route.params.role == '') || $route.params.role == role.name
                     ? 'block px-7 pb-3 pt-4 text-xs font-bold uppercase leading-tight text-red-400 border-x-0 border-b-2 border-t-0 border-red-400 hover:bg-red-100'
                     : 'block px-7 pb-3 pt-4 text-xs font-bold uppercase leading-tight text-gray-500 bg-gray-50 border-x-0 border-b-2 border-t-0 hover:text-red-400 hover:bg-red-100 hover:border-red-400',
                 ]"     
