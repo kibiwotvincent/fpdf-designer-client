@@ -59,7 +59,11 @@ export const useDocumentStore = defineStore({
 		updateDocument(item, itemValue) {
 			this.document[item] = itemValue
 		},
-		addDraggable(draggable) {
+		addDraggable(draggable, copy) {
+      if(copy) {
+        draggable.left = parseInt(draggable.left + 4)
+        draggable.top = parseInt(draggable.top + 10)
+      }
 			this.document.draggables.push(this.format(draggable))
 			this.activateDraggable(this.document.draggables.length - 1)
 		},

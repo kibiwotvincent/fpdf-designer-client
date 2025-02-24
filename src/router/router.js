@@ -16,6 +16,9 @@ import Login from '@/views/auth/Login.vue';
 import Register from '@/views/auth/Register.vue';
 import ForgotPassword from '@/views/auth/ForgotPassword.vue';
 import Dashboard from '@/views/account/Dashboard.vue';
+import UserPayments from '@/views/account/Payments.vue';
+import UserSettings from '@/views/account/SettingsView.vue';
+import AccountBuyCoins from '@/views/account/BuyCoins.vue';
 import AdminTemplates from '@/views/account/admin/TemplatesView.vue';
 import SubscriptionPlans from '@/views/account/admin/SubscriptionsView.vue';
 import AddSubscriptionView from '@/views/account/admin/AddSubscriptionView.vue';
@@ -49,6 +52,21 @@ const routes = [
 				path: "/dashboard",
 				name: 'dashboard',
 				component: Dashboard,
+			},
+      {
+				path: "/payments",
+				name: 'payments',
+				component: UserPayments,
+			},
+      {
+				path: "/settings/:category",
+				name: 'settings',
+				component: UserSettings,
+			},
+      {
+				path: "/account/buy-coins",
+				name: 'account.buy-coins',
+				component: AccountBuyCoins,
 			},
 			{
 				path: "/admin/templates",

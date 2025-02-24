@@ -61,7 +61,6 @@ documentModalStore.show('LoadingWorkspace')
 				<button @click="reset" class="text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowPathIcon class="inline-block h-4 w-4 mb-1"/> Reset</button>
 				<button @click="preview" class="ml-2 text-gray-600 rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><AdjustmentsVerticalIcon class="inline-block h-4 w-4 mb-1"/> Preview</button>
 				<button @click="save" class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><InboxArrowDownIcon class="inline-block h-4 w-4 mb-1"/> Save</button>
-				<button class="ml-2 secondary rounded shadow focus:outline-none focus:shadow-outline transform transition hover:scale-105 duration-300 ease-in-out"><ArrowDownTrayIcon class="inline-block h-4 w-4 mb-1"/> Download</button>
 			</div>
 		</div>
 		<div v-show="documentStore.isLoadingWorkspace">
@@ -188,7 +187,7 @@ documentModalStore.show('LoadingWorkspace')
 	import UpdateImageModal from '@/components/modals/UpdateImageModal.vue'
 	import PageSettingsModal from '@/components/modals/PageSettingsModal.vue'	
 	import SaveDocumentModal from '@/components/modals/SaveDocumentModal.vue'	
-	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon,ArrowDownTrayIcon } from '@heroicons/vue/20/solid'
+	import { Cog8ToothIcon,AdjustmentsVerticalIcon,ArrowPathIcon,InboxArrowDownIcon } from '@heroicons/vue/20/solid'
 	import Spinner from '@/components/form/Spinner'
     import UploadImageModal from '@/components/modals/UploadImageModal.vue'
     import OverlayModal from '@/components/form/SpinnerModal.vue'

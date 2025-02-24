@@ -16,7 +16,7 @@ import Bubbles from '../homepage/Bubbles.vue'
 				Just drag and drop. We'll do the rest.
 				</h1>
 				<p class="leading-normal text-2xl mb-8 w-full">
-				Design any kind of pdf document and download the code that will plug into your PHP project.
+				Design any kind of pdf document and plug it into your application.
 				</p>
 				<div class="w-full py-6 text-center">
 					<router-link to="/document/choose-template">

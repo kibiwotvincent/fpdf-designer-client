@@ -1,5 +1,5 @@
 <script setup>
-import { useDocumentStore } from '@/stores'
+import { useDocumentStore, useDocumentModalStore } from '@/stores'
 const documentStore = useDocumentStore()
 </script>
 
@@ -15,7 +15,6 @@ const documentStore = useDocumentStore()
 			<TrashIcon class="inline-block h-4 w-4 mb-1"/> 
 			Delete
 			</button>
-			<button type="button" data-te-modal-dismiss ref="closeModal" class="hidden">Close</button>
 		</div>
 		<div class="mt-4">
 			<label class="block">Text</label>
@@ -197,13 +196,13 @@ const documentStore = useDocumentStore()
 				const draggableIndex = documentStore.activeDraggable.index
 				documentStore.deleteDraggable(draggableIndex)
 				//close modal
-				this.$refs.closeModal.click()
+				this.closeModal()
 			},
 			duplicateDraggable() {
 				const documentStore = useDocumentStore()
-				documentStore.addDraggable({ ...documentStore.activeDraggable })
+				documentStore.addDraggable({ ...documentStore.activeDraggable }, true)
 				//close modal
-				this.$refs.closeModal.click()
+				this.closeModal()
 			},
 			toggleBorder(border) {
 				const documentStore = useDocumentStore()
@@ -235,6 +234,10 @@ const documentStore = useDocumentStore()
 				if(documentStore.activeDraggable.type == 'text') {
 					return Object.keys(documentStore.activeDraggable).length !== 0 && documentStore.activeDraggable.font_style.includes(style)
 				}
+			},
+      closeModal() {
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

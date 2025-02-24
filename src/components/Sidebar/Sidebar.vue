@@ -1,5 +1,5 @@
 <script setup>
-	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, PowerIcon, Cog6ToothIcon, TicketIcon, CreditCardIcon,CurrencyDollarIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
+	import { Bars3Icon, XMarkIcon, AdjustmentsHorizontalIcon, PowerIcon, Cog6ToothIcon, CreditCardIcon,CurrencyDollarIcon, UsersIcon, GlobeAltIcon, ViewColumnsIcon } from '@heroicons/vue/24/outline'
 </script>
 <template>
   <nav
@@ -85,7 +85,7 @@
 
           <li class="items-center">
             <router-link
-              to="/admin/settings"
+              to="/settings/profile"
               v-slot="{ href, navigate, isActive }"
             >
               <a
@@ -109,7 +109,7 @@
 
           <li class="items-center">
             <router-link
-              to="/admin/tables"
+              to="/payments"
               v-slot="{ href, navigate, isActive }"
             >
               <a
@@ -127,26 +127,6 @@
                   :class="[isActive ? 'opacity-75' : 'text-gray-300']"
                 ></i>
                 <CurrencyDollarIcon class="inline-block h-4 w-4 mb-1" /> Payments
-              </a>
-            </router-link>
-        </li>
-        <li class="items-center">
-            <router-link to="/admin/maps" v-slot="{ href, navigate, isActive }">
-              <a
-                :href="href"
-                @click="navigate"
-                class="text-xs uppercase py-3 font-bold block"
-                :class="[
-                  isActive
-                    ? 'text-red-400 hover:text-red-500 hover:underline'
-                    : 'text-gray-700 hover:text-red-400 hover:underline',
-                ]"
-              >
-                <i
-                  class="fas fa-map-marked mr-2 text-sm"
-                  :class="[isActive ? 'opacity-75' : 'text-gray-300']"
-                ></i>
-                <TicketIcon class="inline-block h-4 w-4 mb-1" /> Subscriptions
               </a>
             </router-link>
         </li>

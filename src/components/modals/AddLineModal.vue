@@ -49,7 +49,7 @@
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
-	import { useDocumentStore } from '@/stores'
+	import { useDocumentStore, useDocumentModalStore } from '@/stores'
 	
 	export default {
 		name: 'AddLineModalComponent',
@@ -79,7 +79,8 @@
 				this.closeModal()
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

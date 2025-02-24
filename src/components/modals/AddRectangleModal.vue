@@ -64,7 +64,7 @@
 
 <script>
 	import Modal from '@/components/form/HeadlessModal.vue'
-	import { useDocumentStore } from '@/stores'
+	import { useDocumentStore, useDocumentModalStore } from '@/stores'
 	
 	export default {
 		name: 'AddRectangleModalComponent',
@@ -99,7 +99,8 @@
 				this.draggable.background = this.draggable.background_color
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			}
 		}
 	}

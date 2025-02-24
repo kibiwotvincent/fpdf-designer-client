@@ -41,7 +41,7 @@
 	import TableSettings from '@/components/modals/table/TableSettings.vue'
 	import ColumnSettings from '@/components/modals/table/ColumnSettings.vue'
 	import RowSettings from '@/components/modals/table/RowSettings.vue'
-	import { useDocumentStore } from '@/stores'
+	import { useDocumentStore, useDocumentModalStore } from '@/stores'
 	
 	export default {
 		name: 'AddTableModalComponent',
@@ -157,7 +157,8 @@
 				this.closeModal()
 			},
 			closeModal() {
-				this.$refs.closeModal.click()
+				const documentModalStore = useDocumentModalStore()
+				documentModalStore.close()
 			},
 			increase(itemToIncrease) {
 				if(itemToIncrease == 'rows') {
